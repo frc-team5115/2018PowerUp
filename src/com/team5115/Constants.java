@@ -24,6 +24,9 @@ public class Constants {
     public static final double OPTIMUM_FLYWHEEL_RPM = 2750;
 
     // PID values
+    public static final double AUTO_FORWARD_KP = 0.1;
+    public static final double AUTO_FORWARD_KI = 0;
+    public static final double AUTO_FORWARD_KD = 0;
     public static final double AUTO_LINE_KP = 0;
     public static final double AUTO_LINE_KI = 0;
     public static final double AUTO_LINE_KD = 0;
@@ -38,6 +41,8 @@ public class Constants {
     // Tolerances for PID
     public static final double LINE_TOLERANCE = 0.1; // ft
     public static final double LINE_DTOLERANCE = 0.1; // ft/s
+    public static final double FORWARD_TOLERANCE = 0.1;//ft
+    public static final double FORWARD_DTOLERANCE = 0.1;//ft/s
     public static final double TURN_TOLERANCE = 0.1; // rad
     public static final double TURN_DTOLERANCE = 0.1; // rad/s
 

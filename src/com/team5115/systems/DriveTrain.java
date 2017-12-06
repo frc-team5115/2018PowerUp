@@ -1,8 +1,9 @@
 package com.team5115.systems;
 
 import com.ctre.CANTalon;
-//import com.kauailabs.navx.frc.AHRS;
+import com.kauailabs.navx.frc.AHRS;
 import com.team5115.Constants;
+import edu.wpi.first.wpilibj.SerialPort;
 
 public class DriveTrain {
 
@@ -17,8 +18,11 @@ public class DriveTrain {
     public double lastRightSpeed = 0;
 
     public int direction;
+    
+    AHRS navx;
 
     public DriveTrain(){
+    	navx = new AHRS(SerialPort.Port.kMXP);
 
         frontleft = new CANTalon(Constants.FRONT_LEFT_MOTOR_ID);
         frontright = new CANTalon(Constants.FRONT_RIGHT_MOTOR_ID);
@@ -41,6 +45,8 @@ public class DriveTrain {
     public void drive(double speed, double turn){
         double leftspeed = speed + turn;
         double rightspeed = speed - turn;
+//        System.out.println(leftspeed + " left");
+//        System.out.println(rightspeed + " right");
 
         if(Math.abs(leftspeed) > 1){
             leftspeed = 1;
@@ -48,29 +54,36 @@ public class DriveTrain {
         if(Math.abs(rightspeed) > 1){
             rightspeed = 1;
         }
-
+        //System.out.println(leftspeed);
+        
         frontleft.set(leftspeed);
-        frontright.set(rightspeed);
+        frontright.set(-rightspeed);
     }
-
-    public double getDist() {
-        // TODO: average of left and right encoder distances
-        return 0;
-    }
-
-    public double getForwardVelocity() {
-        // TODO: average of encoder velocities from talons
-        return 0;
-    }
+	public double leftDist() {
+		double leftDist = -direction * backleft.getPosition();
+		return leftDist / 1440 * 4 * Math.PI / 12;
+	}
+	
+	public double rightDist() {
+		double rightDist = direction * backright.getPosition();
+		return rightDist / 1440 * 4 * Math.PI / 12;
+	}
+	public double distanceTraveled() {
+		System.out.println("distance traveledequals" + ((leftDist() + rightDist()) / 2) );
+		return (leftDist() + rightDist()) / 2;
+	}
+	
+	public double getForwardVelocity(){
+		System.out.println("velocity" +(distanceTraveled() / Constants.DELAY) );
+		return distanceTraveled() / Constants.DELAY;
+	}
 
     public double getYaw() {
-        // TODO: yaw from gyro
-        return 0;
+        return navx.getYaw();
     }
 
     public double getTurnVelocity() {
-        // TODO: yaw velocity from gyro
-        return 0;
+        return navx.getRate();
     }
 
     // This method resets the values given by the encoders to a default of 0

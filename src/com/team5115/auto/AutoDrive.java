@@ -17,7 +17,7 @@ public class AutoDrive extends StateMachineBase {
     PID turnController;
 
     public void startLine(double dist, double maxSpeed) {
-        targetDist = Robot.drivetrain.getDist() + dist;
+        targetDist = Robot.drivetrain.distanceTraveled() + dist;
         targetAngle = Robot.drivetrain.getYaw();
 
         forwardController = new PID(Constants.AUTO_FORWARD_KP, Constants.AUTO_FORWARD_KI, Constants.AUTO_FORWARD_KD, maxSpeed);
@@ -27,7 +27,7 @@ public class AutoDrive extends StateMachineBase {
     }
 
     public void startTurn(double angle, double maxSpeed) {
-        targetDist = Robot.drivetrain.getDist();
+        targetDist = Robot.drivetrain.distanceTraveled();
         targetAngle = Robot.drivetrain.getYaw() + angle;
 
         forwardController = new PID(Constants.AUTO_FORWARD_KP, Constants.AUTO_FORWARD_KI, Constants.AUTO_FORWARD_KD);
@@ -39,9 +39,9 @@ public class AutoDrive extends StateMachineBase {
     public void update() {
         switch (state) {
             case DRIVING:
-
+            	Robot.drivetrain.distanceTraveled();
                 // run every Constants.DELAY seconds while driving
-                double vForward = forwardController.getPID(targetDist, Robot.drivetrain.getDist(), Robot.drivetrain.getForwardVelocity());
+                double vForward = forwardController.getPID(targetDist, Robot.drivetrain.distanceTraveled(), Robot.drivetrain.getForwardVelocity());
 
                 double clearYaw = clearSteer(Robot.drivetrain.getYaw(), targetAngle);
                 double vTurn = turnController.getPID(targetAngle, clearYaw, Robot.drivetrain.getTurnVelocity());
@@ -54,7 +54,9 @@ public class AutoDrive extends StateMachineBase {
                 }
 
                 break;
-
+            case FINISHED:
+            	Robot.drivetrain.drive(0, 0);
+            	break;
         }
     }
 
