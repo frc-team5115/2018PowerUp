@@ -3,7 +3,11 @@ package com.team5115.systems;
 import com.ctre.CANTalon;
 import com.kauailabs.navx.frc.AHRS;
 import com.team5115.Constants;
+
 import edu.wpi.first.wpilibj.SerialPort;
+import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 
 public class DriveTrain {
 
@@ -22,19 +26,20 @@ public class DriveTrain {
     AHRS navx;
 
     public DriveTrain(){
-    	navx = new AHRS(SerialPort.Port.kMXP);
+    	navx = new AHRS(SPI.Port.kMXP);
 
         frontleft = new CANTalon(Constants.FRONT_LEFT_MOTOR_ID);
         frontright = new CANTalon(Constants.FRONT_RIGHT_MOTOR_ID);
         backleft = new CANTalon(Constants.BACK_LEFT_MOTOR_ID);
         backright = new CANTalon(Constants.BACK_RIGHT_MOTOR_ID);
 
-        backleft.changeControlMode(CANTalon.TalonControlMode.Follower);
-        backright.changeControlMode(CANTalon.TalonControlMode.Follower);
-        backleft.set(frontleft.getDeviceID());
-        backright.set(frontright.getDeviceID());
+        frontleft.changeControlMode(CANTalon.TalonControlMode.Follower);
+        frontright.changeControlMode(CANTalon.TalonControlMode.Follower);
+        frontleft.set(backleft.getDeviceID());
+        frontright.set(backright.getDeviceID());
         direction = 1;
-
+        
+        
     }
 
     /**
@@ -56,8 +61,8 @@ public class DriveTrain {
         }
         //System.out.println(leftspeed);
         
-        frontleft.set(leftspeed);
-        frontright.set(-rightspeed);
+        backleft.set(leftspeed);
+        backright.set(-rightspeed);
     }
 	public double leftDist() {
 		double leftDist = -direction * backleft.getPosition();
@@ -68,14 +73,23 @@ public class DriveTrain {
 		double rightDist = direction * backright.getPosition();
 		return rightDist / 1440 * 4 * Math.PI / 12;
 	}
-	public double distanceTraveled() {
-		System.out.println("distance traveledequals" + ((leftDist() + rightDist()) / 2) );
-		return (leftDist() + rightDist()) / 2;
-	}
 	
-	public double getForwardVelocity(){
-		System.out.println("velocity" +(distanceTraveled() / Constants.DELAY) );
-		return distanceTraveled() / Constants.DELAY;
+	public double distanceTraveled() {
+		return -(leftDist() + rightDist()) / 2;
+	}
+
+	public double leftSpeed() {
+		double leftspeed = backleft.getSpeed();
+	    return ((leftspeed * 4 * Math.PI * 10) / (1440 * 12));
+	}
+	 
+	public double rightSpeed() {
+		double rightspeed = backright.getSpeed();
+	    return ((rightspeed * 4 * Math.PI * 10) / (1440 * 12));
+	}
+	 
+	public double averageSpeed() {
+		return (frontright.getSpeed() + frontleft.getSpeed()) / 2;
 	}
 
     public double getYaw() {
@@ -91,5 +105,7 @@ public class DriveTrain {
         frontleft.setPosition(0);
         frontright.setPosition(0);
     }
-
+    public void resetGyro(){
+    	navx.reset();
+    }
 }

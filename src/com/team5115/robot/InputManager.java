@@ -33,6 +33,7 @@ public class InputManager {
 
     public static double getThrottle() {
         // Joystick give 1 to -1 but we need 0 to 1
+    	//System.out.println("throttle " + ((1 - joy.getThrottle()) / 2));
         return (1 - joy.getThrottle()) / 2;
     }
 
