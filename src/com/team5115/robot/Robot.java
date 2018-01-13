@@ -23,7 +23,7 @@ public class Robot extends IterativeRobot {
 //    	//Change back to normal
     	Constants.loadFromFile();
     	Log.startServer(5115);
-    	Log.add("wqefwf", 2.0);
+    	Log.setDelay(150);
         // Initialize subsystems
         drivetrain = new DriveTrain();
         drive = new Drive();
@@ -35,41 +35,59 @@ public class Robot extends IterativeRobot {
 
     // Runs once when the autonomous phase of the game starts
     public void autonomousInit() {
-    	autoDrive.setState(autoDrive.INIT);
-        drivetrain.inuse = false;
-        drivetrain.resetEncoders();
-        drivetrain.resetGyro();
+    	 drivetrain.resetGyro();
+    	 drivetrain.resetEncoders();
+    	 Timer.delay(0.1);
+    	 //System.out.println("Yaw Reset" + Robot.drivetrain.getYaw());
+    	 autoDrive.setState(DriveForwardSome.INIT);
+         drivetrain.inuse = false;
+         
     }
 
     //Runs periodically while the game is in the autonomous phase
     public void autonomousPeriodic() {
         Timer.delay(.005);
-        System.out.println(drivetrain.getYaw());
+        //System.out.println("yaw " + drivetrain.getYaw());
+        Log.log("yaw", drivetrain.getYaw());
+        //System.out.println("dist" + drivetrain.distanceTraveled());
+        Log.log("Distance", drivetrain.distanceTraveled());
+
+    	//Log.add("wqefwf", 2.0);
+        //Log.add("Distance", drivetrain.distanceTraveled());
         
-        //Log.log("test", "i am a loge.");
         autoDrive.update();
+        
     }
 
     // Runs once when the game enters the driver operated stage
     public void teleopInit() {
-    	
+    	drivetrain.drive(0,0);
+        autoDrive.setState(DriveForwardSome.FINISHED);
     	drive.setState(Drive.DRIVING);
         drivetrain.inuse = false;
         drivetrain.resetGyro();
+        drivetrain.resetEncoders();
+       
     }
 
     // Runs periodically when the game is in the driver operated stage
     public void teleopPeriodic() {
-    	System.out.println(drivetrain.getYaw());
+    	//System.out.println(drivetrain.getYaw());
+    	//System.out.println(drivetrain.distanceTraveled());
     	Timer.delay(.005);
         drive.update();
     }
 
     // Runs when the robot is disabled
-    public void disabledInit() {}
-
+    public void disabledInit() {
+    	autoDrive.setState(DriveForwardSome.FINISHED);
+    }
+    
+    	
     // Runs periodically while the robot is disabled
     public void disabledPeriodic() {
+    	autoDrive.setState(DriveForwardSome.FINISHED);
+    	drivetrain.drive(0,0);
         Timer.delay(5);
     }
 

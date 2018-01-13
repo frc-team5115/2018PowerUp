@@ -30,27 +30,23 @@ public class Drive extends StateMachineBase {
     public void update() {
         switch (state) {
             case STOP:
-
                 Robot.drivetrain.drive(0, 0);
                 break;
 
             case DRIVING:
            
                 if (!Robot.drivetrain.inuse) {
-//                    // find desired forward and turning speeds in ft/s
-//                    double forwardSpeed = InputManager.getForward() * InputManager.getThrottle() * Constants.getAsDouble("top_speed");
-//                    double turnSpeed = InputManager.getTurn() * InputManager.getThrottle() * Constants.getAsDouble("top_turn_speed");
+                    // find desired forward and turning speeds in ft/s
                     double forwardSpeed = InputManager.getForward() * InputManager.getThrottle() * Constants.TOP_SPEED;
                     double turnSpeed = InputManager.getTurn() * InputManager.getThrottle() * Constants.TOP_TURN_SPEED;
+                    System.out.println(InputManager.getForward());
 
-//                    // open loop control for forward
-//                    double vForward = forwardSpeed * Constants.getAsDouble("forward_ki");
+                    // open loop control for forward
+                    // vForward is negative because y on the joystick is reversed
                     double vForward = forwardSpeed * Constants.FORWARD_KF;
                     //System.out.println(forwardSpeed);
-                    // PI control for turning speed
-//                    double vTurn = turnSpeed * Constants.TURN_KI + turnController.getPID(turnSpeed, Robot.drivetrain.getTurnVelocity(), 0);
-                    //System.out.println(forwardSpeed);
-                    //System.out.println("wfwe");
+                    System.out.println(turnSpeed);
+                    
                     Robot.drivetrain.drive(forwardSpeed, turnSpeed);
                 }
 

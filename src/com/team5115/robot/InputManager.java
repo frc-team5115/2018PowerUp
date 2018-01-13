@@ -18,7 +18,7 @@ public class InputManager {
     //The following methods deal with the basic driving functionalities
     public static double getForward() {
     	//System.out.println("Y-Axis " + joy.getRawAxis(Constants.AXIS_Y));
-        return treatAxis(joy.getRawAxis(Constants.AXIS_Y));
+        return -treatAxis(joy.getRawAxis(Constants.AXIS_Y));
     }
 
     public static double getTurn() {

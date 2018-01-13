@@ -1,6 +1,11 @@
 package com.team5115.systems;
 
+import com.cruzsbrian.robolog.Log;
 import com.ctre.CANTalon;
+/*
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+*/
 import com.kauailabs.navx.frc.AHRS;
 import com.team5115.Constants;
 
@@ -17,7 +22,13 @@ public class DriveTrain {
     CANTalon frontright;
     CANTalon backleft;
     CANTalon backright;
-
+   
+    /*
+    TalonSRX frontleft;
+	TalonSRX frontright;
+	TalonSRX backleft;
+	TalonSRX backright;
+	*/
     public double lastLeftSpeed = 0;
     public double lastRightSpeed = 0;
 
@@ -33,10 +44,14 @@ public class DriveTrain {
         backleft = new CANTalon(Constants.BACK_LEFT_MOTOR_ID);
         backright = new CANTalon(Constants.BACK_RIGHT_MOTOR_ID);
 
-        frontleft.changeControlMode(CANTalon.TalonControlMode.Follower);
         frontright.changeControlMode(CANTalon.TalonControlMode.Follower);
-        frontleft.set(backleft.getDeviceID());
-        frontright.set(backright.getDeviceID());
+        frontleft.changeControlMode(CANTalon.TalonControlMode.Follower);
+        frontleft.set(Constants.BACK_LEFT_MOTOR_ID);
+        frontright.set(Constants.BACK_RIGHT_MOTOR_ID);
+       /*
+        frontright.set(ControlMode.Follower, Constants.B
+         */
+        
         direction = 1;
         
         
@@ -50,8 +65,8 @@ public class DriveTrain {
     public void drive(double speed, double turn){
         double leftspeed = speed + turn;
         double rightspeed = speed - turn;
-//        System.out.println(leftspeed + " left");
-//        System.out.println(rightspeed + " right");
+        //System.out.println(leftspeed + " left");
+        //System.out.println(rightspeed + " right");
 
         if(Math.abs(leftspeed) > 1){
             leftspeed = 1;
@@ -59,10 +74,11 @@ public class DriveTrain {
         if(Math.abs(rightspeed) > 1){
             rightspeed = 1;
         }
-        //System.out.println(leftspeed);
         
-        backleft.set(leftspeed);
-        backright.set(-rightspeed);
+        backleft.set(-leftspeed);
+        //backleft.set(0.1);
+        backright.set(rightspeed);
+        //backright.set(0.1);
     }
 	public double leftDist() {
 		double leftDist = -direction * backleft.getPosition();
@@ -75,12 +91,13 @@ public class DriveTrain {
 	}
 	
 	public double distanceTraveled() {
-		return -(leftDist() + rightDist()) / 2;
+		return (leftDist() + rightDist()) / 2;
 	}
 
 	public double leftSpeed() {
 		double leftspeed = backleft.getSpeed();
 	    return ((leftspeed * 4 * Math.PI * 10) / (1440 * 12));
+	    
 	}
 	 
 	public double rightSpeed() {
@@ -93,7 +110,7 @@ public class DriveTrain {
 	}
 
     public double getYaw() {
-        return navx.getYaw();
+        return navx.getYaw() * (Math.PI / 180);
     }
 
     public double getTurnVelocity() {
@@ -102,10 +119,10 @@ public class DriveTrain {
 
     // This method resets the values given by the encoders to a default of 0
     public void resetEncoders() {
-        frontleft.setPosition(0);
-        frontright.setPosition(0);
+        backleft.setPosition(0); //5 ms
+        backright.setPosition(0);
     }
     public void resetGyro(){
-    	navx.reset();
+    	navx.reset(); //takes some time
     }
 }

@@ -1,5 +1,7 @@
 package com.team5115;
 
+import com.cruzsbrian.robolog.Log;
+
 public class PID {
 
     /**
@@ -57,7 +59,7 @@ public class PID {
         dError = -dReading;		// result of taking the derivative of the equation above with respect to time
 
         output = kp * error + ki * errorAccum + kd * dError;
-
+        Log.log("error", error);
         // Do not integrate if the output exceeds max to avoid intergral windup. See youtu.be/fusr9eTceEo
         if (Math.abs(output) <= maxOutput) {
             errorAccum += error * Constants.DELAY;
@@ -67,7 +69,7 @@ public class PID {
         if (Math.abs(output) > maxOutput) {
             output = maxOutput * Math.signum(output);
         }
-
+        Log.log("pid output", output);
         return output;
     }
 
@@ -80,4 +82,8 @@ public class PID {
     public boolean isFinished(double tolerance, double dErrorTolerance) {
         return (Math.abs(error) < tolerance && Math.abs(dError) < dErrorTolerance);
     }
+
+	public double getError() {
+		return error;
+	}
 }
