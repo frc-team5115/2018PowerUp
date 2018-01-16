@@ -47,5 +47,23 @@ public class InputManager {
         val *= sign;
         return val;
     }
+    public static boolean kill(){
+    	return joy.getRawButton(7);
+    }
+    public static boolean switchHeight(){
+    	return joy.getRawButton(11);
+    }
+    public static boolean scaleHeight(){
+    	return joy.getRawButton(12);
+    }
+    public static boolean up(){
+    	return joy.getRawButton(5);
+    }
+    public static boolean down(){
+    	return joy.getRawButton(4);
+    }
+    public static boolean returnHeight(){
+    	return joy.getRawButton(9);
+    }
 
 }

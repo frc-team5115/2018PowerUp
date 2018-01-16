@@ -17,6 +17,17 @@ public class Constants {
     public static final int AXIS_Y = 1;
     public static final double JOYSTICK_DEADBAND = 0.2;
     public static final int JOYSTICK_EXPO = 2;
+    public static final int UP = 5;
+    public static final int DOWN = 3;
+    public static final int KILL = 7;
+    public static final int SCALE = 12;
+    public static final int SWITCH = 11;
+    public static final int RETURN = 9;
+    public static final int INTAKE = 4;
+    public static final int EJECT = 1;
+    public static final int SWITCHDIR = 2;
+    
+    
 
     // Motors
     public static final int FRONT_LEFT_MOTOR_ID = 3;
