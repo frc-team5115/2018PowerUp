@@ -29,12 +29,13 @@ public class Constants {
     
     
 
-    // Motors
+    // Can
     public static final int FRONT_LEFT_MOTOR_ID = 3;
     public static final int FRONT_RIGHT_MOTOR_ID = 4;
     public static final int BACK_LEFT_MOTOR_ID = 1;
     public static final int BACK_RIGHT_MOTOR_ID = 2;
-    public static final double OPTIMUM_FLYWHEEL_RPM = 2750;
+    public static final int PNUMATIC_PCM_ID = 5;
+    
 
     // PID values
     public static final double AUTO_FORWARD_KP = 1;
@@ -60,7 +61,25 @@ public class Constants {
     public static final double TURN_DTOLERANCE = 0.2; // rad/s
 
     // Physical robot attributes
-    public static final double TOP_SPEED = 10;
-    public static final double TOP_TURN_SPEED = 5;
-
+    public static final double TOP_SPEED = 1;
+    public static final double TOP_TURN_SPEED = 1;
+    public static final int RETURN_HEIGHT = 0;
+    public static final int RUNG_HEIGHT = 0;
+    public static final int SWITCH_HEIGHT = 0;
+    public static final int SCALE_HEIGHT = 0;
+    
+    //PWM
+    public static final double INTAKE_VICTOR = 0;
+    
+    //sensors
+    public static final int CUBE_DETECTOR = 0;
+    public static final int POTENTIOMETER = 0;
+    
+    //PCM
+    public static final int INTAKE_FORWARD_CHANNEL = 0;
+    public static final int INTAKE_REVERSE_CHANNEL = 1;
+    public static final int GRABBER_FORWARD_CHANNEL  = 2;
+    public static final int GRABBER_REVERSE_CHANNEL = 3;
+    public static final int LIFTER_FORWARD_CHANNEL = 4;
+    public static final int LIFTER_REVERSE_CHANNEL = 5;
 }

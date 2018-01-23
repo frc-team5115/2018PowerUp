@@ -20,15 +20,21 @@ public class Auto extends StateMachineBase{
 	public static final int STRATEGY2 = 3;
 	public static final int STRATEGY3 = 4;
 	public static final int STRATEGY4 = 5;
+	public static Strategy2 s2;
+	public static Strategy3 s3;
+	public static Strategy4 s4;
 	//create new object imported from AutoDrive called "drive"
-	AutoDrive drive;
-	AutoDrive turn;
-	AutoDrive drive2;
-	
-	public Auto() {
-		drive = new AutoDrive();
-		turn = new AutoDrive();
-		drive2 = new AutoDrive();
+	int position;
+	int switchPosition;
+	int strategy;
+	public Auto(int p, int sp, int s) {
+		position = p;
+		switchPosition = sp;
+		strategy = s;
+		
+		s2 = new Strategy2(position, switchPosition);
+		s3 = new Strategy3();
+		s4 = new Strategy4();
 	}
 	
 	//each time update is called in AutoDrive
@@ -36,7 +42,12 @@ public class Auto extends StateMachineBase{
 		 //Run switch block and check for number
 	        switch (state) {
 	        	case INIT:
+	        		
 	        		//Get strategy numberfrom smart dashboard
+	        		s2.setState(Strategy2.INIT);
+	        		s3.setState(Strategy3.INIT);
+	        		s4.setState(Strategy4.INIT);
+	        		setState(strategy);
 	        		break;
 	        		
 	        	case STRATEGY1:
@@ -46,13 +57,16 @@ public class Auto extends StateMachineBase{
 	        	case STRATEGY2:
 	        		//Get robot position from smarrt dashboard
 	        		//if in the correct spot drive forward and place
+	        		s2.update();
 	        		//else strategy 3
 	        		break;
 	        	case STRATEGY3:
 	        		//drive forward
+	        		s3.update();
         			break;
 	        	case STRATEGY4:
 	        		//do nothing
+	        		s4.update();
         			break;
 	        
 	        }

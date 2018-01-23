@@ -17,7 +17,7 @@ public class InputManager {
 
     //The following methods deal with the basic driving functionalities
     public static double getForward() {
-    	//System.out.println("Y-Axis " + joy.getRawAxis(Constants.AXIS_Y));
+    	System.out.println("Y-Axis " + -treatAxis(joy.getRawAxis(Constants.AXIS_Y)));
         return -treatAxis(joy.getRawAxis(Constants.AXIS_Y));
     }
 
@@ -42,28 +42,38 @@ public class InputManager {
         if (Math.abs(val) < Constants.JOYSTICK_DEADBAND) {
             val = 0;
         }
-        double sign = (1 * Math.signum(val));
-        val = Math.pow(Math.abs(val), 2 * getThrottle() + 1);
-        val *= sign;
+        else {
+        	 double sign = (Math.signum(val));
+             val = Math.pow(Math.abs(val), 2 * getThrottle() + 1);
+        
+             if(sign != Math.signum(val)){
+            	 val *= sign;
+             }
+        }
+        
+        System.out.println("throttle " + getThrottle());
+        System.out.println("value " + val);
+
+        
         return val;
     }
     public static boolean kill(){
-    	return joy.getRawButton(7);
+    	return joy.getRawButton(Constants.KILL);
     }
     public static boolean switchHeight(){
-    	return joy.getRawButton(11);
+    	return joy.getRawButton(Constants.SWITCH);
     }
     public static boolean scaleHeight(){
-    	return joy.getRawButton(12);
-    }
-    public static boolean up(){
-    	return joy.getRawButton(5);
-    }
-    public static boolean down(){
-    	return joy.getRawButton(4);
+    	return joy.getRawButton(Constants.SCALE);
     }
     public static boolean returnHeight(){
-    	return joy.getRawButton(9);
+    	return joy.getRawButton(Constants.RETURN);
+    }
+    public static boolean intake(){
+    	return joy.getRawButton(Constants.INTAKE);
+    }
+    public static boolean eject(){
+    	return joy.getRawButton(Constants.EJECT);
     }
 
 }

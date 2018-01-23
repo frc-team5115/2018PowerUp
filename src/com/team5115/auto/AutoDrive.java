@@ -31,10 +31,8 @@ public class AutoDrive extends StateMachineBase {
 
         
         //Change back to our constants, this one doesn't work
-        //forwardController = new PID(Constants.AUTO_FORWARD_KP, Constants.AUTO_FORWARD_KI, Constants.AUTO_FORWARD_KD, maxSpeed);
-        //turnController = new PID(Constants.AUTO_TURN_KP, Constants.AUTO_TURN_KI, Constants.AUTO_TURN_KD, maxSpeed);
         forwardController = new PID(Constants.getAsDouble("auto_forward_kp"), Constants.getAsDouble("auto_forward_ki"), Constants.getAsDouble("auto_forward_kd"), maxSpeed);
-        turnController = new PID(Constants.getAsDouble("auto_turn_kp"), Constants.getAsDouble("auto_turn_ki"), Constants.getAsDouble("auto_turn_kd"), maxSpeed);
+        turnController = new PID(Constants.getAsDouble("auto_turn_kp"), Constants.getAsDouble("auto_turn_ki"), Constants.getAsDouble("auto_turn_kd"));
         setState(DRIVING);
     }
 
@@ -42,11 +40,8 @@ public class AutoDrive extends StateMachineBase {
         targetDist = Robot.drivetrain.distanceTraveled();
         targetAngle = Robot.drivetrain.getYaw() + (angle * (Math.PI / 180));
 
-        //forwardController = new PID(Constants.AUTO_FORWARD_KP, Constants.AUTO_FORWARD_KI, Constants.AUTO_FORWARD_KD, maxSpeed);
-        //turnController = new PID(Constants.AUTO_TURN_KP, Constants.AUTO_TURN_KI, Constants.AUTO_TURN_KD, maxSpeed);
-        forwardController = new PID(Constants.getAsDouble("auto_forward_kp"), Constants.getAsDouble("auto_forward_ki"), Constants.getAsDouble("auto_forward_kd"), maxSpeed);
+        forwardController = new PID(Constants.getAsDouble("auto_forward_kp"), Constants.getAsDouble("auto_forward_ki"), Constants.getAsDouble("auto_forward_kd"));
         turnController = new PID(Constants.getAsDouble("auto_turn_kp"), Constants.getAsDouble("auto_turn_ki"), Constants.getAsDouble("auto_turn_kd"), maxSpeed);
-
 
         setState(DRIVING);
     }

@@ -9,23 +9,22 @@ import com.team5115.robot.Robot;
 
 public class CarriageManager extends StateMachineBase {
 
-	public static final int GRAB = 0;
-    public static final int HOLD = 1;
-    public static final int EJECT = 2; 
+	public static final int GRAB = 1;
+    public static final int DUMP = 2; 
+    
     
 
     PID turnController;
-    public void setState(int s) {
-        switch (s) {
+    public void update() {
+        switch (state) {
+        	case STOP:
+        		Robot.carriage.stop();
+        		break;
         	case GRAB:
-        		
+        		Robot.carriage.grab();
         		break;
-        	case HOLD:
-        		
-        		break;
-        		
-        	case EJECT:
-        		
+        	case DUMP:
+        		Robot.carriage.eject();
         		break;
         }
     }

@@ -10,61 +10,25 @@ import com.team5115.robot.Robot;
 public class ElevatorManager extends StateMachineBase {
 
 	public static final int STOP = 0;
-    public static final int UPPING = 1;
-    public static final int DOWNING = 2;
-    public static final int RETURN = 3;
-    public static final int SWITCH = 4;
-    public static final int SCALE = 5;
+	public static final int RETURN = 1;
+    public static final int SWITCH = 2;
+    public static final int SCALE = 3;
     
 
     PID turnController;
-    public void setState(int s) {
-        switch (s) {
+    public void update() {
+        switch (state) {
         	case STOP:
-        		//Robot.elevator.move(0);
-        		if (InputManager.up()) {
-        			state = UPPING;
-        		}
-        		if (InputManager.down()) {
-        			state = DOWNING;
-        		}
-        		if (InputManager.returnHeight()) {
-        			state = RETURN;
-        		}
-        		if (InputManager.switchHeight()) {
-        			state = SWITCH;
-        		}
-        		if (InputManager.scaleHeight()) {
-        			state = SCALE;
-        		}
-        		
-        		break;
-        	case UPPING:
-        		
-        		//	Robot.elevator.move(1);
-        		if (!InputManager.up()) {
-        			state = STOP;
-        		}
-        		break;
-        	case DOWNING:
-        		if (!InputManager.down()) {
-        			state = STOP;
-        		}
+        		Robot.elevator.move(0);
         		break;
         	case RETURN:
-        		if (!InputManager.returnHeight()) {
-        			state = STOP;
-        		}
+        		Robot.elevator.moveTo(Constants.RETURN_HEIGHT);
         		break;
         	case SWITCH:
-        		if (!InputManager.switchHeight()) {
-        			state = STOP;
-        		}
+        		Robot.elevator.moveTo(Constants.SWITCH_HEIGHT);
         		break;
         	case SCALE:
-        		if (!InputManager.scaleHeight()) {
-        			state = STOP;
-        		}
+        		Robot.elevator.moveTo(Constants.SCALE_HEIGHT);
         		break;
         }
     }

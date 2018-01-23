@@ -36,16 +36,16 @@ public class DriveForwardSome extends StateMachineBase{
 		 //Run switch block and check for number
 	        switch (state) {
 	        	case INIT:
-	        		drive.startLine(10, .5);
-	        		//turn.startTurn(180, .5);
-	        		//setState(TURNING);
-	        		setState(DRIVING);
+	        		//drive.startLine(10, .5);
+	        		turn.startTurn(180, .5);
+	        		setState(TURNING);
+	        		//setState(DRIVING);
 	        		break;
 	        		
 	        //when in case driving
 	            case DRIVING:
 	            	if(drive.state == AutoDrive.FINISHED){
-	            		turn.startTurn(180, .15);
+	            		turn.startTurn(45, .15);
 	            		//drive2.startLine(10.0, 0.25);
 	            		setState(TURNING);
 	            		//setState(FINISHED);
@@ -59,13 +59,14 @@ public class DriveForwardSome extends StateMachineBase{
 	            	break;
 	            case TURNING:
 	            	if(turn.state == AutoDrive.FINISHED){
-	            		drive2.startLine(10.0, .5);
-	            		setState(DRIVING2);
-	            		//setState(FINISHED);
+	            		//drive2.startLine(10.0, .5);
+	            		//setState(DRIVING2);
+	            		setState(FINISHED);
 	            	}
 	            	//System.out.println("yaw " + Robot.drivetrain.getYaw());
 	            	//System.out.println("TURNING");
 	            	turn.update();
+	            	System.out.println("Yaw "+ Robot.drivetrain.getYaw() * (180 / Math.PI));
 	            	break;
 	            	
 	            case DRIVING2:
@@ -78,6 +79,7 @@ public class DriveForwardSome extends StateMachineBase{
 	            
 	            case FINISHED:
 	            	Robot.drivetrain.drive(0,0);
+	            	break;
 	        }
 	 }
 }
