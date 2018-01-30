@@ -86,7 +86,10 @@ public class CubeManipulatorManager extends StateMachineBase {
         		if(InputManager.moveDown() == InputManager.moveUp()){
         			Robot.EM.setState(ElevatorManager.STOP);
         		}
-        		
+        		if (InputManager.eject()) {
+        			setState(DUMP);
+        		}
+        		break;
         		
         	case SWITCH:
         		Robot.IM.update();
