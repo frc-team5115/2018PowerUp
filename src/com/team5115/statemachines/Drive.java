@@ -1,7 +1,7 @@
 package com.team5115.statemachines;
 
 //import com.cruzsbrian.robolog.Constants;
-import com.team5115.Constants;
+import com.team5115.Constantos;
 
 import com.team5115.PID;
 import com.team5115.robot.InputManager;
@@ -19,7 +19,7 @@ public class Drive extends StateMachineBase {
                 // run once when entering DRIVING state
                 // construct the PID every time we start driving in case constants have changed
                 //turnController = new PID(Constants.getAsDouble("turn_kp"), Constants.getAsDouble("turn_ki"), 0);
-                turnController = new PID(Constants.TURN_KP, Constants.TURN_KI, 0);
+                turnController = new PID(Constantos.TURN_KP, Constantos.TURN_KI, 0);
         }
         
         state = s;
@@ -35,15 +35,14 @@ public class Drive extends StateMachineBase {
            
                 if (!Robot.drivetrain.inuse) {
                     // find desired forward and turning speeds in ft/s
-                    double forwardSpeed = InputManager.getForward() * InputManager.getThrottle() * Constants.TOP_SPEED;
-                    double turnSpeed = InputManager.getTurn() * InputManager.getThrottle() * Constants.TOP_TURN_SPEED;
+                    double forwardSpeed = InputManager.getForward() * InputManager.getThrottle() * Constantos.TOP_SPEED;
+                    double turnSpeed = InputManager.getTurn() * InputManager.getThrottle() * Constantos.TOP_TURN_SPEED;
                     System.out.println("forward " + forwardSpeed);
+                    System.out.println("turn " + turnSpeed);
 
                     // open loop control for forward
                     // vForward is negative because y on the joystick is reversed
-                    double vForward = forwardSpeed * Constants.FORWARD_KF;
-                    //System.out.println(forwardSpeed);
-                    System.out.println("turn " + turnSpeed);
+                    //double vForward = forwardSpeed * Constants.FORWARD_KF;
                     
                     Robot.drivetrain.drive(forwardSpeed, turnSpeed);
                 }

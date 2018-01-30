@@ -5,7 +5,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.kauailabs.navx.frc.AHRS;
-import com.team5115.Constants;
+import com.team5115.Constantos;
 
 import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.SPI;
@@ -31,13 +31,13 @@ public class DriveTrain {
     public DriveTrain(){
     	navx = new AHRS(SPI.Port.kMXP);
 
-        frontleft = new TalonSRX(Constants.FRONT_LEFT_MOTOR_ID);
-        frontright = new TalonSRX(Constants.FRONT_RIGHT_MOTOR_ID);
-        backleft = new TalonSRX(Constants.BACK_LEFT_MOTOR_ID);
-        backright = new TalonSRX(Constants.BACK_RIGHT_MOTOR_ID);
+        frontleft = new TalonSRX(Constantos.FRONT_LEFT_MOTOR_ID);
+        frontright = new TalonSRX(Constantos.FRONT_RIGHT_MOTOR_ID);
+        backleft = new TalonSRX(Constantos.BACK_LEFT_MOTOR_ID);
+        backright = new TalonSRX(Constantos.BACK_RIGHT_MOTOR_ID);
 
-        frontright.set(ControlMode.Follower, Constants.BACK_RIGHT_MOTOR_ID);
-        frontleft.set(ControlMode.Follower, Constants.BACK_LEFT_MOTOR_ID);
+        frontright.set(ControlMode.Follower, Constantos.BACK_RIGHT_MOTOR_ID);
+        frontleft.set(ControlMode.Follower, Constantos.BACK_LEFT_MOTOR_ID);
         
        backright.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 5);
        backleft.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 5);
@@ -72,12 +72,12 @@ public class DriveTrain {
     }
 	public double leftDist() {
 		double leftDist = -direction * backleft.getSelectedSensorPosition(0);
-		return leftDist / 1440 * 4 * Math.PI / 12;
+		return leftDist / 1440 * 5.2 * Math.PI / 12;
 	}
 	
 	public double rightDist() {
 		double rightDist = direction * backright.getSelectedSensorPosition(0);
-		return rightDist / 1440 * 4 * Math.PI / 12;
+		return rightDist / 1440 * 5.2 * Math.PI / 12;
 	}
 	
 	public double distanceTraveled() {
@@ -100,11 +100,11 @@ public class DriveTrain {
 	}
 
     public double getYaw() {
-        return navx.getYaw() * (Math.PI / 180);
+        return navx.getYaw();	//the navx considers positrational rotation to be clockwise, which is wrong.
     }
 
     public double getTurnVelocity() {
-        return navx.getRate();
+        return navx.getRate();	//the navx considers positrational rotation to be clockwise, which is wrong.
     }
 
     // This method resets the values given by the encoders to a default of 0

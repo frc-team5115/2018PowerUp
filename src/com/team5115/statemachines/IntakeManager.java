@@ -1,7 +1,7 @@
 package com.team5115.statemachines;
 
 //import com.cruzsbrian.robolog.Constants;
-import com.team5115.Constants;
+import com.team5115.Constantos;
 import com.team5115.PID;
 import com.team5115.robot.InputManager;
 import com.team5115.robot.Robot;
@@ -9,7 +9,7 @@ import com.team5115.robot.Robot;
 import edu.wpi.first.wpilibj.Timer;
 
 public class IntakeManager extends StateMachineBase {
-
+	public static final int STOP = 0;
     public static final int INTAKE = 1;
     public static final int SPIT = 2;
     public static final int GRIP = 3;
@@ -22,6 +22,7 @@ public class IntakeManager extends StateMachineBase {
         switch (state) {
         	case STOP:
         		Robot.intake.relax();
+        		Robot.intake.intake(0);
         		break;
         	case INTAKE:
         		Robot.intake.lowerIntake();

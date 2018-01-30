@@ -2,7 +2,7 @@
 package com.team5115.auto;
 
 import com.cruzsbrian.robolog.Log;
-import com.team5115.Constants;
+import com.team5115.Constantos;
 import com.team5115.PID;
 import com.team5115.robot.Robot;
 import com.team5115.statemachines.StateMachineBase;
@@ -20,6 +20,7 @@ public class Auto extends StateMachineBase{
 	public static final int STRATEGY2 = 3;
 	public static final int STRATEGY3 = 4;
 	public static final int STRATEGY4 = 5;
+	public static Strategy1 s1;
 	public static Strategy2 s2;
 	public static Strategy3 s3;
 	public static Strategy4 s4;
@@ -31,7 +32,8 @@ public class Auto extends StateMachineBase{
 		position = p;
 		switchPosition = sp;
 		strategy = s;
-		
+
+		s1 = new Strategy1(switchPosition);
 		s2 = new Strategy2(position, switchPosition);
 		s3 = new Strategy3();
 		s4 = new Strategy4();
@@ -44,6 +46,7 @@ public class Auto extends StateMachineBase{
 	        	case INIT:
 	        		
 	        		//Get strategy numberfrom smart dashboard
+	        		s1.setState(Strategy1.INIT);
 	        		s2.setState(Strategy2.INIT);
 	        		s3.setState(Strategy3.INIT);
 	        		s4.setState(Strategy4.INIT);
@@ -51,21 +54,16 @@ public class Auto extends StateMachineBase{
 	        		break;
 	        		
 	        	case STRATEGY1:
-	        		//Get Left vs Right
-	        		//Act accordingly
+	        		s1.update();
+	        		Log.log("strategy", "1");
 	        		break;
 	        	case STRATEGY2:
-	        		//Get robot position from smarrt dashboard
-	        		//if in the correct spot drive forward and place
 	        		s2.update();
-	        		//else strategy 3
 	        		break;
 	        	case STRATEGY3:
-	        		//drive forward
 	        		s3.update();
         			break;
 	        	case STRATEGY4:
-	        		//do nothing
 	        		s4.update();
         			break;
 	        

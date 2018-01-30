@@ -3,10 +3,10 @@ package com.team5115.systems;
 import com.cruzsbrian.robolog.Log;
 
 
-import com.team5115.Constants;
+import com.team5115.Constantos;
 
 import edu.wpi.first.wpilibj.Victor;
-import  edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 
 
@@ -17,14 +17,10 @@ public class Intake {
    DoubleSolenoid intakeLifter;
    Victor intakeWheels;
     public Intake(){
-    	cubeDetector = new DigitalInput(Constants.CUBE_DETECTOR);
-    	cubeSolenoid = new DoubleSolenoid(Constants.PNUMATIC_PCM_ID, Constants.INTAKE_FORWARD_CHANNEL, Constants.INTAKE_REVERSE_CHANNEL);
-    	intakeLifter = new DoubleSolenoid(Constants.PNUMATIC_PCM_ID, Constants.LIFTER_FORWARD_CHANNEL, Constants.LIFTER_REVERSE_CHANNEL);
-    	intakeWheels = new Victor(Constants.INTAKE_VICTOR);
-    }
-    
-    public void intake(){
-    	
+    	cubeDetector = new DigitalInput(Constantos.CUBE_DETECTOR);
+    	cubeSolenoid = new DoubleSolenoid(Constantos.PNUMATIC_PCM_ID, Constantos.INTAKE_FORWARD_CHANNEL, Constantos.INTAKE_REVERSE_CHANNEL);
+    	intakeLifter = new DoubleSolenoid(Constantos.PNUMATIC_PCM_ID, Constantos.LIFTER_FORWARD_CHANNEL, Constantos.LIFTER_REVERSE_CHANNEL);
+    	intakeWheels = new Victor(Constantos.INTAKE_VICTOR);
     }
     
     public void grip(){

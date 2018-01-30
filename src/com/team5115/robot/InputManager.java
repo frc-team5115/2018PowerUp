@@ -1,6 +1,6 @@
 package com.team5115.robot;
 
-import com.team5115.Constants;
+import com.team5115.Constantos;
 
 import edu.wpi.first.wpilibj.Joystick;
 
@@ -17,13 +17,13 @@ public class InputManager {
 
     //The following methods deal with the basic driving functionalities
     public static double getForward() {
-    	System.out.println("Y-Axis " + -treatAxis(joy.getRawAxis(Constants.AXIS_Y)));
-        return -treatAxis(joy.getRawAxis(Constants.AXIS_Y));
+    	System.out.println("Y-Axis " + -treatAxis(joy.getRawAxis(Constantos.AXIS_Y)));
+        return -treatAxis(joy.getRawAxis(Constantos.AXIS_Y));
     }
 
     public static double getTurn() {
     	//System.out.println("X-Axis " +joy.getRawAxis(Constants.AXIS_X));
-        return -treatAxis(joy.getRawAxis(Constants.AXIS_X));
+        return -treatAxis(joy.getRawAxis(Constantos.AXIS_X));
     }
 
     //These methods are controlled by the nub on the top of the joystick
@@ -39,7 +39,7 @@ public class InputManager {
 
     // Handles expo and deadband
     public static double treatAxis(double val) {
-        if (Math.abs(val) < Constants.JOYSTICK_DEADBAND) {
+        if (Math.abs(val) < Constantos.JOYSTICK_DEADBAND) {
             val = 0;
         }
         else {
@@ -58,22 +58,27 @@ public class InputManager {
         return val;
     }
     public static boolean kill(){
-    	return joy.getRawButton(Constants.KILL);
+    	return joy.getRawButton(Constantos.KILL);
     }
     public static boolean switchHeight(){
-    	return joy.getRawButton(Constants.SWITCH);
+    	return joy.getRawButton(Constantos.SWITCH);
     }
     public static boolean scaleHeight(){
-    	return joy.getRawButton(Constants.SCALE);
+    	return joy.getRawButton(Constantos.SCALE);
     }
     public static boolean returnHeight(){
-    	return joy.getRawButton(Constants.RETURN);
+    	return joy.getRawButton(Constantos.RETURN);
     }
     public static boolean intake(){
-    	return joy.getRawButton(Constants.INTAKE);
+    	return joy.getRawButton(Constantos.INTAKE);
     }
     public static boolean eject(){
-    	return joy.getRawButton(Constants.EJECT);
+    	return joy.getRawButton(Constantos.EJECT);
     }
-
+    public static boolean moveUp(){
+    	return joy.getRawButton(Constantos.UP);
+    }
+    public static boolean moveDown(){
+    	return joy.getRawButton(Constantos.DOWN);
+    }
 }

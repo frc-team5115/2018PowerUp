@@ -7,7 +7,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 */
 import com.kauailabs.navx.frc.AHRS;
-import com.team5115.Constants;
+import com.team5115.Constantos;
 
 import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.SPI;
@@ -19,7 +19,7 @@ public class Carriage {
    
 
     public Carriage(){
-    	grabberSolenoid = new DoubleSolenoid(Constants.PNUMATIC_PCM_ID, Constants.GRABBER_FORWARD_CHANNEL, Constants.GRABBER_REVERSE_CHANNEL);
+    	grabberSolenoid = new DoubleSolenoid(Constantos.PNUMATIC_PCM_ID, Constantos.GRABBER_FORWARD_CHANNEL, Constantos.GRABBER_REVERSE_CHANNEL);
     }
     
     public void grab(){

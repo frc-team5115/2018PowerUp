@@ -1,8 +1,7 @@
 package com.team5115.auto;
 
 import com.cruzsbrian.robolog.Log;
-import com.cruzsbrian.robolog.Constants;
-//import com.team5115.Constants;
+import com.team5115.Constantos;
 import com.team5115.PID;
 import com.team5115.robot.Robot;
 import com.team5115.statemachines.StateMachineBase;
@@ -25,28 +24,28 @@ public class AutoDrive extends StateMachineBase {
         //Takes some time to reset gyros + encoders
     	Timer.delay(0.1);
         targetDist = Robot.drivetrain.distanceTraveled() + dist;
-        Log.log("target", Robot.drivetrain.getYaw());
         targetAngle = Robot.drivetrain.getYaw();
         //System.out.println("Target " + targetAngle);
 
         
         //Change back to our constants, this one doesn't work
-        forwardController = new PID(Constants.getAsDouble("auto_forward_kp"), Constants.getAsDouble("auto_forward_ki"), Constants.getAsDouble("auto_forward_kd"), maxSpeed);
-        turnController = new PID(Constants.getAsDouble("auto_turn_kp"), Constants.getAsDouble("auto_turn_ki"), Constants.getAsDouble("auto_turn_kd"));
+        forwardController = new PID(Constantos.AUTO_FORWARD_KP, Constantos.AUTO_FORWARD_KI, Constantos.AUTO_FORWARD_KD ,maxSpeed);
+        turnController = new PID(Constantos.AUTO_TURN_KP, Constantos.AUTO_TURN_KI ,Constantos.AUTO_TURN_KD);
         setState(DRIVING);
     }
 
     public void startTurn(double angle, double maxSpeed) {
         targetDist = Robot.drivetrain.distanceTraveled();
-        targetAngle = Robot.drivetrain.getYaw() + (angle * (Math.PI / 180));
+        targetAngle = Robot.drivetrain.getYaw() + (angle);
 
-        forwardController = new PID(Constants.getAsDouble("auto_forward_kp"), Constants.getAsDouble("auto_forward_ki"), Constants.getAsDouble("auto_forward_kd"));
-        turnController = new PID(Constants.getAsDouble("auto_turn_kp"), Constants.getAsDouble("auto_turn_ki"), Constants.getAsDouble("auto_turn_kd"), maxSpeed);
-
+        forwardController = new PID(Constantos.AUTO_FORWARD_KP, Constantos.AUTO_FORWARD_KI, Constantos.AUTO_FORWARD_KD);
+        turnController = new PID(Constantos.TURN_KP, Constantos.TURN_KI ,Constantos.AUTO_TURN_KD, maxSpeed);
+        
         setState(DRIVING);
     }
 
     public void update() {
+    	System.out.println("autodrive state: " + state);
         switch (state) {
             case DRIVING:
                 Robot.drivetrain.inuse = true;
@@ -57,9 +56,9 @@ public class AutoDrive extends StateMachineBase {
                 double clearYaw = clearSteer(Robot.drivetrain.getYaw(), targetAngle);
                 double vTurn = turnController.getPID(targetAngle, clearYaw, Robot.drivetrain.getTurnVelocity());
 
-                Log.add("yawp", turnController.getError() * Constants.getAsDouble("auto_turn_kp"));
-                Log.add("yawi", turnController.getError() * Constants.getAsDouble("auto_turn_ki"));
-                Log.add("yawcorrection", vTurn);
+                //Log.add("yawp", turnController.getError() * Constantos.AUTO_TURN_KP);
+                //Log.add("yawi", turnController.getError() * Constantos.AUTO_TURN_KI);
+                //Log.add("yawcorrection", vTurn);
                 //Log.log("vForward", vForward);
                 //Log.log("average speed", Robot.drivetrain.averageSpeed());
                 Log.log("leftSpeed", Robot.drivetrain.leftSpeed());
@@ -75,7 +74,7 @@ public class AutoDrive extends StateMachineBase {
                 
                 
                 
-                if (forwardController.isFinished(Constants.getAsDouble("forward_tolerance"), Constants.getAsDouble("forward_dtolerance")) && turnController.isFinished(Constants.getAsDouble("turn_tolerance"), Constants.getAsDouble("turn_dtolerance"))) {
+                if (forwardController.isFinished(Constantos.FORWARD_TOLERANCE, Constantos.FORWARD_DTOLERANCE) && turnController.isFinished(Constantos.TURN_TOLERANCE, Constantos.TURN_DTOLERANCE)) {
                     Robot.drivetrain.drive(0, 0);
                     setState(FINISHED);
                 }
@@ -84,16 +83,19 @@ public class AutoDrive extends StateMachineBase {
             case FINISHED:
                 Robot.drivetrain.inuse = false;
             	Robot.drivetrain.drive(0, 0);
+            	
+            	forwardController = null;
+            	turnController = null;
             	break;
         }
     }
 
     private double clearSteer(double yaw, double target) {
-        if (Math.abs(target - yaw) > Math.PI) {
-            if (target < Math.PI) {	// yaw must be too high for target
-                yaw -= Math.PI * 2;
+        if (Math.abs(target - yaw) > 180) {
+            if (target < 180) {	// yaw must be too high for target
+                yaw -= 180 * 2;
             } else {	// yaw must be too low for target
-                yaw += Math.PI * 2;
+                yaw += 180 * 2;
             }
         }
 

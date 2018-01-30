@@ -1,7 +1,7 @@
 package com.team5115.statemachines;
 
 //import com.cruzsbrian.robolog.Constants;
-import com.team5115.Constants;
+import com.team5115.Constantos;
 
 import com.team5115.PID;
 import com.team5115.robot.InputManager;
@@ -27,20 +27,21 @@ public class CubeManipulatorManager extends StateMachineBase {
         switch (state) {
         	case STOP:
         		//EVERYTHING INACTIVE
-        		Robot.IM.setState(Robot.IM.STOP);
-        		Robot.CM.setState(Robot.CM.STOP);
-        		Robot.EM.setState(Robot.EM.STOP);
-        		if (InputManager.intake())
+        		Robot.IM.setState(IntakeManager.STOP);
+        		Robot.CM.setState(CarriageManager.STOP);
+        		Robot.EM.setState(ElevatorManager.STOP);
+        		if (InputManager.intake()) {
+            		Robot.EM.startMovement(Constantos.RETURN_HEIGHT);
         			setState(INTAKE);
+        		}
         		break;
         	case INIT:
         		break;
         	case INTAKE:
-        		//ELEVATOR DOWN, INTAKEACTIVE,CARRIAGE ARMED
+        		//ELEVATOR DOWN, INTAKE ACTIVE,CARRIAGE ARMED
         		// IF SENSOR IMPUT IS RECOGNIZED, GO TO TRANSIT
-        		Robot.IM.setState(Robot.IM.INTAKE);
-        		Robot.CM.setState(Robot.CM.DUMP);
-        		Robot.EM.setState(Robot.EM.RETURN);
+        		Robot.IM.setState(IntakeManager.INTAKE);
+        		Robot.CM.setState(CarriageManager.DUMP);
         		Robot.IM.update();
         		Robot.CM.update();
         		Robot.EM.update();
@@ -48,63 +49,91 @@ public class CubeManipulatorManager extends StateMachineBase {
         			setState(SWALLOW);
         		break;
         	case SPIT:
-        		Robot.IM.setState(Robot.IM.SPIT);
+        		Robot.IM.setState(IntakeManager.SPIT);
         		break;
         	case SWALLOW:
         		//ELEVATOR STILL, INTAKE INACTIVE, CARRIAGE ACTIVE
         		//IF USER INPUT IS RECOGNIZED, GO TO DUMP
-        		Robot.IM.setState(Robot.IM.GRIP);
+        		Robot.IM.setState(IntakeManager.GRIP);
         		Robot.EM.update();
         		Robot.IM.update();
         		Robot.CM.update();
         	
         		
-        		setState(SWITCH);
+        		setState(TRANSIT);
         		break;
         	case TRANSIT:
-        		Robot.CM.setState(Robot.CM.GRAB);
-        		Robot.IM.setState(Robot.IM.RELEASE);
+        		Robot.CM.setState(CarriageManager.GRAB);
+        		Robot.IM.setState(IntakeManager.RELEASE);
         		Robot.EM.update();
         		Robot.IM.update();
         		Robot.CM.update();
         		
-        		if (InputManager.switchHeight())
+        		if (InputManager.switchHeight()) {
+            		Robot.EM.startMovement(Constantos.SWITCH_HEIGHT);
         			setState(SWITCH);
-        		else if (InputManager.scaleHeight())
+        		}
+        		if (InputManager.scaleHeight()) {
+            		Robot.EM.startMovement(Constantos.SCALE_HEIGHT);
         			setState(SCALE);
+        		}
+        		if(InputManager.moveUp() && !Robot.elevator.maxHeight()){
+        			Robot.EM.setState(ElevatorManager.MOVING_UP);
+        		}
+        		if(InputManager.moveDown() && !Robot.elevator.minHeight()){
+        			Robot.EM.setState(ElevatorManager.MOVING_DOWN);
+        		}
+        		if(InputManager.moveDown() == InputManager.moveUp()){
+        			Robot.EM.setState(ElevatorManager.STOP);
+        		}
+        		
+        		
         	case SWITCH:
-        		Robot.EM.setState(SWITCH);
         		Robot.IM.update();
         		Robot.CM.update();
         		Robot.EM.update();
         		
-        		if (InputManager.eject())
+        		if(InputManager.moveUp() || InputManager.moveDown()){
+        			Robot.EM.cancelMovement();
+        			state = TRANSIT;
+        		}
+        		
+        		if (InputManager.eject()) {
         			setState(DUMP);
+        		}
+        		
         		break;
         	case SCALE:
-        		Robot.EM.setState(SCALE);
         		Robot.IM.update();
         		Robot.CM.update();
         		Robot.EM.update();
-        		if (InputManager.eject())
+        		
+        		if(InputManager.moveUp() || InputManager.moveDown()){
+        			Robot.EM.cancelMovement();
+        			state = TRANSIT;
+        		}
+        		
+        		if (InputManager.eject()) {
         			setState(DUMP);
+        		}
         		break;
         	case DUMP:
             	//ELEVATOR STILL, INTAKE INACTIVE, CARRIAGE DUMPING
         		//IF USER INPUTIS DETECTED,GO TO RETURING
-        		Robot.CM.setState(Robot.CM.DUMP);
-        		Robot.IM.setState(Robot.IM.STOP);
+        		Robot.CM.setState(CarriageManager.DUMP);
+        		Robot.IM.setState(StateMachineBase.STOP);
         		Robot.EM.update();
         		Robot.IM.update();
         		Robot.CM.update();
         		
-        		if (InputManager.returnHeight())
+        		if (InputManager.returnHeight()){
+            		Robot.EM.startMovement(Constantos.RETURN_HEIGHT);
         			setState(RETURNING);
+        		}
             	break;
         	case RETURNING:
-        		Robot.IM.setState(Robot.IM.STOP);
-        		Robot.CM.setState(Robot.CM.STOP);
-        		Robot.EM.setState(Robot.EM.RETURN);
+        		Robot.IM.setState(StateMachineBase.STOP);
+        		Robot.CM.setState(StateMachineBase.STOP);
         		Robot.IM.update();
         		Robot.CM.update();
         		Robot.EM.update();

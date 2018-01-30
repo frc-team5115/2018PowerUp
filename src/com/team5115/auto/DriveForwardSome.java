@@ -2,7 +2,7 @@
 package com.team5115.auto;
 
 import com.cruzsbrian.robolog.Log;
-import com.team5115.Constants;
+import com.team5115.Constantos;
 import com.team5115.PID;
 import com.team5115.robot.Robot;
 import com.team5115.statemachines.StateMachineBase;
@@ -36,10 +36,10 @@ public class DriveForwardSome extends StateMachineBase{
 		 //Run switch block and check for number
 	        switch (state) {
 	        	case INIT:
-	        		//drive.startLine(10, .5);
-	        		turn.startTurn(180, .5);
-	        		setState(TURNING);
-	        		//setState(DRIVING);
+	        		drive.startLine(10, .5);
+	        		//turn.startTurn(180, .5);
+	        		//setState(TURNING);
+	        		setState(DRIVING);
 	        		break;
 	        		
 	        //when in case driving
@@ -59,9 +59,9 @@ public class DriveForwardSome extends StateMachineBase{
 	            	break;
 	            case TURNING:
 	            	if(turn.state == AutoDrive.FINISHED){
-	            		//drive2.startLine(10.0, .5);
-	            		//setState(DRIVING2);
-	            		setState(FINISHED);
+	            		drive2.startLine(10.0, .5);
+	            		setState(DRIVING2);
+	            		//setState(FINISHED);
 	            	}
 	            	//System.out.println("yaw " + Robot.drivetrain.getYaw());
 	            	//System.out.println("TURNING");

@@ -13,7 +13,6 @@ import com.team5115.auto.Auto;
 import com.team5115.auto.DriveForwardSome;
 import com.team5115.systems.Intake;
 import com.team5115.statemachines.IntakeManager;
-
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -44,6 +43,7 @@ public class Robot extends IterativeRobot {
 	public static ElevatorManager EM;
     
 	public String gameData;
+	public char L = 'L';
 	
     // Initialization phase of the robot class
     // This method runs once when the robot turns on and does not run again until the robot reboots
@@ -62,29 +62,27 @@ public class Robot extends IterativeRobot {
         CM = new CarriageManager();
         elevator = new Elevator();
         EM = new ElevatorManager();
-        
+        CMM = new CubeManipulatorManager();
         ds = DriverStation.getInstance();
-        /*
-        positionChooser = new SendableChooser<Integer>();
-        positionChooser.addDefault("Left", 1);
-        positionChooser.addObject("Right", 2);
-        positionChooser.addObject("Center", 3);
-        
-        switchPositionChooser = new SendableChooser<Integer>();
-        switchPositionChooser.addDefault("Left", 1);
-        switchPositionChooser.addObject("Right", 2);
-        
-        strategyChooser = new SendableChooser<Integer>();
-        strategyChooser.addDefault("Strategy 1", 2);
-        strategyChooser.addObject("Strategy 2", 3);  
-        strategyChooser.addObject("Strategy 3", 4);
-        strategyChooser.addObject("Strategy 4", 5);
-        */
-        
+//       
+//        positionChooser = new SendableChooser<Integer>();
+//        positionChooser.addDefault("Left", 1);
+//        positionChooser.addObject("Right", 2);
+//        positionChooser.addObject("Center", 3);
+//        
+//        switchPositionChooser = new SendableChooser<Integer>();
+//        switchPositionChooser.addDefault("Left", 1);
+//        switchPositionChooser.addObject("Right", 2);
+//        
+//        strategyChooser = new SendableChooser<Integer>();
+//        strategyChooser.addDefault("Strategy 1", 2);//these are the state numbers in Auto.java
+//        strategyChooser.addObject("Strategy 2", 3);  
+//        strategyChooser.addObject("Strategy 3", 4);
+//        strategyChooser.addObject("Strategy 4", 5);
+//        
 
         
-      
-        SmartDashboard.putNumber("Speed", drivetrain.distanceTraveled());
+      drive.setState(Drive.STOP);
         
     }
 
@@ -100,11 +98,18 @@ public class Robot extends IterativeRobot {
     	 strategy = strategyChooser.getSelected();
     	 auto = new Auto(position, switchPosition, strategy);
     	 */
-    	 autoDrive.setState(DriveForwardSome.INIT);
-         drivetrain.inuse = false;
+    	 //autoDrive.setState(DriveForwardSome.INIT);
+         drivetrain.inuse = true;
          
  		gameData =  ds.getGameSpecificMessage();
-         
+		switchPosition = (L == gameData.charAt(0)) ? 1 : 2;
+// 		position = positionChooser.getSelected();
+// 		strategy = strategyChooser.getSelected();
+ 		//auto = new Auto(position, switchPosition, strategy);
+
+ 		auto = new Auto(3, switchPosition, 2);
+ 		
+ 		auto.setState(Auto.INIT);
     }
 
     //Runs periodically while the game is in the autonomous phase
@@ -114,13 +119,14 @@ public class Robot extends IterativeRobot {
         Log.log("yaw", drivetrain.getYaw());
         //System.out.println("dist" + drivetrain.distanceTraveled());
         Log.log("Distance", drivetrain.distanceTraveled());
-
+        
     	//Log.add("wqefwf", 2.0);
         Log.add("Yaw", drivetrain.getYaw() * (180 / Math.PI));
-        //System.out.println("Yaw "+ drivetrain.getYaw() * (180 / Math.PI));
+        System.out.println("Yaw "+ drivetrain.getYaw());
         
+        auto.update();
         //autoDrive.update();
-        System.out.println(gameData);
+        //System.out.println(gameData);
         
     }
 
@@ -153,7 +159,7 @@ public class Robot extends IterativeRobot {
     public void disabledPeriodic() {
     	autoDrive.setState(DriveForwardSome.FINISHED);
     	drivetrain.drive(0,0);
-        Timer.delay(5);
+        
     }
 
 }

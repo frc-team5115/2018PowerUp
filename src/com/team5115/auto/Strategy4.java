@@ -1,5 +1,6 @@
 package com.team5115.auto;
 
+import com.team5115.robot.Robot;
 import com.team5115.statemachines.StateMachineBase;
 
 //do nothing
@@ -12,6 +13,7 @@ public class Strategy4 extends StateMachineBase {
 			setState(FINISHED);
 			break;
 		case FINISHED:
+			Robot.drivetrain.drive(0, 0);
         	break;
 		}
 	}
