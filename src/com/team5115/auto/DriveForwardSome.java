@@ -2,7 +2,7 @@
 package com.team5115.auto;
 
 import com.cruzsbrian.robolog.Log;
-import com.team5115.Constantos;
+import com.team5115.Konstanten;
 import com.team5115.PID;
 import com.team5115.robot.Robot;
 import com.team5115.statemachines.StateMachineBase;
@@ -34,56 +34,56 @@ public class DriveForwardSome extends StateMachineBase{
 	//each time update is called in AutoDrive
 	 public void update () {
 		 //Run switch block and check for number
-	        switch (state) {
-	        	case INIT:
-	        		drive.startLine(10, .5);
-	        		//turn.startTurn(180, .5);
-	        		//setState(TURNING);
-	        		setState(DRIVING);
-	        		break;
-	        		
-	        //when in case driving
-	            case DRIVING:
-	            	if(drive.state == AutoDrive.FINISHED){
-	            		turn.startTurn(45, .15);
-	            		//drive2.startLine(10.0, 0.25);
-	            		setState(TURNING);
-	            		//setState(FINISHED);
-	       
-	            	}
-	            	drive.update();
-	            	//System.out.println("dist " + Robot.drivetrain.distanceTraveled());
-	            	//System.out.println("DRIVING");
-	            	SmartDashboard.putNumber("left speed", Robot.drivetrain.leftSpeed());
-	            	SmartDashboard.putNumber("right speed", Robot.drivetrain.rightSpeed());
-	            	break;
-	            case TURNING:
-	            	if(turn.state == AutoDrive.FINISHED){
-	            		drive2.startLine(10.0, .5);
-	            		setState(DRIVING2);
-	            		//setState(FINISHED);
-	            	}
-	            	//System.out.println("yaw " + Robot.drivetrain.getYaw());
-	            	//System.out.println("TURNING");
-	            	turn.update();
-	            	System.out.println("Yaw "+ Robot.drivetrain.getYaw() * (180 / Math.PI));
-	            	break;
-	            	
-	            case DRIVING2:
-	            	if(drive2.state == AutoDrive.FINISHED){
-	            		setState(FINISHED);
-	            	}
-	            	drive2.update();
-	            	System.out.println("DRIVING2");
-	            	break;
-	            
-	            case FINISHED:
-	            	Robot.drivetrain.drive(0,0);
-	            	break;
-	        }
+			switch (state) {
+				case INIT:
+					drive.startLine(10, .5);
+					//turn.startTurn(180, .5);
+					//setState(TURNING);
+					setState(DRIVING);
+					break;
+					
+			//when in case driving
+				case DRIVING:
+					if(drive.state == AutoDrive.FINISHED){
+						turn.startTurn(45, .15);
+						//drive2.startLine(10.0, 0.25);
+						setState(TURNING);
+						//setState(FINISHED);
+		   
+					}
+					drive.update();
+					//System.out.println("dist " + Robot.drivetrain.distanceTraveled());
+					//System.out.println("DRIVING");
+					SmartDashboard.putNumber("left speed", Robot.drivetrain.leftSpeed());
+					SmartDashboard.putNumber("right speed", Robot.drivetrain.rightSpeed());
+					break;
+				case TURNING:
+					if(turn.state == AutoDrive.FINISHED){
+						drive2.startLine(10.0, .5);
+						setState(DRIVING2);
+						//setState(FINISHED);
+					}
+					//System.out.println("yaw " + Robot.drivetrain.getYaw());
+					//System.out.println("TURNING");
+					turn.update();
+					System.out.println("Yaw "+ Robot.drivetrain.getYaw() * (180 / Math.PI));
+					break;
+					
+				case DRIVING2:
+					if(drive2.state == AutoDrive.FINISHED){
+						setState(FINISHED);
+					}
+					drive2.update();
+					System.out.println("DRIVING2");
+					break;
+				
+				case FINISHED:
+					Robot.drivetrain.drive(0,0);
+					break;
+			}
 	 }
 }
 
 
-    
+	
 	

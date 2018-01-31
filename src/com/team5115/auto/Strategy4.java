@@ -14,7 +14,7 @@ public class Strategy4 extends StateMachineBase {
 			break;
 		case FINISHED:
 			Robot.drivetrain.drive(0, 0);
-        	break;
+			break;
 		}
 	}
 }

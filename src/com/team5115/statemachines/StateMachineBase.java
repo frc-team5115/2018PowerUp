@@ -9,7 +9,7 @@ public class StateMachineBase {
     public StateMachineBase() {}
 
     public void setState(int s) {
-        state = s;
+		state = s;
     }
 
 }

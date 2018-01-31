@@ -1,7 +1,7 @@
 package com.team5115.auto;
 
 import com.cruzsbrian.robolog.Log;
-import com.team5115.Constantos;
+import com.team5115.Konstanten;
 import com.team5115.PID;
 import com.team5115.robot.Robot;
 import com.team5115.auto.AutoDrive;
@@ -29,11 +29,11 @@ public class Strategy3 extends StateMachineBase {
 		case DRIVE:
 			drive.update();
 			if(drive.state == AutoDrive.FINISHED){
-        		setState(FINISHED);
-        	}
+				setState(FINISHED);
+			}
 			break;
 		case FINISHED:
-        	break;
+			break;
 		}
 	}
 }

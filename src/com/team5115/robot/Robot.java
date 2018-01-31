@@ -18,19 +18,40 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.DriverStation;
-public class Robot extends IterativeRobot {
+import edu.wpi.first.networktables.NetworkTable;;
 
-    // Define subsystems
-    public static DriveTrain drivetrain;
-    
-    public static DriveForwardSome autoDrive;
-    public static Drive drive;
-    public static DriverStation ds;
-    public static SendableChooser<Integer> positionChooser;
-    public static SendableChooser<Integer> switchPositionChooser;
-    public static SendableChooser<Integer> strategyChooser;
-    
-    public static CubeManipulatorManager CMM;
+public class Robot extends IterativeRobot {
+	
+/**
+ * The Robot class handles the basic functions of the robot
+ * Subsystems and State Machines are created and run during the various stages of operation
+ * Robot has 3 distinct phases, autonomous, teleop, and disabled
+ * Autonomous - Robot runs by itself
+ * Teleop - Robot is controlled by the driver
+ * Disabled - Robot is off 
+ * (Note: If you have no clue as to what you're doing, there is a Google slides presentation on the shared FRC files in your drive named "How To code" )
+ */
+	
+	/**
+	 * First, we define all of the subsystems, state machines, and other variables
+	 * To define an object or variable, follow this format:
+	 * public static class name;
+	 * e.g. public static DriveTrain DT;
+	 * class - The class of the object you are creating e.g. DriveTrain, int, double, etc.
+	 * name - Any name you want, but make it something meaningful like an acronym
+	 * Don't forget to end your lines with semicolons(;)
+	 */
+
+	 // Define subsystems
+	public static DriveTrain drivetrain;
+	 
+	public static DriveForwardSome autoDrive;
+	public static Drive drive;
+	public static DriverStation ds;
+	public static SendableChooser<Integer> positionChooser;
+	public static SendableChooser<Integer> strategyChooser;
+	 
+	public static CubeManipulatorManager CMM;
 	public static int position;
 	public static int switchPosition;
 	public static int strategy;
@@ -38,129 +59,132 @@ public class Robot extends IterativeRobot {
 	public static Intake intake;
 	public static IntakeManager IM;
 	public static Carriage carriage;
-    public static CarriageManager CM;
+	public static CarriageManager CM;
 	public static Elevator elevator;
 	public static ElevatorManager EM;
-    
+	public static NetworkTable NT;
+	
 	public String gameData;
 	public char L = 'L';
 	
-    // Initialization phase of the robot class
-    // This method runs once when the robot turns on and does not run again until the robot reboots
-    public void robotInit() {
-//    	//Change back to normal
-    	Constants.loadFromFile();
-    	Log.startServer(5115);
-    	Log.setDelay(500);
-        // Initialize subsystems
-        drivetrain = new DriveTrain();
-        drive = new Drive();
-        autoDrive = new DriveForwardSome();
-        intake = new Intake();
-        IM = new IntakeManager();
-        carriage = new Carriage();
-        CM = new CarriageManager();
-        elevator = new Elevator();
-        EM = new ElevatorManager();
-        CMM = new CubeManipulatorManager();
-        ds = DriverStation.getInstance();
-//       
-//        positionChooser = new SendableChooser<Integer>();
-//        positionChooser.addDefault("Left", 1);
-//        positionChooser.addObject("Right", 2);
-//        positionChooser.addObject("Center", 3);
-//        
-//        switchPositionChooser = new SendableChooser<Integer>();
-//        switchPositionChooser.addDefault("Left", 1);
-//        switchPositionChooser.addObject("Right", 2);
-//        
-//        strategyChooser = new SendableChooser<Integer>();
-//        strategyChooser.addDefault("Strategy 1", 2);//these are the state numbers in Auto.java
-//        strategyChooser.addObject("Strategy 2", 3);  
-//        strategyChooser.addObject("Strategy 3", 4);
-//        strategyChooser.addObject("Strategy 4", 5);
-//        
+	 // Initialization phase of the robot class
+	 // This method runs once when the robot turns on and does not run again until the robot reboots
+	 public void robotInit() {
+	 	/**
+		 * Constructing an object runs the initialization method of the class
+		 * To construct an object, follow this format:
+		 * name-of-object = new class();
+		 * e.g. DT = new DriveTrain();
+		 * To construct a variable, give it a default value
+		 * e.g. var = 0;
+		 * In this case, 0 is the default value that you set it to initially
+		 * You can also give the constructor variables like you would any other method
+		 * e.g. object = new Class(20);
+		 * Make sure that the value you give it is consistent with what the constructor method in the class asks for
+		 */
+	 	
+			// Change back to normal
+	 	Constants.loadFromFile();
+	 	Log.startServer(5115);
+	 	Log.setDelay(500);
+		// Initialize subsystems
+		drivetrain = new DriveTrain();
+		drive = new Drive();
+		autoDrive = new DriveForwardSome();
+		intake = new Intake();
+		IM = new IntakeManager();
+		carriage = new Carriage();
+		CM = new CarriageManager();
+		elevator = new Elevator();
+		EM = new ElevatorManager();
+		CMM = new CubeManipulatorManager();
+		ds = DriverStation.getInstance();
+		
+		positionChooser = new SendableChooser<Integer>();
+		positionChooser.addDefault("Left", 1);
+		positionChooser.addObject("Right", 2);
+		positionChooser.addObject("Center", 3);
+	 	SmartDashboard.putData("Position", positionChooser);
+		
+		strategyChooser = new SendableChooser<Integer>();
+		strategyChooser.addDefault("Strategy 1", 2);//these are the state numbers in Auto.java
+		strategyChooser.addObject("Strategy 2", 3);
+		strategyChooser.addObject("Strategy 3", 4);
+		strategyChooser.addObject("Strategy 4", 5);
+		SmartDashboard.putData("Strategy", strategyChooser);
+		
+	 	drive.setState(Drive.STOP);
+		
+	 }
 
-        
-      drive.setState(Drive.STOP);
-        
-    }
+	 // Runs once when the autonomous phase of the game starts
+	 public void autonomousInit() {
+		 gameData =ds.getGameSpecificMessage();
+	 	 drivetrain.resetGyro();
+	 	 drivetrain.resetEncoders();
+	 	 Timer.delay(0.1);
+	 	 
+	 	 position = (int) positionChooser.getSelected(); 	
+	 	 switchPosition = (L == gameData.charAt(0)) ? 1 : 2;
+	 	 strategy = (int) strategyChooser.getSelected();
+	 	 auto = new Auto(position, switchPosition, strategy);
 
-    // Runs once when the autonomous phase of the game starts
-    public void autonomousInit() {
-    	 drivetrain.resetGyro();
-    	 drivetrain.resetEncoders();
-    	 Timer.delay(0.1);
-    	 //System.out.println("Yaw Reset" + Robot.drivetrain.getYaw());
-    	 /*
-    	 position = positionChooser.getSelected();
-    	 switchPosition = switchPositionChooser.getSelected();
-    	 strategy = strategyChooser.getSelected();
-    	 auto = new Auto(position, switchPosition, strategy);
-    	 */
-    	 //autoDrive.setState(DriveForwardSome.INIT);
-         drivetrain.inuse = true;
-         
- 		gameData =  ds.getGameSpecificMessage();
-		switchPosition = (L == gameData.charAt(0)) ? 1 : 2;
-// 		position = positionChooser.getSelected();
-// 		strategy = strategyChooser.getSelected();
- 		//auto = new Auto(position, switchPosition, strategy);
+	 	 drivetrain.inuse = true;
 
- 		auto = new Auto(3, switchPosition, 2);
+		/**
+ 		 * To initialize a state machine, follow this format:
+ 		 * object.setState(initialState)
+ 		 * e.g. dt.setState(DriveTrain.START);
+ 		 * Per this example, the initialState value should come from the class of the object
+ 		 * You could just give it a normal integer like 0 or 1, but this is nicer organizationally
+ 		 */
  		
- 		auto.setState(Auto.INIT);
-    }
+ 		 auto.setState(Auto.INIT);
+	 }
 
-    //Runs periodically while the game is in the autonomous phase
-    public void autonomousPeriodic() {
-        Timer.delay(.005);
-        //System.out.println("yaw " + drivetrain.getYaw());
-        Log.log("yaw", drivetrain.getYaw());
-        //System.out.println("dist" + drivetrain.distanceTraveled());
-        Log.log("Distance", drivetrain.distanceTraveled());
-        
-    	//Log.add("wqefwf", 2.0);
-        Log.add("Yaw", drivetrain.getYaw() * (180 / Math.PI));
-        System.out.println("Yaw "+ drivetrain.getYaw());
-        
-        auto.update();
-        //autoDrive.update();
-        //System.out.println(gameData);
-        
-    }
+	 //Runs periodically while the game is in the autonomous phase
+	 public void autonomousPeriodic() {
+		Timer.delay(.005);
+		
+		Log.log("yaw", drivetrain.getYaw());
+		Log.log("Distance", drivetrain.distanceTraveled());
+		
+		Log.add("Yaw", drivetrain.getYaw() * (180 / Math.PI));
+		System.out.println("Yaw "+ drivetrain.getYaw());
+		
+		auto.update();
+		
+	 }
 
-    // Runs once when the game enters the driver operated stage
-    public void teleopInit() {
-    	drivetrain.drive(0,0);
-        autoDrive.setState(DriveForwardSome.FINISHED);
-    	drive.setState(Drive.DRIVING);
-        drivetrain.inuse = false;
-        drivetrain.resetGyro();
-        drivetrain.resetEncoders();
-       
-    }
+	 // Runs once when the game enters the driver operated stage
+	 public void teleopInit() {
+	 	drivetrain.inuse = false;
+	 	drivetrain.drive(0,0);
+		autoDrive.setState(DriveForwardSome.FINISHED);
+	 	drive.setState(Drive.DRIVING);
+		drivetrain.resetGyro();
+		drivetrain.resetEncoders();
+		 
+	 }
 
-    // Runs periodically when the game is in the driver operated stage
-    public void teleopPeriodic() {
-    	//System.out.println(drivetrain.getYaw());
-    	//System.out.println(drivetrain.distanceTraveled());
-    	Timer.delay(.005);
-        drive.update();
-    }
+	 // Runs periodically when the game is in the driver operated stage
+	 public void teleopPeriodic() {
+	 	Timer.delay(.005);
+		drive.update();
+	 }
 
-    // Runs when the robot is disabled
-    public void disabledInit() {
-    	autoDrive.setState(DriveForwardSome.FINISHED);
-    }
-    
-    	
-    // Runs periodically while the robot is disabled
-    public void disabledPeriodic() {
-    	autoDrive.setState(DriveForwardSome.FINISHED);
-    	drivetrain.drive(0,0);
-        
-    }
+	 // Runs when the robot is disabled
+	 public void disabledInit() {
+	 	autoDrive.setState(DriveForwardSome.FINISHED);
+	 }
+	 
+	 	
+	 // Runs periodically while the robot is disabled
+	 public void disabledPeriodic() {
+	 	autoDrive.setState(DriveForwardSome.FINISHED);
+	 	drivetrain.drive(0,0);
+		
+	 }
 
 }
 

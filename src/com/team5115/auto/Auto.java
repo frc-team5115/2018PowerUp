@@ -2,7 +2,7 @@
 package com.team5115.auto;
 
 import com.cruzsbrian.robolog.Log;
-import com.team5115.Constantos;
+import com.team5115.Konstanten;
 import com.team5115.PID;
 import com.team5115.robot.Robot;
 import com.team5115.statemachines.StateMachineBase;
@@ -42,35 +42,35 @@ public class Auto extends StateMachineBase{
 	//each time update is called in AutoDrive
 	 public void update () {
 		 //Run switch block and check for number
-	        switch (state) {
-	        	case INIT:
-	        		
-	        		//Get strategy numberfrom smart dashboard
-	        		s1.setState(Strategy1.INIT);
-	        		s2.setState(Strategy2.INIT);
-	        		s3.setState(Strategy3.INIT);
-	        		s4.setState(Strategy4.INIT);
-	        		setState(strategy);
-	        		break;
-	        		
-	        	case STRATEGY1:
-	        		s1.update();
-	        		Log.log("strategy", "1");
-	        		break;
-	        	case STRATEGY2:
-	        		s2.update();
-	        		break;
-	        	case STRATEGY3:
-	        		s3.update();
-        			break;
-	        	case STRATEGY4:
-	        		s4.update();
-        			break;
-	        
-	        }
+			switch (state) {
+				case INIT:
+					
+					//Get strategy numberfrom smart dashboard
+					s1.setState(Strategy1.INIT);
+					s2.setState(Strategy2.INIT);
+					s3.setState(Strategy3.INIT);
+					s4.setState(Strategy4.INIT);
+					setState(strategy);
+					break;
+					
+				case STRATEGY1:
+					s1.update();
+					Log.log("strategy", "1");
+					break;
+				case STRATEGY2:
+					s2.update();
+					break;
+				case STRATEGY3:
+					s3.update();
+					break;
+				case STRATEGY4:
+					s4.update();
+					break;
+			
+			}
 	 }
 }
 
 
-    
+	
 	
