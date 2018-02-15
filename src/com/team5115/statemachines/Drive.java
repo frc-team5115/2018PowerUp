@@ -9,20 +9,12 @@ import com.team5115.robot.Robot;
 
 public class Drive extends StateMachineBase {
 
-	public static final int DRIVING = 1;
+	public static final int INIT = 1;
+	public static final int DRIVING = 2;
 
 	PID turnController;
-	public void setState(int s) {
-		switch (s) {
-			case DRIVING:
-
-				// run once when entering DRIVING state
-				// construct the PID every time we start driving in case constants have changed
-				//turnController = new PID(Constants.getAsDouble("turn_kp"), Constants.getAsDouble("turn_ki"), 0);
-				turnController = new PID(Konstanten.TURN_KP, Konstanten.TURN_KI, 0);
-		}
-		
-		state = s;
+	public Drive() {
+		turnController = new PID(1, Konstanten.TURN_KI, 0);
 	}
 
 	public void update() {
@@ -36,9 +28,9 @@ public class Drive extends StateMachineBase {
 				if (!Robot.drivetrain.inuse) {
 					// find desired forward and turning speeds in ft/s
 					double forwardSpeed = InputManager.getForward() * InputManager.getThrottle() * Konstanten.TOP_SPEED;
-					double turnSpeed = InputManager.getTurn() * InputManager.getThrottle() * Konstanten.TOP_TURN_SPEED;
-					System.out.println("forward " + forwardSpeed);
-					System.out.println("turn " + turnSpeed);
+					double turnSpeed = turnController.getPID(InputManager.getTurn(), Robot.drivetrain.getTurnVelocity()) * InputManager.getThrottle() * Konstanten.TOP_TURN_SPEED;
+					//System.out.println("forward " + InputManager.getForward());
+					//System.out.println("turn " + turnSpeed);
 
 					// open loop control for forward
 					// vForward is negative because y on the joystick is reversed

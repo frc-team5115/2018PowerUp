@@ -16,27 +16,32 @@ public class Auto extends StateMachineBase{
 	
 	//DRIVING returns 1 in the switch block, FINISH returns 2.
 	public static final int INIT = 1;
-	public static final int STRATEGY1 = 2;
-	public static final int STRATEGY2 = 3;
-	public static final int STRATEGY3 = 4;
-	public static final int STRATEGY4 = 5;
-	public static Strategy1 s1;
-	public static Strategy2 s2;
-	public static Strategy3 s3;
-	public static Strategy4 s4;
+	public static final int SWITCH = 2;
+	public static final int SCALE = 3;
+	public static final int LINE = 4;
+	public static final int DROPCUBE = 5;
+	public static final int NOTHINGTODO = 6;
+	public static SwitchAuto switchStrat;
+	public static ScaleAuto scaleStrat;
+	public static DropCubeAuto dropCubeStrat;
+	public static LineAuto lineStrat;
+	public static NothingToSeeHereAuto NothingToSeeHere;
 	//create new object imported from AutoDrive called "drive"
 	int position;
 	int switchPosition;
+	int scalePosition;
 	int strategy;
-	public Auto(int p, int sp, int s) {
+	public Auto(int p, int sp, int scp, int s) {
 		position = p;
 		switchPosition = sp;
+		scalePosition = scp;
 		strategy = s;
 
-		s1 = new Strategy1(switchPosition);
-		s2 = new Strategy2(position, switchPosition);
-		s3 = new Strategy3();
-		s4 = new Strategy4();
+		switchStrat = new SwitchAuto(switchPosition);
+		scaleStrat = new ScaleAuto(scalePosition);
+		dropCubeStrat = new DropCubeAuto(position, switchPosition);
+		lineStrat = new LineAuto();
+		NothingToSeeHere = new NothingToSeeHereAuto();
 	}
 	
 	//each time update is called in AutoDrive
@@ -46,25 +51,28 @@ public class Auto extends StateMachineBase{
 				case INIT:
 					
 					//Get strategy numberfrom smart dashboard
-					s1.setState(Strategy1.INIT);
-					s2.setState(Strategy2.INIT);
-					s3.setState(Strategy3.INIT);
-					s4.setState(Strategy4.INIT);
+					switchStrat.setState(SwitchAuto.INIT);
+					scaleStrat.setState(ScaleAuto.INIT);
+					dropCubeStrat.setState(DropCubeAuto.INIT);
+					lineStrat.setState(LineAuto.INIT);
+					NothingToSeeHere.setState(NothingToSeeHereAuto.INIT);
 					setState(strategy);
 					break;
 					
-				case STRATEGY1:
-					s1.update();
-					Log.log("strategy", "1");
+				case SWITCH:
+					switchStrat.update();
 					break;
-				case STRATEGY2:
-					s2.update();
+				case SCALE:
+					scaleStrat.update();
 					break;
-				case STRATEGY3:
-					s3.update();
+				case LINE:
+					lineStrat.update();
 					break;
-				case STRATEGY4:
-					s4.update();
+				case DROPCUBE:
+					dropCubeStrat.update();
+					break;
+				case NOTHINGTODO:
+					NothingToSeeHere.update();
 					break;
 			
 			}

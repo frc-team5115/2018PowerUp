@@ -9,14 +9,14 @@ import com.team5115.systems.DriveTrain;
 import com.team5115.statemachines.StateMachineBase;
 
 //cross auto line
-public class Strategy3 extends StateMachineBase {
+public class LineAuto extends StateMachineBase {
 	public static final int INIT = 0;
 	public static final int DRIVE = 1;	//12 ft
 	public static final int FINISHED = 2;
 
 	AutoDrive drive;
 	
-	public Strategy3() {
+	public LineAuto() {
 		drive = new AutoDrive();
 		
 	}

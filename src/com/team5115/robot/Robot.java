@@ -1,7 +1,9 @@
 package com.team5115.robot;
 //
+import java.util.ArrayList;
 import com.cruzsbrian.robolog.Log;
 import com.cruzsbrian.robolog.Constants;
+import com.team5115.Konstanten;
 import com.team5115.statemachines.CarriageManager;
 import com.team5115.statemachines.CubeManipulatorManager;
 import com.team5115.statemachines.Drive;
@@ -13,7 +15,9 @@ import com.team5115.auto.Auto;
 import com.team5115.auto.DriveForwardSome;
 import com.team5115.systems.Intake;
 import com.team5115.statemachines.IntakeManager;
+
 import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -44,6 +48,7 @@ public class Robot extends IterativeRobot {
 
 	 // Define subsystems
 	public static DriveTrain drivetrain;
+	public static PowerDistributionPanel PDP;
 	 
 	public static DriveForwardSome autoDrive;
 	public static Drive drive;
@@ -54,6 +59,7 @@ public class Robot extends IterativeRobot {
 	public static CubeManipulatorManager CMM;
 	public static int position;
 	public static int switchPosition;
+	public static int scalePosition;
 	public static int strategy;
 	public static Auto auto;
 	public static Intake intake;
@@ -65,7 +71,8 @@ public class Robot extends IterativeRobot {
 	public static NetworkTable NT;
 	
 	public String gameData;
-	public char L = 'L';
+
+ 	public static Double[] gravity = new Double[3];
 	
 	 // Initialization phase of the robot class
 	 // This method runs once when the robot turns on and does not run again until the robot reboots
@@ -87,8 +94,11 @@ public class Robot extends IterativeRobot {
 	 	Constants.loadFromFile();
 	 	Log.startServer(5115);
 	 	Log.setDelay(500);
+	 	
+	 	
 		// Initialize subsystems
 		drivetrain = new DriveTrain();
+		PDP = new PowerDistributionPanel();
 		drive = new Drive();
 		autoDrive = new DriveForwardSome();
 		intake = new Intake();
@@ -100,6 +110,13 @@ public class Robot extends IterativeRobot {
 		CMM = new CubeManipulatorManager();
 		ds = DriverStation.getInstance();
 		
+//		//Finding gravity
+//	 	ArrayList <Double> gravity = new ArrayList <Double> (3);
+//	 	
+//		gravity[0] = drivetrain.AccelX();
+//		gravity[1] = drivetrain.AccelY();
+//		gravity[2] = drivetrain.AccelZ();
+	 	
 		positionChooser = new SendableChooser<Integer>();
 		positionChooser.addDefault("Left", 1);
 		positionChooser.addObject("Right", 2);
@@ -112,23 +129,22 @@ public class Robot extends IterativeRobot {
 		strategyChooser.addObject("Strategy 3", 4);
 		strategyChooser.addObject("Strategy 4", 5);
 		SmartDashboard.putData("Strategy", strategyChooser);
-		
 	 	drive.setState(Drive.STOP);
 		
 	 }
 
 	 // Runs once when the autonomous phase of the game starts
 	 public void autonomousInit() {
-		 gameData =ds.getGameSpecificMessage();
+		 gameData = ds.getGameSpecificMessage();
 	 	 drivetrain.resetGyro();
 	 	 drivetrain.resetEncoders();
 	 	 Timer.delay(0.1);
 	 	 
 	 	 position = (int) positionChooser.getSelected(); 	
-	 	 switchPosition = (L == gameData.charAt(0)) ? 1 : 2;
+	 	 switchPosition = ('L' == gameData.charAt(0)) ? 1 : 2;
+	 	 scalePosition = ('L' == gameData.charAt(1)) ? 1 : 2;
 	 	 strategy = (int) strategyChooser.getSelected();
-	 	 auto = new Auto(position, switchPosition, strategy);
-
+	 	 auto = new Auto(position, switchPosition, scalePosition, strategy);
 	 	 drivetrain.inuse = true;
 
 		/**
@@ -140,6 +156,7 @@ public class Robot extends IterativeRobot {
  		 */
  		
  		 auto.setState(Auto.INIT);
+	 	 //autoDrive.setState(DriveForwardSome.INIT);
 	 }
 
 	 //Runs periodically while the game is in the autonomous phase
@@ -150,27 +167,50 @@ public class Robot extends IterativeRobot {
 		Log.log("Distance", drivetrain.distanceTraveled());
 		
 		Log.add("Yaw", drivetrain.getYaw() * (180 / Math.PI));
-		System.out.println("Yaw "+ drivetrain.getYaw());
 		
 		auto.update();
-		
+		//autoDrive.update();
 	 }
 
 	 // Runs once when the game enters the driver operated stage
 	 public void teleopInit() {
 	 	drivetrain.inuse = false;
 	 	drivetrain.drive(0,0);
-		autoDrive.setState(DriveForwardSome.FINISHED);
-	 	drive.setState(Drive.DRIVING);
 		drivetrain.resetGyro();
 		drivetrain.resetEncoders();
-		 
+		autoDrive.setState(DriveForwardSome.FINISHED);
+	 	drive.setState(Drive.DRIVING);
+		CMM.setState(CubeManipulatorManager.TRANSIT); //should set state stop
 	 }
 
 	 // Runs periodically when the game is in the driver operated stage
 	 public void teleopPeriodic() {
 	 	Timer.delay(.005);
 		drive.update();
+		CMM.update();
+		//System.out.println("Angle " + Robot.elevator.getAngle());
+		//System.out.println("Drive State " + drive.state);
+		SmartDashboard.putNumber("yaw", drivetrain.getYaw());
+		
+		SmartDashboard.putNumber("frontleft motor current", PDP.getCurrent(Konstanten.FRONT_LEFT_CHANNEL));
+		SmartDashboard.putNumber("frontright motor current", PDP.getCurrent(Konstanten.FRONT_RIGHT_CHANNEL));
+		SmartDashboard.putNumber("backleft motor current", PDP.getCurrent(Konstanten.BACK_LEFT_CHANNEL));
+		SmartDashboard.putNumber("backright motor current", PDP.getCurrent(Konstanten.BACK_RIGHT_CHANNEL));
+		
+		/*
+		System.out.println("Yaw " + drivetrain.getYaw());
+		System.out.println("Roll " + drivetrain.getRoll());
+		System.out.println("Pitch " + drivetrain.getPitch());
+		*/
+		//get angle
+		System.out.println("Pot " + elevator.getAngle());
+		System.out.println("elevator " + EM.state);
+		System.out.println("cube " + CMM.state);
+		//get speed
+		//System.out.println(elevator.getAngleSpeed());
+		if (InputManager.kill()){
+			EM.cancelMovement();
+		}
 	 }
 
 	 // Runs when the robot is disabled
@@ -183,8 +223,8 @@ public class Robot extends IterativeRobot {
 	 public void disabledPeriodic() {
 	 	autoDrive.setState(DriveForwardSome.FINISHED);
 	 	drivetrain.drive(0,0);
-		
+	 	CMM.setState(CubeManipulatorManager.STOP);
+		EM.cancelMovement();
 	 }
 
 }
-

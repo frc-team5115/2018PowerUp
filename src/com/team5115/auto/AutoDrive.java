@@ -43,9 +43,22 @@ public class AutoDrive extends StateMachineBase {
 		
 		setState(DRIVING);
 	}
+	
+	public void startArc(double radius, double angle, double maxSpeed) {
+		double distance = (angle * Math.PI / 180) * radius;
+		//double time = angle / maxSpeed;
+		double maxForwardSpeed = Konstanten.ARC_RATIO * maxSpeed;
+		targetDist = Robot.drivetrain.distanceTraveled() + distance;
+		targetAngle = Robot.drivetrain.getYaw() + (angle);
+
+		forwardController = new PID(Konstanten.AUTO_FORWARD_KP, Konstanten.AUTO_FORWARD_KI, Konstanten.AUTO_FORWARD_KD, maxForwardSpeed);
+		turnController = new PID(Konstanten.AUTO_TURN_KP, Konstanten.AUTO_TURN_KI ,Konstanten.AUTO_TURN_KD, maxSpeed);
+		
+		setState(DRIVING);
+	}
 
 	public void update() {
-		System.out.println("autodrive state: " + state);
+		//System.out.println("autodrive state: " + state);
 		switch (state) {
 			case DRIVING:
 				Robot.drivetrain.inuse = true;
@@ -71,8 +84,9 @@ public class AutoDrive extends StateMachineBase {
 				
 				SmartDashboard.putNumber("distance traveled", Robot.drivetrain.distanceTraveled());
 				SmartDashboard.putNumber("velocity", Robot.drivetrain.averageSpeed());
-				
-				
+
+				SmartDashboard.putNumber("vTurn", vTurn);
+				SmartDashboard.putNumber("vForward", vForward);
 				
 				if (forwardController.isFinished(Konstanten.FORWARD_TOLERANCE, Konstanten.FORWARD_DTOLERANCE) && turnController.isFinished(Konstanten.TURN_TOLERANCE, Konstanten.TURN_DTOLERANCE)) {
 					Robot.drivetrain.drive(0, 0);

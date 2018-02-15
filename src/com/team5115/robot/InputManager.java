@@ -17,14 +17,14 @@ public class InputManager {
 
     //The following methods deal with the basic driving functionalities
     public static double getForward() {
-    	System.out.println("Y-Axis " + -treatAxis(joy.getRawAxis(Konstanten.AXIS_Y)));
-	   return -treatAxis(joy.getRawAxis(Konstanten.AXIS_Y));
+    	//System.out.println("Y-Axis " + -treatAxis(joy.getY()));
+    	return treatAxis(joy.getY());
     }
 
     public static double getTurn() {
-    	//System.out.println("X-Axis " +joy.getRawAxis(Constants.AXIS_X));
-	   return -treatAxis(joy.getRawAxis(Konstanten.AXIS_X));
-    }
+    	//System.out.println("X-Axis " +joy.getX());
+    	return treatAxis(joy.getX());
+   }
 
     //These methods are controlled by the nub on the top of the joystick
     public static double getHat() {
@@ -44,15 +44,15 @@ public class InputManager {
 	   }
 	   else {
 	   	 double sign = (Math.signum(val));
-		   val = Math.pow(Math.abs(val), 2 * getThrottle() + 1);
+		   val = Math.pow(Math.abs(val), Konstanten.JOYSTICK_EXPO);
 	   
 		   if(sign != Math.signum(val)){
 		  	 val *= sign;
 		   }
 	   }
 	   
-	   System.out.println("throttle " + getThrottle());
-	   System.out.println("value " + val);
+	   //System.out.println("throttle " + getThrottle());
+	   //System.out.println("value " + val);
 
 	   
 	   return val;
@@ -80,5 +80,11 @@ public class InputManager {
     }
     public static boolean moveDown(){
     	return joy.getRawButton(Konstanten.DOWN);
+    }
+    public static boolean spit(){
+    	return joy.getRawButton(Konstanten.SPIT);
+    }
+    public static boolean testSolonoid(){
+    	return joy.getRawButton(Konstanten.TEST);
     }
 }

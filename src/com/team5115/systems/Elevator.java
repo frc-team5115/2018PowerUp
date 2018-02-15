@@ -1,43 +1,59 @@
 package com.team5115.systems;
 
 import com.cruzsbrian.robolog.Log;
-
+import com.ctre.phoenix.ParamEnum;
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.team5115.Konstanten;
+
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.DigitalInput;
 
 
 public class Elevator {
 
-	AnalogPotentiometer angle;
-	DigitalInput topLimit;
-	DigitalInput bottomLimit;
-	double lastAngle = 0;
+//	DigitalInput topLimit;
+//	DigitalInput bottomLimit;
+	double lastAngle = 60;
+	
+	TalonSRX armMover;
 
 	 public Elevator(){
-	 	angle = new AnalogPotentiometer(Konstanten.POTENTIOMETER);
-	 	topLimit = new DigitalInput(Konstanten.TOP_LIMIT);
-	 	bottomLimit = new DigitalInput(Konstanten.BOTTOM_LIMIT);
+//	 	topLimit = new DigitalInput(Konstanten.TOP_LIMIT);
+//	 	bottomLimit = new DigitalInput(Konstanten.BOTTOM_LIMIT);
+	 	armMover = new TalonSRX(Konstanten.MOVER_MOTOR_ID);
+	 	armMover.configSelectedFeedbackSensor(FeedbackDevice.Analog, 0, 5);
+	 	armMover.configSetParameter(ParamEnum.eFeedbackNotContinuous, 1, 0x00, 0x00, 0x00);
+	 	armMover.configForwardSoftLimitThreshold(Konstanten.POT_THRESHOLD, 5);
+	 	armMover.configForwardSoftLimitEnable(true, 0);
 	 }
 	 
 	 public double getAngle(){
-	 	return angle.get();
+	 	//return armMover.getSensorCollection().getAnalogIn();
+		double angle = armMover.getSelectedSensorPosition(0);
+		return angle;
 	 }
 	 
-	 public double getDAngle(){
-	 	double dAngle = (getAngle() - lastAngle)/Konstanten.DELAY;
-	 	lastAngle = getAngle();
-	 	return dAngle;
+	 // need to filter out noise
+	 public double getAngleSpeed(){
+	 	//return armMover.getSensorCollection().getAnalogInVel();
+	 	return armMover.getSelectedSensorVelocity(0);
+	 	
 	 }
 	 
-	 public void move(double dir){
-	 	//moving the elevator
+	 public void move(double speed){
+		 armMover.set(ControlMode.PercentOutput, speed);
 	 }
 	 
 	 public boolean maxHeight(){
-	 	return topLimit.get();
+		//return topLimit.get();
+		return (getAngle() > Konstanten.ELEVATOR_MAX);
+		 //return false;
 	 }
 	 public boolean minHeight(){
-	 	return bottomLimit.get();
+		// return bottomLimit.get();
+		 return (getAngle() < Konstanten.ELEVATOR_MIN);
+		 //return false;
 	 }
 }

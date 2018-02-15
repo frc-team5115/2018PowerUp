@@ -72,6 +72,10 @@ public class PID {
 		Log.log("pid output", output);
 		return output;
 	}
+	
+	public double getPID(double setpoint, double reading) {
+		return getPID(setpoint, reading, 0);
+	}
 
 	/**
 	 * Returns true if PID loop has settled. Takes tolerance in reading units and dErrorTolerance in reading units per second

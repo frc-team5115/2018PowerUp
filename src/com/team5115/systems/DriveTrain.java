@@ -6,14 +6,20 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.kauailabs.navx.frc.AHRS;
 import com.team5115.Konstanten;
+import com.team5115.robot.Robot;
 
+import java.util.ArrayList;
+import edu.wpi.first.wpilibj.BuiltInAccelerometer;
+import edu.wpi.first.wpilibj.interfaces.Accelerometer;
 import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
 public class DriveTrain {
-
+	double max = 0;
+	double min = 0;
+	double lastValue = 0;
 	public boolean inuse;
 
 	TalonSRX frontleft;
@@ -27,10 +33,8 @@ public class DriveTrain {
 	public int direction;
 	
 	AHRS navx;
-
 	public DriveTrain(){
 		navx = new AHRS(SPI.Port.kMXP);
-
 		frontleft = new TalonSRX(Konstanten.FRONT_LEFT_MOTOR_ID);
 		frontright = new TalonSRX(Konstanten.FRONT_RIGHT_MOTOR_ID);
 		backleft = new TalonSRX(Konstanten.BACK_LEFT_MOTOR_ID);
@@ -39,8 +43,8 @@ public class DriveTrain {
 		frontright.set(ControlMode.Follower, Konstanten.BACK_RIGHT_MOTOR_ID);
 		frontleft.set(ControlMode.Follower, Konstanten.BACK_LEFT_MOTOR_ID);
 		
-	 backright.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 5);
-	 backleft.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 5);
+		backright.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 5);
+		backleft.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 5);
 		
 		direction = 1;
 		
@@ -55,29 +59,27 @@ public class DriveTrain {
 	public void drive(double speed, double turn){
 		double leftspeed = speed + turn;
 		double rightspeed = speed - turn;
-		//System.out.println(leftspeed + " left");
-		//System.out.println(rightspeed + " right");
 
 		if(Math.abs(leftspeed) > 1){
-		 leftspeed = 1;
+		 leftspeed = Math.signum(leftspeed);
 		}
 		if(Math.abs(rightspeed) > 1){
-		 rightspeed = 1;
-		}
+		 rightspeed = Math.signum(rightspeed);
 		
+		}
+//		System.out.println("left: " + leftspeed);
+//		System.out.println("right: " + rightspeed);
 		backleft.set(ControlMode.PercentOutput, -leftspeed);
-		//backleft.set(0.1);
 		backright.set(ControlMode.PercentOutput, rightspeed);
-		//backright.set(0.1);
 	}
 	public double leftDist() {
 		double leftDist = -direction * backleft.getSelectedSensorPosition(0);
-		return leftDist / 1440 * 5.2 * Math.PI / 12;
+		return leftDist / 1440 * 6 * Math.PI / 12;
 	}
 	
 	public double rightDist() {
 		double rightDist = direction * backright.getSelectedSensorPosition(0);
-		return rightDist / 1440 * 5.2 * Math.PI / 12;
+		return rightDist / 1440 * 6 * Math.PI / 12;
 	}
 	
 	public double distanceTraveled() {
@@ -99,20 +101,29 @@ public class DriveTrain {
 		return (rightSpeed() + leftSpeed()) / 2;
 	}
 
+	public double getPitch(){
+		return navx.getPitch();
+	}
+	
+	public double getRoll(){
+		return navx.getRoll();
+	}
+	
 	public double getYaw() {
-		return navx.getYaw();	//the navx considers positrational rotation to be clockwise, which is wrong.
+		return navx.getYaw();	
 	}
 
 	public double getTurnVelocity() {
-		return navx.getRate();	//the navx considers positrational rotation to be clockwise, which is wrong.
+		return navx.getRate();	
 	}
 
 	// This method resets the values given by the encoders to a default of 0
 	public void resetEncoders() {
-		backleft.setSelectedSensorPosition(0, 0, 0); //5 ms
-		backright.setSelectedSensorPosition(0, 0, 0);
+		backleft.setSelectedSensorPosition(0, 0, 5); //5 ms
+		backright.setSelectedSensorPosition(0, 0, 5);
 	}
 	public void resetGyro(){
 		navx.reset(); //takes some time
 	}
+
 }

@@ -9,29 +9,41 @@ import com.team5115.systems.DriveTrain;
 import com.team5115.statemachines.CubeManipulatorManager;
 import com.team5115.statemachines.StateMachineBase;
 
+import edu.wpi.first.wpilibj.Timer;
+
 //if we're in front of our side of the switch, drop a cube, otherwise, cross the auto line
-public class Strategy2 extends StateMachineBase {
+public class DropCubeAuto extends StateMachineBase {
 	public static final int INIT = 0;
 	public static final int DRIVING = 1; //11.6 ft
 	public static final int TURNING = 2;
 	public static final int DRIVING2 = 3;
 	public static final int PLACE = 4;
 	public static final int FINISHED = 5;
+	
 	public static final int LEFT  = 1;
 	public static final int RIGHT = 2;
-	//ONSIDE means robot amd switch are on the same side
-	//OfFIDE means robt and switch are on different sides
-
+	
 	AutoDrive drive;
+	double time;
 	int position;
 	int switchPosition;
 	
-	public Strategy2(int p, int sp) {
+	public DropCubeAuto(int p, int sp) {
 		drive = new AutoDrive();
 		
 		position = p;
 		switchPosition = sp;
 	}
+	
+	public void setState(int s) {
+    	switch (state) {
+    	case PLACE:
+    		time = Timer.getFPGATimestamp();
+    		break;
+    	}
+    	state = s;
+    }
+	
 	public void update() {
 		switch(state){
 		case INIT:
@@ -40,16 +52,18 @@ public class Strategy2 extends StateMachineBase {
 			}
 			else {
 				drive.startLine(2, .5);
-
-				
 			}
+			Robot.EM.startMovement(Konstanten.SWITCH_HEIGHT);
+			Robot.CMM.setState(CubeManipulatorManager.SWITCH);
 			setState(DRIVING);
 			break;
 		case DRIVING:
 			drive.update();
+			Robot.CMM.update();
 			if(drive.state == AutoDrive.FINISHED){
 				if(position == RIGHT) {
 					if(position == switchPosition) {
+						Robot.CMM.setState(CubeManipulatorManager.DUMP);
 						setState(PLACE);
 					}
 					else {
@@ -63,6 +77,7 @@ public class Strategy2 extends StateMachineBase {
 			}
 			break;
 		case TURNING:
+			Robot.CMM.update();
 			drive.update();
 			if (drive.state == AutoDrive.FINISHED) {
 				drive.startLine(9.08, .25);
@@ -70,9 +85,11 @@ public class Strategy2 extends StateMachineBase {
 			}
 			break;
 		case DRIVING2:
+			Robot.CMM.update();
 			drive.update();
 			if (drive.state == AutoDrive.FINISHED) {
 				if(position == switchPosition) {
+					Robot.CMM.setState(CubeManipulatorManager.DUMP);
 					setState(PLACE);
 				}
 				else {
@@ -81,7 +98,9 @@ public class Strategy2 extends StateMachineBase {
 			}
 			break;
 		case PLACE:
-			Robot.CMM.setState(CubeManipulatorManager.DUMP);
+			Robot.CMM.update();
+			if(Timer.getFPGATimestamp() > time + Konstanten.DUMPING_DELAY)
+				setState(FINISHED);
 			break;
 		case FINISHED:
 			break;

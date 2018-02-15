@@ -20,10 +20,15 @@ public class ElevatorManager extends StateMachineBase {
 	double angle;
 	double output;
 	
+	public void setState(int s) {
+		super.setState(s);
+		System.out.println("Switched to " + s);
+	}
+	
 	public void startMovement(double angle){
 		targetAngle = angle;
-		movement = new PID(Konstanten.ARM_KD, Konstanten.ARM_KI, Konstanten.ARM_KD);
-		state = MOVING_TO;
+		movement = new PID(Konstanten.ARM_KP, Konstanten.ARM_KI, Konstanten.ARM_KD, Konstanten.ELEVATOR_SPEED);
+		setState(MOVING_TO);
 	}
 	
 	public void cancelMovement(){
@@ -35,7 +40,7 @@ public class ElevatorManager extends StateMachineBase {
 	
 	public void update() {
 		angle = Robot.elevator.getAngle();
-		dAngle = Robot.elevator.getDAngle();
+		dAngle = Robot.elevator.getAngleSpeed();
 		switch (state) {
 			case STOP:
 				//Stops the elevator
@@ -43,28 +48,30 @@ public class ElevatorManager extends StateMachineBase {
 				break;
 			case MOVING_UP:
 				//Elevator moves up to max height
-				Robot.elevator.move(1);
 				if(Robot.elevator.maxHeight()){
 					Robot.elevator.move(0);
+				} else {
+					Robot.elevator.move(0.25);	
 				}
 				break;
 			case MOVING_DOWN:
 				//Elevator goes down to lowest point
-				Robot.elevator.move(-1);
 				if(Robot.elevator.minHeight()){
 					Robot.elevator.move(0);
+				} else{
+					Robot.elevator.move(-0.25);
 				}
 				break;
 			case MOVING_TO:
 				//Elevator moves to either switch or scale height 
 				output = movement.getPID(targetAngle, angle, dAngle);
 				Robot.elevator.move(output);
+				System.out.println("out " + output);
 				
 				if(movement.isFinished(Konstanten.ARM_TOLERANCE, Konstanten.ARM_DTOLERANCE)){
 					movement = null;
-					state = STOP;
+					setState(STOP);
 				}
-				
 				break;
 		}
 	}

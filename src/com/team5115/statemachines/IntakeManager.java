@@ -14,38 +14,52 @@ public class IntakeManager extends StateMachineBase {
     public static final int SPIT = 2;
     public static final int GRIP = 3;
     public static final int RELEASE = 4;
-    
-    
 
     PID turnController;
+    
+    double time;
+    
+    public void setState(int s) {
+    	switch (state) {
+    	case INTAKE:
+    		Robot.intake.lowerIntake();
+    		time = Timer.getFPGATimestamp();
+    		break;
+    	case GRIP:
+    		Robot.intake.grip();
+    		time = Timer.getFPGATimestamp();
+    		break;
+    	}
+    	state = s;
+    }
+    
     public void update() {
 	   switch (state) {
 	   	case STOP:
 	   		Robot.intake.relax();
-	   		Robot.intake.intake(0);
+	   		Robot.intake.intake(Konstanten.SPEED_OF_NOT_MOVING);
 	   		break;
 	   	case INTAKE:
-	   		Robot.intake.lowerIntake();
-	   		Timer.delay(.25);
-	   		Robot.intake.relax();
-	   		Robot.intake.intake(1);
+	   		if (Timer.getFPGATimestamp() >= time + Konstanten.INTAKE_DELAY) {
+	   			Robot.intake.relax();
+		   		Robot.intake.intake(Konstanten.INTAKE_SPEED);
+	   		}
 	   		break;
 	   	case SPIT:
 	   		Robot.intake.lowerIntake();
-	   		Timer.delay(.25);
 	   		Robot.intake.relax();
-	   		Robot.intake.intake(-1);
+	   		Robot.intake.intake(-Konstanten.INTAKE_SPEED);
 	   		break;
 	   	case GRIP:
-	   		Robot.intake.grip();
-	   		Timer.delay(.25);
-	   		Robot.intake.liftIntake();
-	   		Robot.intake.intake(0);
+	   		if (Timer.getFPGATimestamp() >= time + Konstanten.INTAKE_DELAY) {
+	   			Robot.intake.liftIntake();
+		   		Robot.intake.intake(Konstanten.SPEED_OF_NOT_MOVING);
+	   		}
 	   		break;
 	   	case RELEASE:
 	   		Robot.intake.release();
 	   		Robot.intake.liftIntake();
-	   		Robot.intake.intake(0);
+	   		Robot.intake.intake(Konstanten.SPEED_OF_NOT_MOVING);
 	   		break;
 	   }
     }
