@@ -22,7 +22,7 @@ public class CubeManipulatorManager extends StateMachineBase {
 
 	PID turnController;
 	public void update() {
-		System.out.println(state);
+		//System.out.println(state);
 		switch (state) {
 			case STOP:
 				//EVERYTHING INACTIVE

@@ -110,7 +110,7 @@ public class Robot extends IterativeRobot {
 		CMM = new CubeManipulatorManager();
 		ds = DriverStation.getInstance();
 		
-//		//Finding gravity
+//		Finding gravity
 //	 	ArrayList <Double> gravity = new ArrayList <Double> (3);
 //	 	
 //		gravity[0] = drivetrain.AccelX();
@@ -124,7 +124,7 @@ public class Robot extends IterativeRobot {
 	 	SmartDashboard.putData("Position", positionChooser);
 		
 		strategyChooser = new SendableChooser<Integer>();
-		strategyChooser.addDefault("Strategy 1", 2);//these are the state numbers in Auto.java
+		strategyChooser.addDefault("Strategy 1", 2); //these are the state numbers in Auto.java
 		strategyChooser.addObject("Strategy 2", 3);
 		strategyChooser.addObject("Strategy 3", 4);
 		strategyChooser.addObject("Strategy 4", 5);
@@ -171,7 +171,7 @@ public class Robot extends IterativeRobot {
 		auto.update();
 		//autoDrive.update();
 	 }
-
+	 
 	 // Runs once when the game enters the driver operated stage
 	 public void teleopInit() {
 	 	drivetrain.inuse = false;
@@ -182,7 +182,7 @@ public class Robot extends IterativeRobot {
 	 	drive.setState(Drive.DRIVING);
 		CMM.setState(CubeManipulatorManager.TRANSIT); //should set state stop
 	 }
-
+	 
 	 // Runs periodically when the game is in the driver operated stage
 	 public void teleopPeriodic() {
 	 	Timer.delay(.005);

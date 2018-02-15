@@ -24,6 +24,8 @@ public class SwitchAuto extends StateMachineBase {
 
 	AutoDrive drive;
 
+	
+	AutoDrive turn; 
 	double time;
 	
 	int switchPosition;

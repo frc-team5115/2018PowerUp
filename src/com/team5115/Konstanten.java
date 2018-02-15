@@ -68,7 +68,6 @@ public class Konstanten {
 	public static final double SWITCH_HEIGHT = 160;
 	public static final double SCALE_HEIGHT = 850;
 	public static final double ELEVATOR_SPEED = 0.5;
-	public static final int SPEED_OF_NOT_MOVING = 0;
 	public static final int INTAKE_SPEED = 1;
 	public static final double INTAKE_DELAY = 0.25;
 	public static final double DUMPING_DELAY = 1;

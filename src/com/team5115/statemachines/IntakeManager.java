@@ -37,7 +37,7 @@ public class IntakeManager extends StateMachineBase {
 	   switch (state) {
 	   	case STOP:
 	   		Robot.intake.relax();
-	   		Robot.intake.intake(Konstanten.SPEED_OF_NOT_MOVING);
+	   		Robot.intake.intake(0);
 	   		break;
 	   	case INTAKE:
 	   		if (Timer.getFPGATimestamp() >= time + Konstanten.INTAKE_DELAY) {
@@ -53,13 +53,13 @@ public class IntakeManager extends StateMachineBase {
 	   	case GRIP:
 	   		if (Timer.getFPGATimestamp() >= time + Konstanten.INTAKE_DELAY) {
 	   			Robot.intake.liftIntake();
-		   		Robot.intake.intake(Konstanten.SPEED_OF_NOT_MOVING);
+		   		Robot.intake.intake(0);
 	   		}
 	   		break;
 	   	case RELEASE:
 	   		Robot.intake.release();
 	   		Robot.intake.liftIntake();
-	   		Robot.intake.intake(Konstanten.SPEED_OF_NOT_MOVING);
+	   		Robot.intake.intake(0);
 	   		break;
 	   }
     }

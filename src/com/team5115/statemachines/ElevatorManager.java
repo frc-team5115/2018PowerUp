@@ -66,7 +66,7 @@ public class ElevatorManager extends StateMachineBase {
 				//Elevator moves to either switch or scale height 
 				output = movement.getPID(targetAngle, angle, dAngle);
 				Robot.elevator.move(output);
-				System.out.println("out " + output);
+				//System.out.println("out " + output);
 				
 				if(movement.isFinished(Konstanten.ARM_TOLERANCE, Konstanten.ARM_DTOLERANCE)){
 					movement = null;
