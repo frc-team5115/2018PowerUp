@@ -61,14 +61,14 @@ public class InputManager {
     	return joy.getRawButton(Konstanten.KILL);
     }
     public static boolean switchHeight(){
-    	return joy.getRawButton(Konstanten.SWITCH);
+    	return getHat() == 270;
     }
     public static boolean scaleHeight(){
-    	return joy.getRawButton(Konstanten.SCALE);
+    	return getHat() == 0;
     }
     public static boolean returnHeight(){
-    	return joy.getRawButton(Konstanten.RETURN);
-    }
+    	return getHat() == 180;
+    	}
     public static boolean intake(){
     	return joy.getRawButton(Konstanten.INTAKE);
     }
@@ -84,7 +84,19 @@ public class InputManager {
     public static boolean spit(){
     	return joy.getRawButton(Konstanten.SPIT);
     }
-    public static boolean testSolonoid(){
-    	return joy.getRawButton(Konstanten.TEST);
+   /* public static boolean lowerIntake(){
+    	return joy.getRawButton(Konstanten.LOWER_INTAKE);
+    }
+    public static boolean grabIntake(){
+    	return joy.getRawButton(Konstanten.GRAB_INTAKE);
+    }*/
+    public static boolean grabIntake(){
+    	return joy.getRawButton(Konstanten.GRAB_INTAKE);
+    }
+    public static boolean bump(){
+    	return joy.getRawButton(Konstanten.CORRECTCUBE);
+    }
+    public static boolean getButton(int b) {
+    	return joy.getRawButton(b);
     }
 }

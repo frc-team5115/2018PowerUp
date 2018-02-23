@@ -71,7 +71,7 @@ public class Robot extends IterativeRobot {
 	public static NetworkTable NT;
 	
 	public String gameData;
-
+	public int qwerty = 0;
  	public static Double[] gravity = new Double[3];
 	
 	 // Initialization phase of the robot class
@@ -124,10 +124,10 @@ public class Robot extends IterativeRobot {
 	 	SmartDashboard.putData("Position", positionChooser);
 		
 		strategyChooser = new SendableChooser<Integer>();
-		strategyChooser.addDefault("Strategy 1", 2); //these are the state numbers in Auto.java
-		strategyChooser.addObject("Strategy 2", 3);
-		strategyChooser.addObject("Strategy 3", 4);
-		strategyChooser.addObject("Strategy 4", 5);
+		strategyChooser.addDefault("Strategy 1- center switch", 2); //these are the state numbers in Auto.java
+		strategyChooser.addObject("Strategy 2- scale", 3);
+		strategyChooser.addObject("Strategy 3 ", 4);
+		strategyChooser.addObject("Strategy 4- switch from the sides", 5);
 		SmartDashboard.putData("Strategy", strategyChooser);
 	 	drive.setState(Drive.STOP);
 		
@@ -174,13 +174,18 @@ public class Robot extends IterativeRobot {
 	 
 	 // Runs once when the game enters the driver operated stage
 	 public void teleopInit() {
-	 	drivetrain.inuse = false;
-	 	drivetrain.drive(0,0);
-		drivetrain.resetGyro();
-		drivetrain.resetEncoders();
-		autoDrive.setState(DriveForwardSome.FINISHED);
-	 	drive.setState(Drive.DRIVING);
-		CMM.setState(CubeManipulatorManager.TRANSIT); //should set state stop
+//	 	drivetrain.inuse = false;
+//	 	drivetrain.drive(0,0);
+//		drivetrain.resetGyro();
+//		drivetrain.resetEncoders();
+//		autoDrive.setState(DriveForwardSome.FINISHED);
+//	 	drive.setState(Drive.DRIVING);
+		CMM.setState(CubeManipulatorManager.STOP); //should set state stop
+		drive.setState(Drive.DRIVING); 
+		intake.lowerIntake();
+		intake.relax();
+		intake.intake(0);
+		carriage.eject();
 	 }
 	 
 	 // Runs periodically when the game is in the driver operated stage
@@ -188,30 +193,73 @@ public class Robot extends IterativeRobot {
 	 	Timer.delay(.005);
 		drive.update();
 		CMM.update();
-		//System.out.println("Angle " + Robot.elevator.getAngle());
-		//System.out.println("Drive State " + drive.state);
-		SmartDashboard.putNumber("yaw", drivetrain.getYaw());
 		
-		SmartDashboard.putNumber("frontleft motor current", PDP.getCurrent(Konstanten.FRONT_LEFT_CHANNEL));
-		SmartDashboard.putNumber("frontright motor current", PDP.getCurrent(Konstanten.FRONT_RIGHT_CHANNEL));
-		SmartDashboard.putNumber("backleft motor current", PDP.getCurrent(Konstanten.BACK_LEFT_CHANNEL));
-		SmartDashboard.putNumber("backright motor current", PDP.getCurrent(Konstanten.BACK_RIGHT_CHANNEL));
 		
-		/*
-		System.out.println("Yaw " + drivetrain.getYaw());
-		System.out.println("Roll " + drivetrain.getRoll());
-		System.out.println("Pitch " + drivetrain.getPitch());
-		*/
-		//get angle
-		System.out.println("Pot " + elevator.getAngle());
-		System.out.println("elevator " + EM.state);
-		System.out.println("cube " + CMM.state);
-		//get speed
-		//System.out.println(elevator.getAngleSpeed());
-		if (InputManager.kill()){
-			EM.cancelMovement();
+//		//System.out.println("Angle " + Robot.elevator.getAngle());
+//		//System.out.println("Drive State " + drive.state);
+//		SmartDashboard.putNumber("yaw", drivetrain.getYaw());
+//		
+//		SmartDashboard.putNumber("frontleft motor current", PDP.getCurrent(Konstanten.FRONT_LEFT_CHANNEL));
+//		SmartDashboard.putNumber("frontright motor current", PDP.getCurrent(Konstanten.FRONT_RIGHT_CHANNEL));
+//		SmartDashboard.putNumber("backleft motor current", PDP.getCurrent(Konstanten.BACK_LEFT_CHANNEL));
+//		SmartDashboard.putNumber("backright motor current", PDP.getCurrent(Konstanten.BACK_RIGHT_CHANNEL));
+//		
+//		/*
+//		System.out.println("Yaw " + drivetrain.getYaw());
+//		System.out.println("Roll " + drivetrain.getRoll());
+//		System.out.println("Pitch " + drivetrain.getPitch());
+//		*/
+//		//get angle
+//		System.out.println("Pot " + elevator.getAngle());
+//		System.out.println("cube " + intake.isCube());
+//		SmartDashboard.putNumber("pot", elevator.getAngle());
+//		System.out.println("elevator " + EM.state);
+//		System.out.println("cube " + CMM.state);
+//		
+//		System.out.println("Hat " + InputManager.getHat());
+//		//get speed
+//		//System.out.println(elevator.getAngleSpeed());
+//		if (InputManager.kill()){
+//			EM.cancelMovement();
+//		}
+
+
+/*
+		if (InputManager.getButton(11)) {	// lower and start intake
+			intake.lowerIntake();
+			Timer.delay(0.5);
+			intake.relax();
+			intake.intake(0.5);
 		}
+		if (InputManager.getButton(9)) {	// grip and lift intake
+			intake.intake(0.1);
+			intake.grip();
+			intake.liftIntake();
+		}
+		if (InputManager.getButton(12)) {	// release intake
+			intake.intake(0);
+			intake.release();
+		}
+		if (InputManager.getButton(8)) {	// grip carriage
+			carriage.grab();
+		}
+		if (InputManager.getButton(10)) {	// release carriage
+			carriage.eject();
+		}
+		
+		if (InputManager.moveUp()) {
+			elevator.move(0.5);
+		}
+		if (InputManager.moveDown()) {
+			elevator.move(-0.5);
+		}
+		if (!InputManager.moveUp() && !InputManager.moveDown()) {
+			elevator.move(0);
+		}
+		*/
+		
 	 }
+	 
 
 	 // Runs when the robot is disabled
 	 public void disabledInit() {

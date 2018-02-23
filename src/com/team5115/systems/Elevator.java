@@ -15,8 +15,8 @@ public class Elevator {
 
 //	DigitalInput topLimit;
 //	DigitalInput bottomLimit;
-	double lastAngle = 60;
-	
+	double lastAngle = 00;
+	public boolean movingArm = false;
 	TalonSRX armMover;
 
 	 public Elevator(){
@@ -30,30 +30,34 @@ public class Elevator {
 	 }
 	 
 	 public double getAngle(){
-	 	//return armMover.getSensorCollection().getAnalogIn();
-		double angle = armMover.getSelectedSensorPosition(0);
-		return angle;
+		return armMover.getSelectedSensorPosition(0);
 	 }
 	 
 	 // need to filter out noise
 	 public double getAngleSpeed(){
-	 	//return armMover.getSensorCollection().getAnalogInVel();
 	 	return armMover.getSelectedSensorVelocity(0);
 	 	
 	 }
 	 
 	 public void move(double speed){
+		 if (speed != 0){
+			 movingArm = true;
+		 }
+		 else {
+			 movingArm = false;
+		 }
+		 System.out.println("arm speed: " + speed);
 		 armMover.set(ControlMode.PercentOutput, speed);
 	 }
 	 
 	 public boolean maxHeight(){
 		//return topLimit.get();
 		return (getAngle() > Konstanten.ELEVATOR_MAX);
-		 //return false;
+		//return false;
 	 }
 	 public boolean minHeight(){
 		// return bottomLimit.get();
-		 return (getAngle() < Konstanten.ELEVATOR_MIN);
-		 //return false;
+		return (getAngle() < Konstanten.ELEVATOR_MIN);
+		//return false;
 	 }
 }

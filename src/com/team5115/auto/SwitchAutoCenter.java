@@ -12,7 +12,7 @@ import com.team5115.statemachines.StateMachineBase;
 import edu.wpi.first.wpilibj.Timer;
 
 //drop a cube in the correct side of the switch
-public class SwitchAuto extends StateMachineBase {
+public class SwitchAutoCenter extends StateMachineBase {
 	public static final int INIT = 0;
 	public static final int DRIVING = 1;		//2 ft
 	public static final int TURNING = 2;	//45 degrees
@@ -33,7 +33,7 @@ public class SwitchAuto extends StateMachineBase {
 	int left = 1;
 	int right = 2;
 	
-	public SwitchAuto(int sp) {
+	public SwitchAutoCenter(int sp) {
 		drive = new AutoDrive();
 
 		switchPosition = sp;

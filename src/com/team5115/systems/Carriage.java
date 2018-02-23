@@ -19,7 +19,7 @@ public class Carriage {
    
 
     public Carriage(){
-    	grabberSolenoid = new DoubleSolenoid(Konstanten.PNUMATIC_PCM_ID, Konstanten.GRABBER_FORWARD_CHANNEL, Konstanten.GRABBER_REVERSE_CHANNEL);
+    	grabberSolenoid = new DoubleSolenoid(Konstanten.PHEUMATIC_PCM_1_ID, Konstanten.CARRIAGE_FORWARD_CHANNEL, Konstanten.CARRIAGE_REVERSE_CHANNEL);
     }
     
     public void grab(){

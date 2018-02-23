@@ -6,7 +6,10 @@ import com.team5115.PID;
 import com.team5115.robot.Robot;
 import com.team5115.auto.AutoDrive;
 import com.team5115.systems.DriveTrain;
+import com.team5115.statemachines.CarriageManager;
 import com.team5115.statemachines.CubeManipulatorManager;
+import com.team5115.statemachines.ElevatorManager;
+import com.team5115.statemachines.IntakeManager;
 import com.team5115.statemachines.StateMachineBase;
 
 import edu.wpi.first.wpilibj.Timer;
@@ -19,12 +22,9 @@ public class ScaleAuto extends StateMachineBase {
 	public static final int DRIVING2 = 3;
 	public static final int TURNING2 = 4;
 	public static final int DRIVING3 = 5;
-	public static final int PLACE = 6;
-	public static final int TURNING3 = 7;
-	public static final int DRIVING4 = 8;
-	public static final int TURNING4 = 9;
-	public static final int PICKUP = 10;
-	public static final int FINISHED = 11;
+	public static final int TURNING3 = 6;
+	public static final int DRIVING4 = 7;
+	public static final int FINISHED = 8;
 	// Distances and Angles are not accurate, need to be changed later
 
 	AutoDrive drive;
@@ -32,139 +32,142 @@ public class ScaleAuto extends StateMachineBase {
 	double time;
 	
 	int scalePosition;
-	
+	int position;
 	int left = 1;
 	int right = 2;
 	
 	
-	public ScaleAuto(int sp) {
+	public ScaleAuto(int sp, int p) {
 		drive = new AutoDrive();
-
+		position = p;
 		scalePosition = sp;
+		//check 
 	}
-	
-	public void setState(int s) {
-    	switch (state) {
-    	case PLACE:
-    		time = Timer.getFPGATimestamp();
-    		break;
-    	}
-    	state = s;
-    }
 	
 	public void update() {
 		switch(state){
 		case INIT:
-			drive.startLine(2, 0.5);
 			Robot.CMM.setState(CubeManipulatorManager.STOP);
+			drive.startLine(17.5, 0.5); //distance that is going to be required every time
+			Robot.CM.setState(CarriageManager.GRAB);
+			Robot.IM.setState(IntakeManager.RELEASE);
+			Robot.EM.startMovement(Konstanten.SCALE_HEIGHT);
 			setState(DRIVING);
 			break;
+			
 		case DRIVING:
 			drive.update();
-			Robot.CMM.update();
+			Robot.EM.update();
+			Robot.IM.update();
+			Robot.CM.update();
+			if ((Robot.elevator.getAngle() <  Konstanten.INTAKE_HEIGHT) && Robot.elevator.movingArm){
+				Robot.IM.setState(IntakeManager.RELEASE);
+			}
+			else{
+				Robot.IM.setState(IntakeManager.GRIP);
+			}
+			
 			if(drive.state == AutoDrive.FINISHED){
-				if(scalePosition == left) {
-					drive.startTurn(45, 0.25);
+				if (position == scalePosition){
+					drive.startLine(8, 0.25);
+					setState(DRIVING3);
 				}
-				else {
-					drive.startTurn(-45, 0.25);
+				else if (position == left){
+					drive.startTurn(90, .5);
+					setState(TURNING);
+					
 				}
-				Robot.CMM.setState(CubeManipulatorManager.TRANSIT);
-				setState(TURNING);
+				else {//position = right
+					drive.startTurn(-90, .5);
+				}
 			}
 			break;
 			
 		case TURNING:
 			drive.update();
-			Robot.CMM.update();
-			if (drive.state == AutoDrive.FINISHED) { 
-				if(scalePosition == left) {
-					drive.startLine(6.4, 0.5);
-				}
-				else {
-					drive.startLine(7.75, 0.5);
-				}
-				Robot.CMM.setState(CubeManipulatorManager.SWITCH);
+			Robot.EM.update();
+			Robot.IM.update();
+			Robot.CM.update();
+			if (drive.state == AutoDrive.FINISHED){
+				drive.startLine(19.4,  0.5);
 				setState(DRIVING2);
 			}
 			break;
 			
 		case DRIVING2:
 			drive.update();
-			Robot.CMM.update();
-			if (drive.state == AutoDrive.FINISHED) { 
-				if(scalePosition == left) {
-					drive.startTurn(-45, 0.25);
+			Robot.EM.update();
+			Robot.IM.update();
+			Robot.CM.update();
+			if (drive.state == AutoDrive.FINISHED){
+				if (position == left){
+					drive.startTurn(-90, .5);
 				}
 				else {
-					drive.startTurn(45, 0.25);
+					drive.startTurn(90, .5);
 				}
 				setState(TURNING2);
 			}
 			break;
-					
+			
 		case TURNING2:
 			drive.update();
-			Robot.CMM.update();
-			if (drive.state == AutoDrive.FINISHED) { 
-				if(scalePosition == left) {
-					drive.startLine(3.37, 0.25);
-				}
-				else {
-					drive.startLine(4.04, 0.25);
-				}
-			
+			Robot.EM.update();
+			Robot.IM.update();
+			Robot.CM.update();
+			if (drive.state == AutoDrive.FINISHED){
+				drive.startLine(8, 0.25);
 				setState(DRIVING3);
 			}
 			break;
+			
 		case DRIVING3:
 			drive.update();
-			Robot.CMM.update();
-			if (drive.state == AutoDrive.FINISHED) { 
-				Robot.CMM.setState(CubeManipulatorManager.DUMP);
-				setState(PLACE);
+			Robot.EM.update();
+			Robot.IM.update();
+			Robot.CM.update();
+			if (drive.state == AutoDrive.FINISHED){
+				if (position == left){
+					drive.startTurn(-90, .5);
+				}
+				else {
+					drive.startTurn(90, .5);
+				}
+				setState(TURNING3);
 			}
 			break;
-		case PLACE:
-			Robot.CMM.update();
-			if (Timer.getFPGATimestamp() >= time + Konstanten.DUMPING_DELAY)
-				drive.startTurn(180, 0.25);
-				Robot.CMM.setState(CubeManipulatorManager.RETURNING);
-				setState(TURNING3);
-			break;
+			
 		case TURNING3:
 			drive.update();
-			Robot.CMM.update();
-			if (drive.state == AutoDrive.FINISHED) {
-				drive.startLine(5, 0.25);	//placeholder distance
+			Robot.EM.update();
+			Robot.IM.update();
+			Robot.CM.update();
+			if (drive.state == AutoDrive.FINISHED){
+				drive.startLine(2.1,  0.25);
 				setState(DRIVING4);
 			}
 			break;
+			
 		case DRIVING4:
 			drive.update();
-			Robot.CMM.update();
-			if (drive.state == AutoDrive.FINISHED) {
-				drive.startTurn(45, 0.25);	//might be wrong direction
-				Robot.CMM.setState(CubeManipulatorManager.INTAKE);
-				setState(TURNING4);
+			Robot.EM.update();
+			Robot.IM.update();
+			Robot.CM.update();
+			if (drive.state == AutoDrive.FINISHED){
+				Robot.drivetrain.drive(0, 0);
+				Robot.CM.setState(CarriageManager.DUMP);
+				Robot.IM.setState(IntakeManager.STOP);
+				Robot.EM.setState(ElevatorManager.STOP);
 			}
 			break;
-		case TURNING4:
-			drive.update();
-			Robot.CMM.update();
-			if (drive.state == AutoDrive.FINISHED) {
-				setState(PICKUP);
-			}
-			break;
-		// Might have to add more driving and turning in order to line up with cubes past switch, currently tries to intake from the side
-		// I don't know if that will work, so this might get even more complicated...
-		case PICKUP:
-			Robot.CMM.update();
-			if (Robot.intake.isCube()) {
-				setState(FINISHED);
-			}
+			
 		case FINISHED:
+			Robot.drivetrain.drive(0, 0);
+			Robot.EM.update();
+			Robot.IM.update();
+			Robot.CM.update();
 			break;
 		}
+	
 	}
 }

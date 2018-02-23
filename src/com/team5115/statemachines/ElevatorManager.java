@@ -22,12 +22,18 @@ public class ElevatorManager extends StateMachineBase {
 	
 	public void setState(int s) {
 		super.setState(s);
-		System.out.println("Switched to " + s);
+		//System.out.println("Switched to " + s);
 	}
 	
 	public void startMovement(double angle){
 		targetAngle = angle;
-		movement = new PID(Konstanten.ARM_KP, Konstanten.ARM_KI, Konstanten.ARM_KD, Konstanten.ELEVATOR_SPEED);
+		if (angle == Konstanten.SCALE_HEIGHT) {
+			movement = new PID(Konstanten.ARM_KP, Konstanten.ARM_KI, Konstanten.ARM_KD, Konstanten.ELEVATOR_SPEED_SCALE);
+		} else if (angle == Konstanten.SWITCH_HEIGHT) {
+			movement = new PID(Konstanten.ARM_KP, Konstanten.ARM_KI, Konstanten.ARM_KD, Konstanten.ELEVATOR_SPEED_SWITCH);
+		} else {
+			movement = new PID(Konstanten.ARM_KP, Konstanten.ARM_KI, Konstanten.ARM_KD, Konstanten.ELEVATOR_SPEED);
+		}
 		setState(MOVING_TO);
 	}
 	
@@ -51,7 +57,7 @@ public class ElevatorManager extends StateMachineBase {
 				if(Robot.elevator.maxHeight()){
 					Robot.elevator.move(0);
 				} else {
-					Robot.elevator.move(0.25);	
+					Robot.elevator.move(Konstanten.ELEVATOR_SPEED);	
 				}
 				break;
 			case MOVING_DOWN:
@@ -59,7 +65,7 @@ public class ElevatorManager extends StateMachineBase {
 				if(Robot.elevator.minHeight()){
 					Robot.elevator.move(0);
 				} else{
-					Robot.elevator.move(-0.25);
+					Robot.elevator.move(-Konstanten.ELEVATOR_SPEED);
 				}
 				break;
 			case MOVING_TO:

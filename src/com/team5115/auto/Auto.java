@@ -6,6 +6,7 @@ import com.team5115.Konstanten;
 import com.team5115.PID;
 import com.team5115.robot.Robot;
 import com.team5115.statemachines.StateMachineBase;
+import com.team5115.statemachines.SwitchCross;
 import com.team5115.auto.AutoDrive;
 import com.team5115.systems.DriveTrain;
 
@@ -21,11 +22,13 @@ public class Auto extends StateMachineBase{
 	public static final int LINE = 4;
 	public static final int DROPCUBE = 5;
 	public static final int NOTHINGTODO = 6;
-	public static SwitchAuto switchStrat;
+	public static final int SWITCHCROSS = 7;
+	public static SwitchAutoCenter switchStrat;
 	public static ScaleAuto scaleStrat;
 	public static DropCubeAuto dropCubeStrat;
 	public static LineAuto lineStrat;
 	public static NothingToSeeHereAuto NothingToSeeHere;
+	public static SwitchCross SwitchCross;
 	//create new object imported from AutoDrive called "drive"
 	int position;
 	int switchPosition;
@@ -37,11 +40,12 @@ public class Auto extends StateMachineBase{
 		scalePosition = scp;
 		strategy = s;
 
-		switchStrat = new SwitchAuto(switchPosition);
-		scaleStrat = new ScaleAuto(scalePosition);
+		switchStrat = new SwitchAutoCenter(switchPosition);
+		scaleStrat = new ScaleAuto(scalePosition, position);
 		dropCubeStrat = new DropCubeAuto(position, switchPosition);
 		lineStrat = new LineAuto();
 		NothingToSeeHere = new NothingToSeeHereAuto();
+		SwitchCross = new SwitchCross(position, switchPosition);
 	}
 	
 	//each time update is called in AutoDrive
@@ -51,11 +55,12 @@ public class Auto extends StateMachineBase{
 				case INIT:
 					
 					//Get strategy numberfrom smart dashboard
-					switchStrat.setState(SwitchAuto.INIT);
+					switchStrat.setState(SwitchAutoCenter.INIT);
 					scaleStrat.setState(ScaleAuto.INIT);
 					dropCubeStrat.setState(DropCubeAuto.INIT);
 					lineStrat.setState(LineAuto.INIT);
 					NothingToSeeHere.setState(NothingToSeeHereAuto.INIT);
+					SwitchCross.setState(SwitchCross.INIT);
 					setState(strategy);
 					break;
 					
@@ -74,7 +79,8 @@ public class Auto extends StateMachineBase{
 				case NOTHINGTODO:
 					NothingToSeeHere.update();
 					break;
-			
+				case SWITCHCROSS:
+					SwitchCross.update();
 			}
 	 }
 }

@@ -5,46 +5,66 @@ import com.cruzsbrian.robolog.Log;
 
 import com.team5115.Konstanten;
 
-import edu.wpi.first.wpilibj.Victor;
+import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 
 
 public class Intake {
 
-	DigitalInput cubeDetector;
-	DoubleSolenoid cubeSolenoid; 
-	DoubleSolenoid intakeLifter;
-	Victor intakeWheels;
+	DigitalInput cubeDetectorL;
+	DigitalInput cubeDetectorR;
+	DoubleSolenoid cubeSolenoidLeft;
+	DoubleSolenoid cubeSolenoidRight;
+	DoubleSolenoid intakeLifterLeft;
+	DoubleSolenoid intakeLifterRight;
+	Spark intakeWheelsLeft;
+	Spark intakeWheelsRight;
 	public Intake(){
-		cubeDetector = new DigitalInput(Konstanten.CUBE_DETECTOR);
-		cubeSolenoid = new DoubleSolenoid(Konstanten.PNUMATIC_PCM_ID, Konstanten.INTAKE_FORWARD_CHANNEL, Konstanten.INTAKE_REVERSE_CHANNEL);
-		intakeLifter = new DoubleSolenoid(Konstanten.PNUMATIC_PCM_ID, Konstanten.LIFTER_FORWARD_CHANNEL, Konstanten.LIFTER_REVERSE_CHANNEL);
-		intakeWheels = new Victor(Konstanten.INTAKE_VICTOR);
+		cubeDetectorL = new DigitalInput(Konstanten.CUBE_DETECTOR_L);
+		cubeDetectorR = new DigitalInput(Konstanten.CUBE_DETECTOR_R);
+		cubeSolenoidLeft = new DoubleSolenoid(Konstanten.PHEUMATIC_PCM_0_ID, Konstanten.INTAKE_FORWARD_CHANNEL_LEFT, Konstanten.INTAKE_REVERSE_CHANNEL_LEFT);
+		cubeSolenoidRight = new DoubleSolenoid(Konstanten.PHEUMATIC_PCM_0_ID, Konstanten.INTAKE_FORWARD_CHANNEL_RIGHT, Konstanten.INTAKE_REVERSE_CHANNEL_RIGHT);
+		intakeLifterLeft = new DoubleSolenoid(Konstanten.PHEUMATIC_PCM_0_ID, Konstanten.LIFTER_FORWARD_CHANNEL_LEFT, Konstanten.LIFTER_REVERSE_CHANNEL_LEFT);
+		intakeLifterRight = new DoubleSolenoid(Konstanten.PHEUMATIC_PCM_0_ID, Konstanten.LIFTER_FORWARD_CHANNEL_RIGHT, Konstanten.LIFTER_REVERSE_CHANNEL_RIGHT);
+		intakeWheelsLeft = new Spark(Konstanten.INTAKE_SPARK_LEFT);
+		intakeWheelsRight = new Spark(Konstanten.INTAKE_SPARK_RIGHT);
 	}
 	
 	public void grip(){
-		cubeSolenoid.set(DoubleSolenoid.Value.kForward);
+		cubeSolenoidLeft.set(DoubleSolenoid.Value.kForward);
+		cubeSolenoidRight.set(DoubleSolenoid.Value.kForward);
 	}
 	
 	public void relax(){
-		cubeSolenoid.set(DoubleSolenoid.Value.kOff);
+		cubeSolenoidLeft.set(DoubleSolenoid.Value.kOff);
+		cubeSolenoidRight.set(DoubleSolenoid.Value.kOff);
 	}
 	public void release(){
-		cubeSolenoid.set(DoubleSolenoid.Value.kReverse);
+		cubeSolenoidLeft.set(DoubleSolenoid.Value.kReverse);
+		cubeSolenoidRight.set(DoubleSolenoid.Value.kReverse);
 	}
 	public void liftIntake(){
-		intakeLifter.set(DoubleSolenoid.Value.kForward);
+		intakeLifterLeft.set(DoubleSolenoid.Value.kForward);
+		intakeLifterRight.set(DoubleSolenoid.Value.kForward);
 	}
 	public void lowerIntake(){
-		intakeLifter.set(DoubleSolenoid.Value.kReverse);
+		intakeLifterLeft.set(DoubleSolenoid.Value.kReverse);
+		intakeLifterRight.set(DoubleSolenoid.Value.kReverse);
 	}
 	
 	public boolean isCube(){
-		return cubeDetector.get();
+		//System.out.println("l" + cubeDetectorL.get());
+		//System.out.println("r" + cubeDetectorR.get());
+		return !cubeDetectorL.get() && !cubeDetectorR.get();
 	}
 	public void intake(double dir){
-		intakeWheels.set(dir);
+		intakeWheelsLeft.set(-dir);
+		intakeWheelsRight.set(dir);
+	}
+	public void bump(){
+		intakeWheelsLeft.set(1);
+		intakeWheelsRight.set(1);
 	}
 	
 }
