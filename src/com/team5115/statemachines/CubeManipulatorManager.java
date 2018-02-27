@@ -1,8 +1,6 @@
 package com.team5115.statemachines;
 
-//import com.cruzsbrian.robolog.Constants;
 import com.team5115.Konstanten;
-import com.team5115.PID;
 import com.team5115.robot.InputManager;
 import com.team5115.robot.Robot;
 
@@ -12,21 +10,30 @@ public class CubeManipulatorManager extends StateMachineBase {
 	
 	public static final int INTAKE = 1;
 	public static final int LOWER_INTAKE = 2;
-	public static final int SPIT = 3;
-	public static final int SWALLOW = 4;
+	public static final int PASS_TO_INTAKE = 3;
+	public static final int PASS_TO_ARM = 4;
 	public static final int TRANSIT = 5;
-	public static final int SWITCH = 6;
-	public static final int SCALE = 7;
-	public static final int DUMP = 8;
-	public static final int RETURNING = 9;
-	public static final int RESET = 10;
+	public static final int DRIVIN_AROUND_WIT_DA_INTAKE_DOWN = 6;
+	public static final int EMPTY = 7;
 	
+	public double armGoal = Robot.elevator.getAngle();
+	private double time;
 	
+	protected void updateChildren() {
+		Robot.IM.update();
+		Robot.EM.update();
+		Robot.CM.update();
+	}
 	
-
-	PID turnController;
+	public void collisionAvoidance() {
+		if ((Robot.elevator.getAngle() <= Konstanten.INTAKE_HEIGHT) && Robot.elevator.movingArm) {		// the arm is where it can hit the intake
+			Robot.IM.setState(IntakeManager.STOW_OPEN);
+		} else {	// the arm is above the intake
+			Robot.IM.setState(IntakeManager.STOW_CLOSED);
+		}
+	}
+	
 	public void update() {
-		//System.out.println(state);
 		switch (state) {
 			case STOP:
 				// EVERYTHING INACTIVE
@@ -34,7 +41,6 @@ public class CubeManipulatorManager extends StateMachineBase {
 				Robot.CM.setState(CarriageManager.STOP);
 				Robot.EM.setState(ElevatorManager.STOP);
 				if (InputManager.intake()) {
-					Robot.EM.startMovement(Konstanten.RETURN_HEIGHT);
 					setState(INTAKE);
 				}
 				break;
@@ -43,204 +49,194 @@ public class CubeManipulatorManager extends StateMachineBase {
 				// IF SENSOR INPUT IS RECOGNIZED, GO TO TRANSIT
 				
 				Robot.CM.setState(CarriageManager.DUMP);
-				Robot.IM.update();
-				Robot.CM.update();
-				Robot.EM.update();
-				if (InputManager.bump()){
+				Robot.EM.setTarget(Konstanten.RETURN_HEIGHT);
+				updateChildren();
+				
+				if (InputManager.bump()) {
 					Robot.IM.setState(IntakeManager.CORRECT);
-				}
-				else{
+				} else {
 					Robot.IM.setState(IntakeManager.INTAKE);
 				}
-				if ((InputManager.grabIntake() || Robot.intake.isCube()) && Robot.elevator.minHeight())
-					setState(SWALLOW);
+
+				if (InputManager.grabIntake() || Robot.intake.isCube()) {
+					setState(PASS_TO_ARM);
+				}
+				
+				break;
+
+			case PASS_TO_INTAKE:
+				Robot.EM.setTarget(Konstanten.RETURN_HEIGHT);
+				updateChildren();
+				
+				if(Robot.elevator.minHeight()) {
+					Robot.IM.setState(IntakeManager.GRIP_UP);
+					Robot.CM.setState(CarriageManager.DUMP);
+					time = Timer.getFPGATimestamp();
+					setState(DRIVIN_AROUND_WIT_DA_INTAKE_DOWN);
+				}
+				else {
+					collisionAvoidance();
+				}
 				break;
 				
+			case DRIVIN_AROUND_WIT_DA_INTAKE_DOWN:
+				updateChildren();
+
+				Robot.EM.setTarget(Konstanten.RETURN_HEIGHT);
 				
-			case LOWER_INTAKE:
-				Robot.IM.setState(IntakeManager.LOWER_INTAKE);
-				Robot.IM.update();
-				Robot.CM.update();
+				if(Timer.getFPGATimestamp() >= time + Konstanten.PASSBACK_TIME) {
+					Robot.IM.setState(IntakeManager.GRIP_DOWN);
+				}
+				else {
+					Robot.IM.setState(IntakeManager.GRIP_UP);
+				}
 				
-				if(InputManager.spit()) {
-					setState(SPIT);
+				//user inputs
+				if (InputManager.eject()) {
+					Robot.IM.setState(IntakeManager.SPIT);
+					time = Timer.getFPGATimestamp();
+					setState(EMPTY);
 				}
-			case SPIT:
-				Robot.IM.setState(IntakeManager.SPIT);
-				Robot.IM.update();
-				Robot.CM.update();
-				
-				if(!Robot.intake.isCube()) {
-					setState(INTAKE);
+				if (InputManager.moveUp()) {
+					armGoal = Robot.elevator.getAngle() + Konstanten.ELEVATOR_STEP;
+					setState(PASS_TO_ARM);
 				}
-				break;
-			case SWALLOW:
-				// ELEVATOR STILL, INTAKE UP, CARRIAGE ACTIVE
-				// IF USER INPUT IS RECOGNIZED, GO TO DUMP
-				Robot.IM.setState(IntakeManager.GRIP);
-				Robot.EM.update();
-				Robot.IM.update();
-				Robot.CM.update();
-			
-				Timer.delay(1);
-				Robot.CM.setState(CarriageManager.GRAB);
-				setState(TRANSIT);
-				break;
-			case TRANSIT:
-				// need to implement ability to lower intake for exchange 
-				//Robot.IM.setState(IntakeManager.STOP);
-				Robot.EM.update();
-				Robot.IM.update();
-				Robot.CM.update();
-				if ((Robot.elevator.getAngle() <  Konstanten.INTAKE_HEIGHT) && Robot.elevator.movingArm){
-					Robot.IM.setState(IntakeManager.RELEASE);
+				if (InputManager.moveDown()) {
+					setState(PASS_TO_ARM);
 				}
-				else{
-					Robot.IM.setState(IntakeManager.GRIP);
+				if (InputManager.scaleHeight()) {
+					armGoal = Konstanten.SCALE_HEIGHT;
+					setState(PASS_TO_ARM);
+				}
+				if (InputManager.switchHeight()) {
+					armGoal = Konstanten.SWITCH_HEIGHT;
+					setState(PASS_TO_ARM);
+				}
+				if (InputManager.returnHeight()) {
+					armGoal = Konstanten.RETURN_HEIGHT;
+					setState(PASS_TO_ARM);
 				}
 				if (InputManager.intake()) {
-					Robot.EM.startMovement(Konstanten.RETURN_HEIGHT);
 					setState(INTAKE);
 				}
-//				if(Robot.elevator.getAngle() <  Konstanten.INTAKE_HEIGHT){
-//					Robot.IM.setState(IntakeManager.RELEASE);
-//				}
-//				else{
-//					Robot.IM.setState(IntakeManager.GRIP);
-//					System.out.println("GRIPPPPPP");
-//				}
+				
+				break;
+			case PASS_TO_ARM:
+				// ELEVATOR STILL, INTAKE UP, CARRIAGE ACTIVE
+				// IF USER INPUT IS RECOGNIZED, GO TO EMPTY
+				updateChildren();
+				
+				Robot.EM.setTarget(Konstanten.RETURN_HEIGHT);
+				Robot.CM.setState(CarriageManager.DUMP);
+				
+				if (Robot.elevator.minHeight()) {
+					Robot.IM.setState(IntakeManager.GRIP_UP);
+					time = Timer.getFPGATimestamp();
+					setState(TRANSIT);
+				} else {
+					Robot.IM.setState(IntakeManager.GRIP_DOWN);
+				}
+				
+				break;
+			
+			case TRANSIT:
+				// need to implement ability to lower intake for exchange 
+				//Robot.IM.setState(IntakeManager.STOP)
+				updateChildren();
+				
+				if (Robot.elevator.minHeight() && !Robot.elevator.movingArm) {
+					Robot.IM.setState(IntakeManager.GRIP_UP);
+				}
+				else {
+					collisionAvoidance();
+				}
+				
+				if (Timer.getFPGATimestamp() >= time + Konstanten.PASSOFF_TIME) {
+					Robot.CM.setState(CarriageManager.GRAB);
+					Robot.EM.setTarget(armGoal);
+				}
+				else {
+					Robot.EM.setTarget(Konstanten.RETURN_HEIGHT);
+					Robot.CM.setState(CarriageManager.DUMP);
+				}
+				
+				if (InputManager.intake()) {
+					Robot.EM.setTarget(Konstanten.RETURN_HEIGHT);
+					setState(INTAKE);
+				}
 				
 				if((InputManager.moveUp()) && !Robot.elevator.maxHeight()){
-					Robot.EM.setState(ElevatorManager.MOVING_UP);
+					armGoal = Robot.elevator.getAngle() + Konstanten.ELEVATOR_STEP;
 				}
 				
 				if(InputManager.moveDown() && !Robot.elevator.minHeight()){
-					Robot.EM.setState(ElevatorManager.MOVING_DOWN);
-				}
-				
-				if (InputManager.moveDown() == InputManager.moveUp() && Robot.EM.state != ElevatorManager.MOVING_TO) {
-					Robot.IM.setState(IntakeManager.GRIP);
-					Robot.EM.setState(ElevatorManager.STOP);
+					armGoal = Robot.elevator.getAngle() - Konstanten.ELEVATOR_STEP;
 				}
 		
 				if (InputManager.eject()) {
-					setState(DUMP);
-				}
-				if (InputManager.switchHeight()) {
-					if(Robot.elevator.getAngle() <  Konstanten.INTAKE_HEIGHT){
-						Robot.IM.setState(IntakeManager.RELEASE);
+					if (Robot.elevator.minHeight()){
+						setState(PASS_TO_ARM);
 					}
 					else {
-						Robot.IM.setState(IntakeManager.GRIP);
-						System.out.println("GRIPPPPPP");
+						setState(EMPTY);
 					}
-					Robot.EM.startMovement(Konstanten.SWITCH_HEIGHT);
-					setState(SWITCH);
 				}
+				
+				if (InputManager.switchHeight()) {
+					armGoal = Konstanten.SWITCH_HEIGHT;
+				}
+				
 				if (InputManager.scaleHeight()) {
-					Robot.EM.startMovement(Konstanten.SCALE_HEIGHT);
-					setState(SCALE);
+					armGoal = Konstanten.SCALE_HEIGHT;
 				}
-				if (InputManager.spit() && Robot.elevator.minHeight()) {
-					Robot.CM.setState(CarriageManager.DUMP);
-					Robot.IM.setState(IntakeManager.GRIP);
-					Robot.IM.setState(IntakeManager.LOWER_INTAKE);
-					//delay
-					setState(LOWER_INTAKE);
+				
+				if (InputManager.returnHeight()) {
+					armGoal = Konstanten.RETURN_HEIGHT;
+				}
+				
+				if (InputManager.spit()) {
+					setState(PASS_TO_INTAKE);
 				}
 				break;
 				
-			case SWITCH:
-				Robot.IM.update();
-				Robot.CM.update();
-				Robot.EM.update();
-				
-				if(InputManager.moveUp() || InputManager.moveDown()){
-					Robot.EM.cancelMovement();
-					setState(TRANSIT);
-				}
-				
-				if(InputManager.scaleHeight()) {
-					Robot.EM.cancelMovement();
-					Robot.EM.startMovement(Konstanten.SCALE_HEIGHT);
-					setState(SCALE);
-				}
-				
-				if(InputManager.returnHeight()) {
-					Robot.EM.cancelMovement();
-					Robot.EM.startMovement(Konstanten.RETURN_HEIGHT);
-					setState(TRANSIT);
-				}
-				
-				if (InputManager.eject()) {
-					setState(DUMP);
-				}
-				
-				break;
-			case SCALE:
-				Robot.IM.update();
-				Robot.CM.update();
-				Robot.EM.update();
-				
-				if(InputManager.moveUp() || InputManager.moveDown()){
-					Robot.EM.cancelMovement();
-					setState(TRANSIT);
-				}
-				
-				if (InputManager.eject()) {
-					setState(DUMP);
-				}
-				if(InputManager.switchHeight()) {
-					Robot.EM.cancelMovement();
-					Robot.EM.startMovement(Konstanten.SWITCH_HEIGHT);
-					setState(SWITCH);
-				}
-				
-				if(InputManager.returnHeight()) {
-					Robot.EM.cancelMovement();
-					Robot.EM.startMovement(Konstanten.RETURN_HEIGHT);
-					setState(TRANSIT);
-				}
-				break;
-			case DUMP:
+			case EMPTY:
 				//ELEVATOR STILL, INTAKE INACTIVE, CARRIAGE DUMPING
 				//IF USER INPUT IS DETECTED, GO TO RETURING
 				Robot.CM.setState(CarriageManager.DUMP);
-				Robot.IM.setState(IntakeManager.STOP);
-				Robot.EM.update();
-				Robot.IM.update();
-				Robot.CM.update();
+				updateChildren();
 				
-				if (InputManager.returnHeight()){
-					Robot.EM.startMovement(Konstanten.RETURN_HEIGHT);
-					setState(RETURNING);
+				// if we're coming from DRIVIN_AROUND_WIT_DA_INTAKE_DOWN, wait for the ejection to finish
+				// otherwise, time should already be something from much longer ago
+				if (Timer.getFPGATimestamp() >= time + Konstanten.SPIT_DELAY) {
+					Robot.IM.setState(IntakeManager.STOW_CLOSED);
 				}
+				
+				Robot.EM.setTarget(armGoal);
+
+				if((InputManager.moveUp()) && !Robot.elevator.maxHeight()){
+					armGoal = Robot.elevator.getAngle() + Konstanten.ELEVATOR_STEP;
+				}
+				
+				if(InputManager.moveDown() && !Robot.elevator.minHeight()){
+					armGoal = Robot.elevator.getAngle() - Konstanten.ELEVATOR_STEP;
+				}
+
+				if (InputManager.switchHeight()) {
+					armGoal = Konstanten.SWITCH_HEIGHT;
+				}
+				
+				if (InputManager.scaleHeight()) {
+					armGoal = Konstanten.SCALE_HEIGHT;
+				}
+				
+				if (InputManager.returnHeight()) {
+					armGoal = Konstanten.RETURN_HEIGHT;
+				}
+				
 				if (InputManager.intake()){
-					Robot.EM.startMovement(Konstanten.RETURN_HEIGHT);
+					Robot.EM.setTarget(Konstanten.RETURN_HEIGHT);
 					setState(INTAKE);
 				}
-				break;
-			case RETURNING:
-				Robot.IM.setState(IntakeManager.STOP);
-				Robot.IM.setState(IntakeManager.RAISE_INTAKE);
-				Robot.CM.setState(CarriageManager.DUMP);
-				Robot.IM.update();
-				Robot.CM.update();
-				Robot.EM.update();
-				//ELEVATOR RETURNING, INTAKE INACTIVE,CARRIAGE INACTIVE
-				if (InputManager.intake() || InputManager.spit()) {
-					Robot.EM.startMovement(Konstanten.RETURN_HEIGHT);
-					setState(INTAKE);
-				}
-				//GO TO DRIVING
-				break;
-			case RESET:
-				Robot.IM.setState(IntakeManager.RAISE_INTAKE);
-				Robot.CM.setState(CarriageManager.DUMP);
-				Robot.EM.setState(ElevatorManager.STOP);
-				Robot.IM.update();
-				Robot.CM.update();
-				Robot.EM.update();
 				break;
 		}
 	}

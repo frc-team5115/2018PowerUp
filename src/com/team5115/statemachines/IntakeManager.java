@@ -12,29 +12,13 @@ public class IntakeManager extends StateMachineBase {
 	public static final int STOP = 0;
     public static final int INTAKE = 1;
     public static final int CORRECT = 2;
-    public static final int LOWER_INTAKE = 3;
-    public static final int RAISE_INTAKE = 4;
-    public static final int SPIT = 5;
-    public static final int GRIP = 6;
-    public static final int RELEASE = 7;
+    public static final int SPIT = 3;
+    public static final int GRIP_DOWN = 4;
+    public static final int GRIP_UP = 5;
+    public static final int STOW_OPEN = 6;
+    public static final int STOW_CLOSED = 7;
 
     PID turnController;
-    
-    double time;
-    
-    public void setState(int s) {
-    	switch (state) {
-    	case INTAKE:
-    		Robot.intake.lowerIntake();
-    		time = Timer.getFPGATimestamp();
-    		break;
-    	case GRIP:
-    		Robot.intake.grip();
-    		time = Timer.getFPGATimestamp();
-    		break;
-    	}
-    	state = s;
-    }
     
     public void update() {
 	   switch (state) {
@@ -50,25 +34,29 @@ public class IntakeManager extends StateMachineBase {
 	   		Robot.intake.relax();
 		   	Robot.intake.bump();
 	   		break;
-	   	case LOWER_INTAKE:
-	   		Robot.intake.lowerIntake();
-	   		break;
-//	   	case RAISE_INTAKE:
-//	   		Robot.intake.liftIntake();
-//	   		break;
 	   	case SPIT:
 	   		Robot.intake.relax();
 	   		Robot.intake.intake(-Konstanten.INTAKE_SPEED);
 	   		break;
-	   	case GRIP:
+	   	case GRIP_DOWN:
+	   		Robot.intake.grip();
+	   		Robot.intake.intake(0.25);
+	   		Robot.intake.lowerIntake();
+	   		break;
+	   	case GRIP_UP:
 	   		Robot.intake.grip();
 	   		Robot.intake.intake(0.25);
 	   		Robot.intake.liftIntake();
 	   		break;
-	   	case RELEASE:
+	   	case STOW_OPEN:
 	   		Robot.intake.release();
-	   		Robot.intake.liftIntake();
 	   		Robot.intake.intake(0);
+	   		Robot.intake.liftIntake();
+	   		break;
+	   	case STOW_CLOSED:
+	   		Robot.intake.grip();
+	   		Robot.intake.intake(0);
+	   		Robot.intake.liftIntake();
 	   		break;
 	   }
     }

@@ -124,10 +124,11 @@ public class Robot extends IterativeRobot {
 	 	SmartDashboard.putData("Position", positionChooser);
 		
 		strategyChooser = new SendableChooser<Integer>();
-		strategyChooser.addDefault("Strategy 1- center switch", 2); //these are the state numbers in Auto.java
-		strategyChooser.addObject("Strategy 2- scale", 3);
-		strategyChooser.addObject("Strategy 3 ", 4);
-		strategyChooser.addObject("Strategy 4- switch from the sides", 5);
+		strategyChooser.addDefault("Strategy 1- start in the center put a cube in the correct side of the switch", 2); //these are the state numbers in Auto.java
+		strategyChooser.addObject("Strategy 2- put something in scale", 3);
+		strategyChooser.addObject("Strategy 3- cross auto line and do nothing ", 4);
+		strategyChooser.addObject("Strategy 4- start on a side, drop a cube if that side of the switch is ours", 5);
+		strategyChooser.addObject("Strategy 5- same as 4 but we go for whichever side of the switch is ours", 7);
 		SmartDashboard.putData("Strategy", strategyChooser);
 	 	drive.setState(Drive.STOP);
 		
@@ -205,9 +206,9 @@ public class Robot extends IterativeRobot {
 //		SmartDashboard.putNumber("backright motor current", PDP.getCurrent(Konstanten.BACK_RIGHT_CHANNEL));
 //		
 //		/*
-//		System.out.println("Yaw " + drivetrain.getYaw());
-//		System.out.println("Roll " + drivetrain.getRoll());
-//		System.out.println("Pitch " + drivetrain.getPitch());
+		System.out.println("Yaw " + drivetrain.getYaw());
+		System.out.println("Roll " + drivetrain.getRoll());
+		System.out.println("Pitch " + drivetrain.getPitch());
 //		*/
 //		//get angle
 //		System.out.println("Pot " + elevator.getAngle());
@@ -272,7 +273,7 @@ public class Robot extends IterativeRobot {
 	 	autoDrive.setState(DriveForwardSome.FINISHED);
 	 	drivetrain.drive(0,0);
 	 	CMM.setState(CubeManipulatorManager.STOP);
-		EM.cancelMovement();
+	 	EM.setState(ElevatorManager.STOP);
 	 }
 
 }

@@ -6,7 +6,10 @@ import com.team5115.PID;
 import com.team5115.robot.Robot;
 import com.team5115.auto.AutoDrive;
 import com.team5115.systems.DriveTrain;
+import com.team5115.statemachines.CarriageManager;
 import com.team5115.statemachines.CubeManipulatorManager;
+import com.team5115.statemachines.ElevatorManager;
+import com.team5115.statemachines.IntakeManager;
 import com.team5115.statemachines.StateMachineBase;
 
 import edu.wpi.first.wpilibj.Timer;
@@ -49,21 +52,27 @@ public class DropCubeAuto extends StateMachineBase {
 		case INIT:
 			if (position == RIGHT) {
 				drive.startLine(10, 0.5);
+				Robot.EM.setTarget(Konstanten.SWITCH_HEIGHT);
+				Robot.EM.setState(ElevatorManager.MOVING_TO);
 			}
 			else {
 				drive.startLine(2, .5);
+				Robot.EM.setState(ElevatorManager.STOP);
 			}
-			Robot.EM.startMovement(Konstanten.SWITCH_HEIGHT);
-			Robot.CMM.setState(CubeManipulatorManager.SWITCH);
+			Robot.IM.setState(IntakeManager.STOW_CLOSED);
+			Robot.CM.setState(CarriageManager.GRAB);
 			setState(DRIVING);
 			break;
 		case DRIVING:
 			drive.update();
-			Robot.CMM.update();
+			Robot.CM.update();
+			Robot.EM.update();
+			Robot.IM.update();
+			Robot.CMM.collisionAvoidance();
 			if(drive.state == AutoDrive.FINISHED){
 				if(position == RIGHT) {
 					if(position == switchPosition) {
-						Robot.CMM.setState(CubeManipulatorManager.DUMP);
+						Robot.CM.setState(CarriageManager.DUMP);
 						setState(PLACE);
 					}
 					else {
@@ -77,19 +86,26 @@ public class DropCubeAuto extends StateMachineBase {
 			}
 			break;
 		case TURNING:
-			Robot.CMM.update();
+			Robot.CM.update();
+			Robot.EM.update();
+			Robot.IM.update();
 			drive.update();
 			if (drive.state == AutoDrive.FINISHED) {
 				drive.startLine(9.08, .25);
+				Robot.EM.setTarget(Konstanten.SWITCH_HEIGHT);
+				Robot.EM.setState(ElevatorManager.MOVING_TO);
 				setState(DRIVING2);
 			}
 			break;
 		case DRIVING2:
-			Robot.CMM.update();
+			Robot.CM.update();
+			Robot.EM.update();
+			Robot.IM.update();
+			Robot.CMM.collisionAvoidance();
 			drive.update();
 			if (drive.state == AutoDrive.FINISHED) {
 				if(position == switchPosition) {
-					Robot.CMM.setState(CubeManipulatorManager.DUMP);
+					Robot.CM.setState(CarriageManager.DUMP);
 					setState(PLACE);
 				}
 				else {
@@ -98,8 +114,9 @@ public class DropCubeAuto extends StateMachineBase {
 			}
 			break;
 		case PLACE:
-			Robot.CMM.update();
-			if(Timer.getFPGATimestamp() > time + Konstanten.DUMPING_DELAY)
+			Robot.CM.update();
+			Robot.EM.update();
+			if(Timer.getFPGATimestamp() > time + Konstanten.SPIT_DELAY)
 				setState(FINISHED);
 			break;
 		case FINISHED:

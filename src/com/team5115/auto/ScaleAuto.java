@@ -50,8 +50,9 @@ public class ScaleAuto extends StateMachineBase {
 			Robot.CMM.setState(CubeManipulatorManager.STOP);
 			drive.startLine(17.5, 0.5); //distance that is going to be required every time
 			Robot.CM.setState(CarriageManager.GRAB);
-			Robot.IM.setState(IntakeManager.RELEASE);
-			Robot.EM.startMovement(Konstanten.SCALE_HEIGHT);
+			Robot.IM.setState(IntakeManager.STOW_OPEN);
+			Robot.EM.setTarget(Konstanten.SCALE_HEIGHT);
+			Robot.EM.setState(ElevatorManager.MOVING_TO);
 			setState(DRIVING);
 			break;
 			
@@ -60,14 +61,9 @@ public class ScaleAuto extends StateMachineBase {
 			Robot.EM.update();
 			Robot.IM.update();
 			Robot.CM.update();
-			if ((Robot.elevator.getAngle() <  Konstanten.INTAKE_HEIGHT) && Robot.elevator.movingArm){
-				Robot.IM.setState(IntakeManager.RELEASE);
-			}
-			else{
-				Robot.IM.setState(IntakeManager.GRIP);
-			}
-			
+			Robot.CMM.collisionAvoidance();
 			if(drive.state == AutoDrive.FINISHED){
+				Robot.EM.setState(ElevatorManager.STOP);
 				if (position == scalePosition){
 					drive.startLine(8, 0.25);
 					setState(DRIVING3);

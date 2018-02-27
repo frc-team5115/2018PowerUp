@@ -46,7 +46,6 @@ public class Elevator {
 		 else {
 			 movingArm = false;
 		 }
-		 System.out.println("arm speed: " + speed);
 		 armMover.set(ControlMode.PercentOutput, speed);
 	 }
 	 

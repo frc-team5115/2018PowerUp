@@ -6,7 +6,10 @@ import com.team5115.PID;
 import com.team5115.robot.Robot;
 import com.team5115.auto.AutoDrive;
 import com.team5115.systems.DriveTrain;
+import com.team5115.statemachines.CarriageManager;
 import com.team5115.statemachines.CubeManipulatorManager;
+import com.team5115.statemachines.ElevatorManager;
+import com.team5115.statemachines.IntakeManager;
 import com.team5115.statemachines.StateMachineBase;
 
 import edu.wpi.first.wpilibj.Timer;
@@ -35,7 +38,6 @@ public class SwitchAutoCenter extends StateMachineBase {
 	
 	public SwitchAutoCenter(int sp) {
 		drive = new AutoDrive();
-
 		switchPosition = sp;
 	}
 	
@@ -48,16 +50,24 @@ public class SwitchAutoCenter extends StateMachineBase {
     	state = s;
     }
 	
+	protected void updateChildren() {
+		drive.update();
+		Robot.EM.update();
+		Robot.IM.update();
+		Robot.CM.update();
+	}
+	
 	public void update() {
 		switch(state){
 		case INIT:
 			drive.startLine(2, 0.5);
-			Robot.CMM.setState(CubeManipulatorManager.STOP);
+			Robot.EM.setState(ElevatorManager.STOP);
+			Robot.IM.setState(IntakeManager.STOW_CLOSED);
+			Robot.CM.setState(CarriageManager.GRAB);
 			setState(DRIVING);
 			break;
 		case DRIVING:
-			drive.update();
-			Robot.CMM.update();
+			updateChildren();
 			if(drive.state == AutoDrive.FINISHED){
 				if(switchPosition == left) {
 					drive.startTurn(45, 0.25);
@@ -71,8 +81,7 @@ public class SwitchAutoCenter extends StateMachineBase {
 			break;
 			
 		case TURNING:
-			drive.update();
-			Robot.CMM.update();
+			updateChildren();
 			if (drive.state == AutoDrive.FINISHED) { 
 				if(switchPosition == left) {
 					drive.startLine(6.4, 0.5);
@@ -80,15 +89,15 @@ public class SwitchAutoCenter extends StateMachineBase {
 				else {
 					drive.startLine(7.75, 0.5);
 				}
-				Robot.EM.startMovement(Konstanten.SWITCH_HEIGHT);
-				Robot.CMM.setState(CubeManipulatorManager.SWITCH);
+				Robot.EM.setTarget(Konstanten.SWITCH_HEIGHT);
+				Robot.EM.setState(ElevatorManager.MOVING_TO);
 				setState(DRIVING2);
 			}
 			break;
 			
 		case DRIVING2:
-			drive.update();
-			Robot.CMM.update();
+			updateChildren();
+			Robot.CMM.collisionAvoidance();
 			if (drive.state == AutoDrive.FINISHED) { 
 				if(switchPosition == left) {
 					drive.startTurn(-45, 0.25);
@@ -101,8 +110,7 @@ public class SwitchAutoCenter extends StateMachineBase {
 			break;
 					
 		case TURNING2:
-			drive.update();
-			Robot.CMM.update();
+			updateChildren();
 			if (drive.state == AutoDrive.FINISHED) { 
 				if(switchPosition == left) {
 					drive.startLine(3.37, 0.25);
@@ -115,16 +123,15 @@ public class SwitchAutoCenter extends StateMachineBase {
 			}
 			break;
 		case DRIVING3:
-			drive.update();
-			Robot.CMM.update();
+			updateChildren();
 			if (drive.state == AutoDrive.FINISHED) { 
-				Robot.CMM.setState(CubeManipulatorManager.DUMP);
+				Robot.CM.setState(CarriageManager.DUMP);
 				setState(PLACE);
 			}
 			break;
 		case PLACE:
-			Robot.CMM.update();
-			if(Timer.getFPGATimestamp() >= time + Konstanten.DUMPING_DELAY)
+			updateChildren();
+			if(Timer.getFPGATimestamp() >= time + Konstanten.SPIT_DELAY)
 				setState(FINISHED);
 			break;
 			

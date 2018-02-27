@@ -27,10 +27,10 @@ public class Konstanten {
 	public static final int SPIT = 11;
 	public static final int INTAKE = 2;
 	public static final int EJECT = 1;
-	public static final int CORRECTCUBE = 6;
-	//public static final int LOWER_INTAKE = 12;
+	public static final int CORRECTCUBE = 4;
+	public static final int LOWER_INTAKE = 12;
 	//public static final int GRAB_INTAKE = 6;
-	public static final int GRAB_INTAKE = 4;
+	public static final int GRAB_INTAKE = 6;
 	
 	// PID values
 	public static final double AUTO_FORWARD_KP = 1; //Constants.getAsDouble("auto_forward_kp");
@@ -72,13 +72,15 @@ public class Konstanten {
 	public static final double ELEVATOR_SPEED_SWITCH = 0.5;
 	public static final double ELEVATOR_SPEED = 0.75;
 	public static final double INTAKE_SPEED = 0.75;
-	public static final double INTAKE_DELAY = 0.25;
-	public static final double DUMPING_DELAY = 1;
+	public static final double PASSOFF_TIME = 0.75;
+	public static final double PASSBACK_TIME = 0.1;
+	public static final double SPIT_DELAY = 0.5;
+	
 	public static final int POT_THRESHOLD = 900;
 	public static final double ARC_RATIO = 2.675;
 	public static final int ELEVATOR_MAX = 850;
 	public static final int ELEVATOR_MIN = 60;
-	
+	public static final int ELEVATOR_STEP = 5;
 	//PWM
 	public static final int INTAKE_SPARK_LEFT = 2;
 	public static final int INTAKE_SPARK_RIGHT = 1;

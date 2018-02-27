@@ -6,7 +6,6 @@ import com.team5115.Konstanten;
 import com.team5115.PID;
 import com.team5115.robot.Robot;
 import com.team5115.statemachines.StateMachineBase;
-import com.team5115.statemachines.SwitchCross;
 import com.team5115.auto.AutoDrive;
 import com.team5115.systems.DriveTrain;
 
@@ -28,7 +27,7 @@ public class Auto extends StateMachineBase{
 	public static DropCubeAuto dropCubeStrat;
 	public static LineAuto lineStrat;
 	public static NothingToSeeHereAuto NothingToSeeHere;
-	public static SwitchCross SwitchCross;
+	public static SwitchAutoSide SwitchAutoSide;
 	//create new object imported from AutoDrive called "drive"
 	int position;
 	int switchPosition;
@@ -45,7 +44,7 @@ public class Auto extends StateMachineBase{
 		dropCubeStrat = new DropCubeAuto(position, switchPosition);
 		lineStrat = new LineAuto();
 		NothingToSeeHere = new NothingToSeeHereAuto();
-		SwitchCross = new SwitchCross(position, switchPosition);
+		SwitchAutoSide = new SwitchAutoSide(position, switchPosition);
 	}
 	
 	//each time update is called in AutoDrive
@@ -60,7 +59,7 @@ public class Auto extends StateMachineBase{
 					dropCubeStrat.setState(DropCubeAuto.INIT);
 					lineStrat.setState(LineAuto.INIT);
 					NothingToSeeHere.setState(NothingToSeeHereAuto.INIT);
-					SwitchCross.setState(SwitchCross.INIT);
+					SwitchAutoSide.setState(SwitchAutoSide.INIT);
 					setState(strategy);
 					break;
 					
@@ -80,7 +79,7 @@ public class Auto extends StateMachineBase{
 					NothingToSeeHere.update();
 					break;
 				case SWITCHCROSS:
-					SwitchCross.update();
+					SwitchAutoSide.update();
 			}
 	 }
 }
