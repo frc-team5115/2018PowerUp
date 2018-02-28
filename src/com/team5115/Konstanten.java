@@ -75,6 +75,10 @@ public class Konstanten {
 	public static final double PASSOFF_TIME = 0.75;
 	public static final double PASSBACK_TIME = 0.1;
 	public static final double SPIT_DELAY = 0.5;
+	public static final double TIP_THRESHOLD = -20;
+	public static final double ACCEL_THRESHOLD = 0.75;
+	public static final double SAFE_ANGLE = -15;
+	
 	
 	public static final int POT_THRESHOLD = 900;
 	public static final double ARC_RATIO = 2.675;

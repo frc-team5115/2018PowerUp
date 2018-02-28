@@ -73,7 +73,15 @@ public class Robot extends IterativeRobot {
 	public String gameData;
 	public int qwerty = 0;
  	public static Double[] gravity = new Double[3];
+ 	
+ 	double armTarget;
 	
+ 	int shouldI;
+ 	
+ 	public int dont(){
+ 		return 1 / 0;
+ 	}
+ 	
 	 // Initialization phase of the robot class
 	 // This method runs once when the robot turns on and does not run again until the robot reboots
 	 public void robotInit() {
@@ -187,13 +195,16 @@ public class Robot extends IterativeRobot {
 		intake.relax();
 		intake.intake(0);
 		carriage.eject();
+		
+		armTarget = elevator.getAngle();
+		
 	 }
 	 
 	 // Runs periodically when the game is in the driver operated stage
 	 public void teleopPeriodic() {
 	 	Timer.delay(.005);
 		drive.update();
-		CMM.update();
+//		CMM.update();
 		
 		
 //		//System.out.println("Angle " + Robot.elevator.getAngle());
@@ -206,9 +217,10 @@ public class Robot extends IterativeRobot {
 //		SmartDashboard.putNumber("backright motor current", PDP.getCurrent(Konstanten.BACK_RIGHT_CHANNEL));
 //		
 //		/*
-		System.out.println("Yaw " + drivetrain.getYaw());
-		System.out.println("Roll " + drivetrain.getRoll());
-		System.out.println("Pitch " + drivetrain.getPitch());
+		//System.out.println("Yaw " + drivetrain.getYaw());
+//		//System.out.println("Roll " + drivetrain.getRoll());
+//		System.out.println("Pitch " + drivetrain.getPitch());
+//		System.out.println("accel " + drivetrain.forwarAccel());
 //		*/
 //		//get angle
 //		System.out.println("Pot " + elevator.getAngle());
@@ -225,7 +237,9 @@ public class Robot extends IterativeRobot {
 //		}
 
 
-/*
+	 	EM.update();
+	 	EM.setTarget(armTarget);
+	 	
 		if (InputManager.getButton(11)) {	// lower and start intake
 			intake.lowerIntake();
 			Timer.delay(0.5);
@@ -249,17 +263,18 @@ public class Robot extends IterativeRobot {
 		}
 		
 		if (InputManager.moveUp()) {
-			elevator.move(0.5);
+			armTarget += Konstanten.ELEVATOR_STEP;
 		}
 		if (InputManager.moveDown()) {
-			elevator.move(-0.5);
+			armTarget -= Konstanten.ELEVATOR_STEP;
 		}
-		if (!InputManager.moveUp() && !InputManager.moveDown()) {
-			elevator.move(0);
+		
+		if (InputManager.getButton(7)){
+			shouldI = dont();
 		}
-		*/
 		
 	 }
+	 
 	 
 
 	 // Runs when the robot is disabled

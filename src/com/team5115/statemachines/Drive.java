@@ -11,6 +11,7 @@ public class Drive extends StateMachineBase {
 
 	public static final int INIT = 1;
 	public static final int DRIVING = 2;
+	public static final int TIPPING = 3;
 
 	PID turnController;
 	public Drive() {
@@ -37,8 +38,20 @@ public class Drive extends StateMachineBase {
 					//double vForward = forwardSpeed * Constants.FORWARD_KF;
 					
 					Robot.drivetrain.drive(forwardSpeed, turnSpeed);
+					if ((Robot.drivetrain.getPitch() < Konstanten.TIP_THRESHOLD) && (Robot.drivetrain.forwarAccel() > Konstanten.ACCEL_THRESHOLD)){
+						Robot.drivetrain.inuse = true;
+						setState(TIPPING);
+					}
 				}
-
+				break;
+			case TIPPING:
+					double power = -(Robot.drivetrain.getPitch() / Konstanten.TIP_THRESHOLD);
+					Robot.drivetrain.drive(power, 0);
+					if (Robot.drivetrain.getPitch() > Konstanten.SAFE_ANGLE){
+						Robot.drivetrain.inuse = false;
+						setState(DRIVING);
+					}
+					break;
 		}
 	}
 

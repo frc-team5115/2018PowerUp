@@ -116,7 +116,9 @@ public class DriveTrain {
 	public double getTurnVelocity() {
 		return navx.getRate();	
 	}
-
+	public double forwarAccel(){
+		return -navx.getRawAccelY(); //this way points forward on our robot
+	}
 	// This method resets the values given by the encoders to a default of 0
 	public void resetEncoders() {
 		backleft.setSelectedSensorPosition(0, 0, 5); //5 ms
