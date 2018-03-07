@@ -71,8 +71,6 @@ public class Robot extends IterativeRobot {
 	public static NetworkTable NT;
 	
 	public String gameData;
-	public int qwerty = 0;
- 	public static Double[] gravity = new Double[3];
  	
  	double armTarget;
 	
