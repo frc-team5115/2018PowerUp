@@ -21,14 +21,16 @@ public class CubeManipulatorManager extends StateMachineBase {
 	
 	protected void updateChildren() {
 		Robot.IM.update();
-		Robot.EM.update();
+		//Robot.EM.update();
 		Robot.CM.update();
 	}
 	
 	public void collisionAvoidance() {
-		if ((Robot.elevator.getAngle() <= Konstanten.INTAKE_HEIGHT) && Robot.elevator.movingArm) {		// the arm is where it can hit the intake
+		if (Robot.elevator.minHeight() && !Robot.elevator.movingArm) {
+			Robot.IM.setState(IntakeManager.GRIP_UP);
+		} else if (Robot.elevator.getAngle() <= Konstanten.INTAKE_HEIGHT) {
 			Robot.IM.setState(IntakeManager.STOW_OPEN);
-		} else {	// the arm is above the intake
+		} else {
 			Robot.IM.setState(IntakeManager.STOW_CLOSED);
 		}
 	}
@@ -37,6 +39,7 @@ public class CubeManipulatorManager extends StateMachineBase {
 		switch (state) {
 			case STOP:
 				// EVERYTHING INACTIVE
+				updateChildren();
 				Robot.IM.setState(IntakeManager.STOP);
 				Robot.CM.setState(CarriageManager.STOP);
 				Robot.EM.setState(ElevatorManager.STOP);
@@ -68,15 +71,22 @@ public class CubeManipulatorManager extends StateMachineBase {
 				Robot.EM.setTarget(Konstanten.RETURN_HEIGHT);
 				updateChildren();
 				
-				if(Robot.elevator.minHeight()) {
-					Robot.IM.setState(IntakeManager.GRIP_UP);
-					Robot.CM.setState(CarriageManager.DUMP);
-					time = Timer.getFPGATimestamp();
-					setState(DRIVIN_AROUND_WIT_DA_INTAKE_DOWN);
-				}
-				else {
-					collisionAvoidance();
-				}
+				Robot.IM.setState(IntakeManager.GRIP_UP);
+				Robot.CM.setState(CarriageManager.DUMP);
+				time = Timer.getFPGATimestamp();
+				setState(DRIVIN_AROUND_WIT_DA_INTAKE_DOWN);
+				//collisionAvoidance();
+				
+				
+//				if(Robot.elevator.minHeight()) {
+//					Robot.IM.setState(IntakeManager.GRIP_UP);
+//					Robot.CM.setState(CarriageManager.DUMP);
+//					time = Timer.getFPGATimestamp();
+//					setState(DRIVIN_AROUND_WIT_DA_INTAKE_DOWN);
+//				}
+//				else {
+//					collisionAvoidance();
+//				}
 				break;
 				
 			case DRIVIN_AROUND_WIT_DA_INTAKE_DOWN:
@@ -129,13 +139,18 @@ public class CubeManipulatorManager extends StateMachineBase {
 				Robot.EM.setTarget(Konstanten.RETURN_HEIGHT);
 				Robot.CM.setState(CarriageManager.DUMP);
 				
-				if (Robot.elevator.minHeight()) {
-					Robot.IM.setState(IntakeManager.GRIP_UP);
-					time = Timer.getFPGATimestamp();
-					setState(TRANSIT);
-				} else {
-					Robot.IM.setState(IntakeManager.GRIP_DOWN);
-				}
+
+				Robot.IM.setState(IntakeManager.GRIP_UP);
+				time = Timer.getFPGATimestamp();
+				setState(TRANSIT);
+				
+//				if (Robot.elevator.minHeight()) {
+//					Robot.IM.setState(IntakeManager.GRIP_UP);
+//					time = Timer.getFPGATimestamp();
+//					setState(TRANSIT);
+//				} else {
+//					Robot.IM.setState(IntakeManager.GRIP_DOWN);
+//				}
 				
 				break;
 			
@@ -237,6 +252,11 @@ public class CubeManipulatorManager extends StateMachineBase {
 					Robot.EM.setTarget(Konstanten.RETURN_HEIGHT);
 					setState(INTAKE);
 				}
+				
+				if (InputManager.grabIntake()) {
+					setState(TRANSIT);
+				}
+				
 				break;
 		}
 	}

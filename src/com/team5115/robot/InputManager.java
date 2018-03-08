@@ -18,12 +18,12 @@ public class InputManager {
     //The following methods deal with the basic driving functionalities
     public static double getForward() {
     	//System.out.println("Y-Axis " + -treatAxis(joy.getY()));
-    	return treatAxis(joy.getY());
+    	return -treatAxis(joy.getRawAxis(Konstanten.AXIS_Y));
     }
 
     public static double getTurn() {
     	//System.out.println("X-Axis " +joy.getX());
-    	return treatAxis(joy.getX());
+    	return treatAxis(joy.getRawAxis(Konstanten.AXIS_X));
    }
 
     //These methods are controlled by the nub on the top of the joystick
@@ -34,7 +34,7 @@ public class InputManager {
     public static double getThrottle() {
 	   // Joystick give 1 to -1 but we need 0 to 1
     	//System.out.println("throttle " + ((1 - joy.getThrottle()) / 2));
-	   return (1 - joy.getThrottle()) / 2;
+	   return (1 - joy.getRawAxis(Konstanten.AXIS_THROTTLE)) / 2;
     }
 
     // Handles expo and deadband

@@ -71,8 +71,6 @@ public class Robot extends IterativeRobot {
 	public static NetworkTable NT;
 	
 	public String gameData;
-	public int qwerty = 0;
- 	public static Double[] gravity = new Double[3];
  	
  	double armTarget;
 	
@@ -97,11 +95,6 @@ public class Robot extends IterativeRobot {
 		 * e.g. object = new Class(20);
 		 * Make sure that the value you give it is consistent with what the constructor method in the class asks for
 		 */
-	 	
-			// Change back to normal
-	 	Constants.loadFromFile();
-	 	Log.startServer(5115);
-	 	Log.setDelay(500);
 	 	
 	 	
 		// Initialize subsystems
@@ -191,23 +184,20 @@ public class Robot extends IterativeRobot {
 //	 	drive.setState(Drive.DRIVING);
 		CMM.setState(CubeManipulatorManager.STOP); //should set state stop
 		drive.setState(Drive.DRIVING); 
-		intake.lowerIntake();
-		intake.relax();
-		intake.intake(0);
 		carriage.eject();
 		
 		armTarget = elevator.getAngle();
-		
+		EM.setState(ElevatorManager.STOP);
 	 }
 	 
 	 // Runs periodically when the game is in the driver operated stage
 	 public void teleopPeriodic() {
 	 	Timer.delay(.005);
 		drive.update();
-//		CMM.update();
+		//CMM.update();
+		System.out.println("CMM state: " + CMM.state);
 		
-		
-//		//System.out.println("Angle " + Robot.elevator.getAngle());
+		System.out.println("Angle " + elevator.getAngle());
 //		//System.out.println("Drive State " + drive.state);
 //		SmartDashboard.putNumber("yaw", drivetrain.getYaw());
 //		
@@ -237,42 +227,49 @@ public class Robot extends IterativeRobot {
 //		}
 
 
-	 	EM.update();
-	 	EM.setTarget(armTarget);
+	 	//EM.setTarget(armTarget);
+	 	//EM.update();
+//		IM.update();
+//		CM.update();
 	 	
-		if (InputManager.getButton(11)) {	// lower and start intake
-			intake.lowerIntake();
-			Timer.delay(0.5);
-			intake.relax();
-			intake.intake(0.5);
-		}
-		if (InputManager.getButton(9)) {	// grip and lift intake
-			intake.intake(0.1);
+	 	
+//		System.out.println(elevator.getAngle());
+//	 	
+//		if (InputManager.getButton(11)) {	// lower and start intake
+//			intake.lowerIntake();
+//			Timer.delay(0.5);
+//			intake.relax();
+//			intake.intake(0.5);
+//		}
+		if (InputManager.getButton(6)) {	// grip intake
 			intake.grip();
-			intake.liftIntake();
 		}
-		if (InputManager.getButton(12)) {	// release intake
-			intake.intake(0);
+		if (InputManager.getButton(7)) {	// release intake
 			intake.release();
 		}
-		if (InputManager.getButton(8)) {	// grip carriage
-			carriage.grab();
+		if (InputManager.getButton(8)) {	// relax intake
+			intake.relax();
 		}
-		if (InputManager.getButton(10)) {	// release carriage
-			carriage.eject();
-		}
-		
+//		if (InputManager.getButton(10)) {	// release carriage
+//			carriage.eject();
+//		}
+//		
 		if (InputManager.moveUp()) {
-			armTarget += Konstanten.ELEVATOR_STEP;
+			//armTarget += Konstanten.ELEVATOR_STEP;
+			elevator.move(0.75);
+			System.out.println("arm up");
 		}
-		if (InputManager.moveDown()) {
-			armTarget -= Konstanten.ELEVATOR_STEP;
+		else if (InputManager.moveDown()) {
+			//armTarget -= Konstanten.ELEVATOR_STEP;
+			elevator.move(-0.75);
+			System.out.println("arm down");
+		} else {
+			elevator.move(0);
 		}
 		
-		if (InputManager.getButton(7)){
-			shouldI = dont();
+		if (InputManager.getButton(Konstanten.KILL)) {
+			dont();
 		}
-		
 	 }
 	 
 	 

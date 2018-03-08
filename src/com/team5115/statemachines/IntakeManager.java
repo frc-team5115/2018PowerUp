@@ -25,22 +25,25 @@ public class IntakeManager extends StateMachineBase {
 	   	case STOP:
 	   		Robot.intake.relax();
 	   		Robot.intake.intake(0);
+	   		Robot.intake.liftIntake();
 	   		break;
 	   	case INTAKE:
 	   		Robot.intake.relax();
 		   	Robot.intake.intake(Konstanten.INTAKE_SPEED);
+		   	Robot.intake.lowerIntake();
 	   		break;
 	   	case CORRECT:
 	   		Robot.intake.relax();
 		   	Robot.intake.bump();
+		   	Robot.intake.lowerIntake();
 	   		break;
 	   	case SPIT:
 	   		Robot.intake.relax();
-	   		Robot.intake.intake(-Konstanten.INTAKE_SPEED);
+	   		Robot.intake.intake(Konstanten.SPIT_SPEED);
 	   		break;
 	   	case GRIP_DOWN:
 	   		Robot.intake.grip();
-	   		Robot.intake.intake(0.25);
+	   		Robot.intake.intake(0.1);
 	   		Robot.intake.lowerIntake();
 	   		break;
 	   	case GRIP_UP:

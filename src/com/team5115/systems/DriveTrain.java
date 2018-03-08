@@ -69,8 +69,8 @@ public class DriveTrain {
 		}
 //		System.out.println("left: " + leftspeed);
 //		System.out.println("right: " + rightspeed);
-		backleft.set(ControlMode.PercentOutput, -leftspeed);
-		backright.set(ControlMode.PercentOutput, rightspeed);
+		backleft.set(ControlMode.PercentOutput, leftspeed);
+		backright.set(ControlMode.PercentOutput, -rightspeed);
 	}
 	public double leftDist() {
 		double leftDist = -direction * backleft.getSelectedSensorPosition(0);
