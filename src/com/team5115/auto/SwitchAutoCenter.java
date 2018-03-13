@@ -42,7 +42,10 @@ public class SwitchAutoCenter extends StateMachineBase {
 	}
 	
 	public void setState(int s) {
-    	switch (state) {
+    	switch (s) {
+    	case DRIVING3:
+    		time = Timer.getFPGATimestamp();
+    		break;
     	case PLACE:
     		time = Timer.getFPGATimestamp();
     		break;
@@ -70,10 +73,10 @@ public class SwitchAutoCenter extends StateMachineBase {
 			updateChildren();
 			if(drive.state == AutoDrive.FINISHED){
 				if(switchPosition == left) {
-					drive.startTurn(45, 0.25);
+					drive.startTurn(-45, 0.4);
 				}
 				else {
-					drive.startTurn(-45, 0.25);
+					drive.startTurn(45, 0.4);
 				}
 				Robot.CMM.setState(CubeManipulatorManager.TRANSIT);
 				setState(TURNING);
@@ -87,7 +90,7 @@ public class SwitchAutoCenter extends StateMachineBase {
 					drive.startLine(6.4, 0.5);
 				}
 				else {
-					drive.startLine(7.75, 0.5);
+					drive.startLine(6.4, 0.5);
 				}
 				Robot.EM.setTarget(Konstanten.SWITCH_HEIGHT);
 				Robot.EM.setState(ElevatorManager.MOVING_TO);
@@ -100,10 +103,10 @@ public class SwitchAutoCenter extends StateMachineBase {
 			Robot.CMM.collisionAvoidance();
 			if (drive.state == AutoDrive.FINISHED) { 
 				if(switchPosition == left) {
-					drive.startTurn(-45, 0.25);
+					drive.startTurn(45, 0.4);
 				}
 				else {
-					drive.startTurn(45, 0.25);
+					drive.startTurn(-45, 0.4);
 				}
 				setState(TURNING2);
 			}
@@ -113,10 +116,10 @@ public class SwitchAutoCenter extends StateMachineBase {
 			updateChildren();
 			if (drive.state == AutoDrive.FINISHED) { 
 				if(switchPosition == left) {
-					drive.startLine(3.37, 0.25);
+					drive.startLine(2.37, 0.5);
 				}
 				else {
-					drive.startLine(4.04, 0.25);
+					drive.startLine(2.04, 0.5);
 				}
 			
 				setState(DRIVING3);
@@ -124,8 +127,9 @@ public class SwitchAutoCenter extends StateMachineBase {
 			break;
 		case DRIVING3:
 			updateChildren();
-			if (drive.state == AutoDrive.FINISHED) { 
+			if (drive.state == AutoDrive.FINISHED || Timer.getFPGATimestamp() - time > 2) { 
 				Robot.CM.setState(CarriageManager.DUMP);
+				Robot.drivetrain.drive(0, 0);
 				setState(PLACE);
 			}
 			break;

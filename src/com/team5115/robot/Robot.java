@@ -96,7 +96,6 @@ public class Robot extends IterativeRobot {
 		 * Make sure that the value you give it is consistent with what the constructor method in the class asks for
 		 */
 	 	
-	 	
 		// Initialize subsystems
 		drivetrain = new DriveTrain();
 		PDP = new PowerDistributionPanel();
@@ -132,7 +131,10 @@ public class Robot extends IterativeRobot {
 		strategyChooser.addObject("Strategy 5- same as 4 but we go for whichever side of the switch is ours", 7);
 		SmartDashboard.putData("Strategy", strategyChooser);
 	 	drive.setState(Drive.STOP);
-		
+	 	
+	 	Timer.delay(1);
+ 		SmartDashboard.putData("Position", positionChooser);
+ 		SmartDashboard.putData("Strategy", strategyChooser);
 	 }
 
 	 // Runs once when the autonomous phase of the game starts
@@ -159,17 +161,15 @@ public class Robot extends IterativeRobot {
  		
  		 auto.setState(Auto.INIT);
 	 	 //autoDrive.setState(DriveForwardSome.INIT);
+	 	 drivetrain.drive(0.25, 0);
 	 }
 
 	 //Runs periodically while the game is in the autonomous phase
 	 public void autonomousPeriodic() {
 		Timer.delay(.005);
 		
-		Log.log("yaw", drivetrain.getYaw());
-		Log.log("Distance", drivetrain.distanceTraveled());
-		
-		Log.add("Yaw", drivetrain.getYaw() * (180 / Math.PI));
-		
+
+//		System.out.println("yaw: " + drivetrain.getYaw());
 		auto.update();
 		//autoDrive.update();
 	 }
@@ -182,22 +182,33 @@ public class Robot extends IterativeRobot {
 //		drivetrain.resetEncoders();
 //		autoDrive.setState(DriveForwardSome.FINISHED);
 //	 	drive.setState(Drive.DRIVING);
-		CMM.setState(CubeManipulatorManager.STOP); //should set state stop
+		CMM.setState(CubeManipulatorManager.EMPTY); //should set state stop
 		drive.setState(Drive.DRIVING); 
 		carriage.eject();
 		
+	
 		armTarget = elevator.getAngle();
-		EM.setState(ElevatorManager.STOP);
+		EM.setState(ElevatorManager.MOVING_TO);
 	 }
 	 
 	 // Runs periodically when the game is in the driver operated stage
 	 public void teleopPeriodic() {
 	 	Timer.delay(.005);
 		drive.update();
-		//CMM.update();
-		System.out.println("CMM state: " + CMM.state);
+		CMM.update();
+		System.out.println("y axis: " + InputManager.getForward());
+		System.out.println("x axis: " + InputManager.getTurn());
+		System.out.println("throttle: " + InputManager.getThrottle());
+		System.out.println("yaw: " + drivetrain.getYaw());
+
+		SmartDashboard.putNumber("left", drivetrain.leftDist());
+		SmartDashboard.putNumber("right", drivetrain.rightDist());
+		SmartDashboard.putNumber("total", drivetrain.distanceTraveled());
 		
-		System.out.println("Angle " + elevator.getAngle());
+		//System.out.println("CMM state: " + CMM.state);
+		
+		//System.out.println("Angle " + elevator.getAngle());
+//		SmartDashboard.putNumber("arm", elevator.getAngle());
 //		//System.out.println("Drive State " + drive.state);
 //		SmartDashboard.putNumber("yaw", drivetrain.getYaw());
 //		
@@ -227,8 +238,8 @@ public class Robot extends IterativeRobot {
 //		}
 
 
-	 	//EM.setTarget(armTarget);
-	 	//EM.update();
+//	 	EM.setTarget(armTarget);
+//	 	EM.update();
 //		IM.update();
 //		CM.update();
 	 	
@@ -241,31 +252,41 @@ public class Robot extends IterativeRobot {
 //			intake.relax();
 //			intake.intake(0.5);
 //		}
-		if (InputManager.getButton(6)) {	// grip intake
-			intake.grip();
-		}
-		if (InputManager.getButton(7)) {	// release intake
-			intake.release();
-		}
-		if (InputManager.getButton(8)) {	// relax intake
-			intake.relax();
-		}
+//		if (InputManager.getButton(6)) {	// grip intake
+//			intake.grip();
+//		}
+//		if (InputManager.getButton(7)) {	// release intake
+//			intake.release();
+//		}
+//		if (InputManager.getButton(8)) {	// relax intake
+//			intake.relax();
+//		}
 //		if (InputManager.getButton(10)) {	// release carriage
 //			carriage.eject();
 //		}
 //		
-		if (InputManager.moveUp()) {
-			//armTarget += Konstanten.ELEVATOR_STEP;
-			elevator.move(0.75);
-			System.out.println("arm up");
-		}
-		else if (InputManager.moveDown()) {
-			//armTarget -= Konstanten.ELEVATOR_STEP;
-			elevator.move(-0.75);
-			System.out.println("arm down");
-		} else {
-			elevator.move(0);
-		}
+//		if (InputManager.moveUp()) {
+//			//armTarget += Konstanten.ELEVATOR_STEP;
+//			elevator.move(0.25);
+//			System.out.println("arm up");
+//		}
+//		else if (InputManager.moveDown()) {
+//			//armTarget -= Konstanten.ELEVATOR_STEP;
+//			elevator.move(-0.25);
+//			System.out.println("arm down");
+//		} else {
+//			elevator.move(0);
+//		}
+//		
+//		if (InputManager.getButton(9)) {
+//			armTarget = Konstanten.RETURN_HEIGHT;
+//		}
+//		if (InputManager.getButton(8)) {
+//			armTarget = Konstanten.SWITCH_HEIGHT;
+//		}
+//		if (InputManager.getButton(7)) {
+//			armTarget = Konstanten.SCALE_HEIGHT;
+//		}
 		
 		if (InputManager.getButton(Konstanten.KILL)) {
 			dont();

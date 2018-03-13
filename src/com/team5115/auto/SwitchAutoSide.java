@@ -65,9 +65,9 @@ public class SwitchAutoSide extends StateMachineBase {
 			Robot.IM.setState(IntakeManager.STOW_CLOSED);
 			Robot.CM.setState(CarriageManager.GRAB);
 			if(position == switchPosition){
-				drive.startLine(14, 0.5);
+				drive.startLine(12, 0.125);
 			} else {
-				drive.startLine(19, 0.5);
+				drive.startLine(10, 0.125);//17.5
 			}
 			setState(DRIVING);
 			break;
@@ -77,10 +77,10 @@ public class SwitchAutoSide extends StateMachineBase {
 			Robot.CMM.collisionAvoidance();
 			if(drive.state == AutoDrive.FINISHED){
 				if(position == RIGHT){
-					drive.startTurn(-90, 0.25);
+					drive.startTurn(-90, 0.5);
 				} else{
 					//Position is left
-					drive.startTurn(90, 0.25);
+					drive.startTurn(90, 0.5);
 				}
 				Robot.EM.setState(STOP);
 				setState(TURNING);
@@ -91,10 +91,10 @@ public class SwitchAutoSide extends StateMachineBase {
 			updateChildren();
 			if(drive.state == AutoDrive.FINISHED){
 				if(position == switchPosition){
-					drive.startLine(3.2, 0.25);
+					drive.startLine(1.6, 0.25);
 				}else{
 					//Position != swith position
-					drive.startLine(14.12, 0.5);
+					drive.startLine(14.12, 0.25);
 				}
 				setState(DRIVING2);
 			}
@@ -108,10 +108,10 @@ public class SwitchAutoSide extends StateMachineBase {
 					setState(PLACE);
 				} else {
 					if(position == RIGHT){
-						drive.startTurn(-90, 0.25);
+						drive.startTurn(-90, 0.5);
 					} else {
 						//Position = left
-						drive.startTurn(90, 0.25);
+						drive.startTurn(90, 0.5);
 					} 
 					setState(TURNING2);
 				}

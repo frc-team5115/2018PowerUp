@@ -23,7 +23,7 @@ public class InputManager {
 
     public static double getTurn() {
     	//System.out.println("X-Axis " +joy.getX());
-    	return treatAxis(joy.getRawAxis(Konstanten.AXIS_X));
+    	return joy.getRawAxis(Konstanten.AXIS_X);
    }
 
     //These methods are controlled by the nub on the top of the joystick
@@ -61,7 +61,7 @@ public class InputManager {
     	return joy.getRawButton(Konstanten.KILL);
     }
     public static boolean switchHeight(){
-    	return getHat() == 270;
+    	return getHat() == 270 || getHat() == 90;
     }
     public static boolean scaleHeight(){
     	return getHat() == 0;
@@ -86,9 +86,7 @@ public class InputManager {
     }
    /* public static boolean lowerIntake(){
     	return joy.getRawButton(Konstanten.LOWER_INTAKE);
-    }
-    public static boolean grabIntake(){
-    	return joy.getRawButton(Konstanten.GRAB_INTAKE);
+   	}
     }*/
     public static boolean grabIntake(){
     	return joy.getRawButton(Konstanten.GRAB_INTAKE);

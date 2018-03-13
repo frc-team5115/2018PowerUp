@@ -51,12 +51,12 @@ public class DropCubeAuto extends StateMachineBase {
 		switch(state){
 		case INIT:
 			if (position == RIGHT) {
-				drive.startLine(10, 0.5);
+				drive.startLine(9, 0.125);
 				Robot.EM.setTarget(Konstanten.SWITCH_HEIGHT);
 				Robot.EM.setState(ElevatorManager.MOVING_TO);
 			}
 			else {
-				drive.startLine(2, .5);
+				drive.startLine(2, .25);
 				Robot.EM.setState(ElevatorManager.STOP);
 			}
 			Robot.IM.setState(IntakeManager.STOW_CLOSED);
@@ -91,7 +91,7 @@ public class DropCubeAuto extends StateMachineBase {
 			Robot.IM.update();
 			drive.update();
 			if (drive.state == AutoDrive.FINISHED) {
-				drive.startLine(9.08, .25);
+				drive.startLine(5.08, .25);
 				Robot.EM.setTarget(Konstanten.SWITCH_HEIGHT);
 				Robot.EM.setState(ElevatorManager.MOVING_TO);
 				setState(DRIVING2);

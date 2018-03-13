@@ -27,6 +27,7 @@ public class Elevator {
 	 	armMover.configSetParameter(ParamEnum.eFeedbackNotContinuous, 1, 0x00, 0x00, 0x00);
 	 	armMover.configForwardSoftLimitThreshold(Konstanten.POT_THRESHOLD, 5);
 	 	armMover.configForwardSoftLimitEnable(false, 0);
+	 	//armMover.configOpenloopRamp(0.5, 0);
 	 }
 	 
 	 public double getAngle(){

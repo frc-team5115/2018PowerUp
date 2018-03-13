@@ -13,6 +13,8 @@ public class AutoDrive extends StateMachineBase {
 
 	public static final int DRIVING = 1;
 	public static final int FINISHED = 2;
+	
+	boolean line;
 
 	double targetDist;
 	double targetAngle;
@@ -21,6 +23,7 @@ public class AutoDrive extends StateMachineBase {
 	PID turnController;
 
 	public void startLine(double dist, double maxSpeed) {
+		line = true;
 		//Takes some time to reset gyros + encoders
 		Timer.delay(0.1);
 		targetDist = Robot.drivetrain.distanceTraveled() + dist;
@@ -35,6 +38,7 @@ public class AutoDrive extends StateMachineBase {
 	}
 
 	public void startTurn(double angle, double maxSpeed) {
+		line = false;
 		targetDist = Robot.drivetrain.distanceTraveled();
 		targetAngle = Robot.drivetrain.getYaw() + (angle);
 
@@ -80,7 +84,9 @@ public class AutoDrive extends StateMachineBase {
 				Log.log("turn error", targetAngle - Robot.drivetrain.getYaw());
 				Robot.drivetrain.drive(vForward, vTurn);
 				//System.out.println("distance travelled:  " + Robot.drivetrain.distanceTraveled());
-				//System.out.println("Yaw " + Robot.drivetrain.getYaw());
+//				System.out.println("Yaw: " + Robot.drivetrain.getYaw());
+				System.out.println("Clear Yaw " + clearYaw);
+				System.out.println("Target" + targetAngle);
 				
 				SmartDashboard.putNumber("distance traveled", Robot.drivetrain.distanceTraveled());
 				SmartDashboard.putNumber("velocity", Robot.drivetrain.averageSpeed());
@@ -107,9 +113,9 @@ public class AutoDrive extends StateMachineBase {
 	private double clearSteer(double yaw, double target) {
 		if (Math.abs(target - yaw) > 180) {
 			if (target < 180) {	// yaw must be too high for target
-				yaw -= 180 * 2;
+				yaw += 360;
 			} else {	// yaw must be too low for target
-				yaw += 180 * 2;
+				yaw -= 360;
 			}
 		}
 

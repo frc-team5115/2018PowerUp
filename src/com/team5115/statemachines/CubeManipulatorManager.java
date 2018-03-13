@@ -21,7 +21,7 @@ public class CubeManipulatorManager extends StateMachineBase {
 	
 	protected void updateChildren() {
 		Robot.IM.update();
-		//Robot.EM.update();
+		Robot.EM.update();
 		Robot.CM.update();
 	}
 	
@@ -78,15 +78,15 @@ public class CubeManipulatorManager extends StateMachineBase {
 				//collisionAvoidance();
 				
 				
-//				if(Robot.elevator.minHeight()) {
-//					Robot.IM.setState(IntakeManager.GRIP_UP);
-//					Robot.CM.setState(CarriageManager.DUMP);
-//					time = Timer.getFPGATimestamp();
-//					setState(DRIVIN_AROUND_WIT_DA_INTAKE_DOWN);
-//				}
-//				else {
-//					collisionAvoidance();
-//				}
+				if(Robot.elevator.minHeight()) {
+					Robot.IM.setState(IntakeManager.GRIP_UP);
+					Robot.CM.setState(CarriageManager.DUMP);
+					time = Timer.getFPGATimestamp();
+					setState(DRIVIN_AROUND_WIT_DA_INTAKE_DOWN);
+				}
+				else {
+					collisionAvoidance();
+				}
 				break;
 				
 			case DRIVIN_AROUND_WIT_DA_INTAKE_DOWN:
@@ -140,17 +140,17 @@ public class CubeManipulatorManager extends StateMachineBase {
 				Robot.CM.setState(CarriageManager.DUMP);
 				
 
-				Robot.IM.setState(IntakeManager.GRIP_UP);
+				//Robot.IM.setState(IntakeManager.GRIP_UP);
 				time = Timer.getFPGATimestamp();
 				setState(TRANSIT);
 				
-//				if (Robot.elevator.minHeight()) {
-//					Robot.IM.setState(IntakeManager.GRIP_UP);
-//					time = Timer.getFPGATimestamp();
-//					setState(TRANSIT);
-//				} else {
-//					Robot.IM.setState(IntakeManager.GRIP_DOWN);
-//				}
+				if (Robot.elevator.minHeight() && !InputManager.grabIntake()) {
+					Robot.IM.setState(IntakeManager.GRIP_UP);
+					time = Timer.getFPGATimestamp();
+					setState(TRANSIT);
+				} else {
+					Robot.IM.setState(IntakeManager.GRIP_DOWN);
+				}
 				
 				break;
 			
@@ -159,7 +159,7 @@ public class CubeManipulatorManager extends StateMachineBase {
 				//Robot.IM.setState(IntakeManager.STOP)
 				updateChildren();
 				
-				if (Robot.elevator.minHeight() && !Robot.elevator.movingArm) {
+				if (Robot.elevator.minHeight()) {
 					Robot.IM.setState(IntakeManager.GRIP_UP);
 				}
 				else {
@@ -189,12 +189,7 @@ public class CubeManipulatorManager extends StateMachineBase {
 				}
 		
 				if (InputManager.eject()) {
-					if (Robot.elevator.minHeight()){
-						setState(PASS_TO_ARM);
-					}
-					else {
-						setState(EMPTY);
-					}
+					setState(EMPTY);
 				}
 				
 				if (InputManager.switchHeight()) {
