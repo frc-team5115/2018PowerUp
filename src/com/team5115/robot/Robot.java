@@ -53,8 +53,8 @@ public class Robot extends IterativeRobot {
 	public static DriveForwardSome autoDrive;
 	public static Drive drive;
 	public static DriverStation ds;
-	public static SendableChooser<Integer> positionChooser;
-	public static SendableChooser<Integer> strategyChooser;
+	public static SendableChooser positionChooser;
+	public static SendableChooser strategyChooser;
 	 
 	public static CubeManipulatorManager CMM;
 	public static int position;
@@ -96,12 +96,6 @@ public class Robot extends IterativeRobot {
 		 * Make sure that the value you give it is consistent with what the constructor method in the class asks for
 		 */
 	 	
-			// Change back to normal
-	 	Constants.loadFromFile();
-	 	Log.startServer(5115);
-	 	Log.setDelay(500);
-	 	
-	 	
 		// Initialize subsystems
 		drivetrain = new DriveTrain();
 		PDP = new PowerDistributionPanel();
@@ -123,13 +117,13 @@ public class Robot extends IterativeRobot {
 //		gravity[1] = drivetrain.AccelY();
 //		gravity[2] = drivetrain.AccelZ();
 	 	
-		positionChooser = new SendableChooser<Integer>();
+		positionChooser = new SendableChooser();
 		positionChooser.addDefault("Left", 1);
 		positionChooser.addObject("Right", 2);
 		positionChooser.addObject("Center", 3);
 	 	SmartDashboard.putData("Position", positionChooser);
 		
-		strategyChooser = new SendableChooser<Integer>();
+		strategyChooser = new SendableChooser();
 		strategyChooser.addDefault("Strategy 1- start in the center put a cube in the correct side of the switch", 2); //these are the state numbers in Auto.java
 		strategyChooser.addObject("Strategy 2- put something in scale", 3);
 		strategyChooser.addObject("Strategy 3- cross auto line and do nothing ", 4);
@@ -137,7 +131,10 @@ public class Robot extends IterativeRobot {
 		strategyChooser.addObject("Strategy 5- same as 4 but we go for whichever side of the switch is ours", 7);
 		SmartDashboard.putData("Strategy", strategyChooser);
 	 	drive.setState(Drive.STOP);
-		
+	 	
+	 	Timer.delay(1);
+ 		SmartDashboard.putData("Position", positionChooser);
+ 		SmartDashboard.putData("Strategy", strategyChooser);
 	 }
 
 	 // Runs once when the autonomous phase of the game starts
@@ -164,17 +161,15 @@ public class Robot extends IterativeRobot {
  		
  		 auto.setState(Auto.INIT);
 	 	 //autoDrive.setState(DriveForwardSome.INIT);
+	 	 drivetrain.drive(0.25, 0);
 	 }
 
 	 //Runs periodically while the game is in the autonomous phase
 	 public void autonomousPeriodic() {
 		Timer.delay(.005);
 		
-		Log.log("yaw", drivetrain.getYaw());
-		Log.log("Distance", drivetrain.distanceTraveled());
-		
-		Log.add("Yaw", drivetrain.getYaw() * (180 / Math.PI));
-		
+
+//		System.out.println("yaw: " + drivetrain.getYaw());
 		auto.update();
 		//autoDrive.update();
 	 }
@@ -187,25 +182,33 @@ public class Robot extends IterativeRobot {
 //		drivetrain.resetEncoders();
 //		autoDrive.setState(DriveForwardSome.FINISHED);
 //	 	drive.setState(Drive.DRIVING);
-		CMM.setState(CubeManipulatorManager.STOP); //should set state stop
+		CMM.setState(CubeManipulatorManager.EMPTY); //should set state stop
 		drive.setState(Drive.DRIVING); 
-		intake.lowerIntake();
-		intake.relax();
-		intake.intake(0);
 		carriage.eject();
 		
+	
 		armTarget = elevator.getAngle();
-		
+		EM.setState(ElevatorManager.MOVING_TO);
 	 }
 	 
 	 // Runs periodically when the game is in the driver operated stage
 	 public void teleopPeriodic() {
 	 	Timer.delay(.005);
-		drive.update();
+//		drive.update();
 //		CMM.update();
+//		System.out.println("y axis: " + InputManager.getForward());
+//		System.out.println("x axis: " + InputManager.getTurn());
+//		System.out.println("throttle: " + InputManager.getThrottle());
+//		System.out.println("yaw: " + drivetrain.getYaw());
+
+		SmartDashboard.putNumber("left", drivetrain.leftDist());
+		SmartDashboard.putNumber("right", drivetrain.rightDist());
+		SmartDashboard.putNumber("total", drivetrain.distanceTraveled());
 		
+		//System.out.println("CMM state: " + CMM.state);
 		
-//		//System.out.println("Angle " + Robot.elevator.getAngle());
+		//System.out.println("Angle " + elevator.getAngle());
+//		SmartDashboard.putNumber("arm", elevator.getAngle());
 //		//System.out.println("Drive State " + drive.state);
 //		SmartDashboard.putNumber("yaw", drivetrain.getYaw());
 //		
@@ -235,42 +238,61 @@ public class Robot extends IterativeRobot {
 //		}
 
 
-	 	EM.update();
-	 	EM.setTarget(armTarget);
+//	 	EM.setTarget(armTarget);
+//	 	EM.update();
+//		IM.update();
+//		CM.update();
 	 	
-		if (InputManager.getButton(11)) {	// lower and start intake
+	 	
+		System.out.println(elevator.getAngle());
+	 	
+		if (InputManager.getButton(12)) {	// lower and start intake
 			intake.lowerIntake();
 			Timer.delay(0.5);
 			intake.relax();
-			intake.intake(0.5);
 		}
-		if (InputManager.getButton(9)) {	// grip and lift intake
-			intake.intake(0.1);
+		if (InputManager.getButton(6)) {	// grip intake
 			intake.grip();
-			intake.liftIntake();
 		}
-		if (InputManager.getButton(12)) {	// release intake
-			intake.intake(0);
+		if (InputManager.getButton(4)) {	// release intake
 			intake.release();
 		}
-		if (InputManager.getButton(8)) {	// grip carriage
-			carriage.grab();
+		if (InputManager.getButton(11)) {	// relax intake
+			intake.relax();
 		}
-		if (InputManager.getButton(10)) {	// release carriage
+		if (InputManager.getButton(1)) {	// release carriage
 			carriage.eject();
 		}
-		
-		if (InputManager.moveUp()) {
-			armTarget += Konstanten.ELEVATOR_STEP;
-		}
-		if (InputManager.moveDown()) {
-			armTarget -= Konstanten.ELEVATOR_STEP;
+		if (InputManager.getButton(9)) {	// grip carriage
+			carriage.grab();
 		}
 		
-		if (InputManager.getButton(7)){
-			shouldI = dont();
+		if (InputManager.getButton(5)) {
+			//armTarget += Konstanten.ELEVATOR_STEP;
+			elevator.move(0.5);
+			System.out.println("arm up");
 		}
+		else if (InputManager.getButton(3)) {
+			//armTarget -= Konstanten.ELEVATOR_STEP;
+			elevator.move(-0.5);
+			System.out.println("arm down");
+		} else {
+			elevator.move(0);
+		}
+//		
+//		if (InputManager.getButton(9)) {
+//			armTarget = Konstanten.RETURN_HEIGHT;
+//		}
+//		if (InputManager.getButton(8)) {
+//			armTarget = Konstanten.SWITCH_HEIGHT;
+//		}
+//		if (InputManager.getButton(7)) {
+//			armTarget = Konstanten.SCALE_HEIGHT;
+//		}
 		
+		if (InputManager.getButton(Konstanten.KILL)) {
+			dont();
+		}
 	 }
 	 
 	 

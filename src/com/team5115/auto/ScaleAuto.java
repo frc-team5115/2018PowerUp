@@ -13,6 +13,7 @@ import com.team5115.statemachines.IntakeManager;
 import com.team5115.statemachines.StateMachineBase;
 
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 //drop a cube in the correct side of the scale
 public class ScaleAuto extends StateMachineBase {
@@ -45,10 +46,11 @@ public class ScaleAuto extends StateMachineBase {
 	}
 	
 	public void update() {
+		SmartDashboard.putNumber("state", state);
 		switch(state){
 		case INIT:
 			Robot.CMM.setState(CubeManipulatorManager.STOP);
-			drive.startLine(17.5, 0.5); //distance that is going to be required every time
+			drive.startLine(17.3, 0.5); //distance that is going to be required every time
 			Robot.CM.setState(CarriageManager.GRAB);
 			Robot.IM.setState(IntakeManager.STOW_OPEN);
 			Robot.EM.setTarget(Konstanten.SCALE_HEIGHT);
@@ -65,8 +67,13 @@ public class ScaleAuto extends StateMachineBase {
 			if(drive.state == AutoDrive.FINISHED){
 				Robot.EM.setState(ElevatorManager.STOP);
 				if (position == scalePosition){
-					drive.startLine(8, 0.25);
-					setState(DRIVING3);
+					if (position == left){
+						drive.startTurn(27, .5);
+					}
+					else {
+						drive.startTurn(-27, .5);
+					}
+					setState(TURNING2);
 				}
 				else if (position == left){
 					drive.startTurn(90, .5);
@@ -75,6 +82,7 @@ public class ScaleAuto extends StateMachineBase {
 				}
 				else {//position = right
 					drive.startTurn(-90, .5);
+					setState(TURNING);
 				}
 			}
 			break;
@@ -97,10 +105,10 @@ public class ScaleAuto extends StateMachineBase {
 			Robot.CM.update();
 			if (drive.state == AutoDrive.FINISHED){
 				if (position == left){
-					drive.startTurn(-90, .5);
+					drive.startTurn(-117, .5);
 				}
 				else {
-					drive.startTurn(90, .5);
+					drive.startTurn(117, .5);
 				}
 				setState(TURNING2);
 			}
@@ -112,37 +120,11 @@ public class ScaleAuto extends StateMachineBase {
 			Robot.IM.update();
 			Robot.CM.update();
 			if (drive.state == AutoDrive.FINISHED){
-				drive.startLine(8, 0.25);
-				setState(DRIVING3);
-			}
-			break;
-			
-		case DRIVING3:
-			drive.update();
-			Robot.EM.update();
-			Robot.IM.update();
-			Robot.CM.update();
-			if (drive.state == AutoDrive.FINISHED){
-				if (position == left){
-					drive.startTurn(-90, .5);
-				}
-				else {
-					drive.startTurn(90, .5);
-				}
-				setState(TURNING3);
-			}
-			break;
-			
-		case TURNING3:
-			drive.update();
-			Robot.EM.update();
-			Robot.IM.update();
-			Robot.CM.update();
-			if (drive.state == AutoDrive.FINISHED){
-				drive.startLine(2.1,  0.25);
+				drive.startLine(6.1, 0.25);
 				setState(DRIVING4);
 			}
 			break;
+
 			
 		case DRIVING4:
 			drive.update();
@@ -150,6 +132,7 @@ public class ScaleAuto extends StateMachineBase {
 			Robot.IM.update();
 			Robot.CM.update();
 			if (drive.state == AutoDrive.FINISHED){
+				System.out.println("last leg finished");
 				Robot.drivetrain.drive(0, 0);
 				Robot.CM.setState(CarriageManager.DUMP);
 				Robot.IM.setState(IntakeManager.STOP);

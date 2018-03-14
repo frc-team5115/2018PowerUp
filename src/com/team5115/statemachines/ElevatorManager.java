@@ -26,7 +26,13 @@ public class ElevatorManager extends StateMachineBase {
 	}
 
 	public void setTarget(double target) {
-		targetAngle = target;
+		if (target > Konstanten.ELEVATOR_MAX) {
+			targetAngle = Konstanten.ELEVATOR_MAX;
+		} else if (target < Konstanten.ELEVATOR_MIN) {
+			targetAngle = Konstanten.ELEVATOR_MIN;
+		} else {
+			targetAngle = target;
+		}
 	}
 	
 	public void update() {
@@ -40,6 +46,7 @@ public class ElevatorManager extends StateMachineBase {
 
 			case MOVING_TO:
 				//Elevator moves to either switch or scale height 
+				System.out.println("Arm goal: " + targetAngle);
 				output = movement.getPID(targetAngle, angle, dAngle);
 				Robot.elevator.move(output);
 				break;

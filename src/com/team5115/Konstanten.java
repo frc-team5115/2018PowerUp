@@ -18,43 +18,43 @@ public class Konstanten {
 	// Define deadzones and axis
 	public static final int AXIS_X = 0;
 	public static final int AXIS_Y = 1;
-	public static final double JOYSTICK_DEADBAND = 0.2;
+	public static final int AXIS_THROTTLE = 4;
+	public static final double JOYSTICK_DEADBAND = 0.025;
 	public static final int JOYSTICK_EXPO = 2;
 	//Actual Button Binds
-	public static final int UP = 5;
-	public static final int DOWN = 3;
-	public static final int KILL = 7;
-	public static final int SPIT = 11;
-	public static final int INTAKE = 2;
+	public static final int UP = 4;
+	public static final int DOWN = 2;
+	public static final int KILL = 10;
+	public static final int SPIT = 6;
+	public static final int INTAKE = 9;
 	public static final int EJECT = 1;
-	public static final int CORRECTCUBE = 4;
+	public static final int CORRECTCUBE = 3;
 	public static final int LOWER_INTAKE = 12;
-	//public static final int GRAB_INTAKE = 6;
-	public static final int GRAB_INTAKE = 6;
+	public static final int GRAB_INTAKE = 5;
 	
 	// PID values
-	public static final double AUTO_FORWARD_KP = 1; //Constants.getAsDouble("auto_forward_kp");
+	public static final double AUTO_FORWARD_KP = 0.25; //Constants.getAsDouble("auto_forward_kp");
 	public static final double AUTO_FORWARD_KI = 0; //Constants.getAsDouble("auto_forward_ki");
-	public static final double AUTO_FORWARD_KD = 0; //Constants.getAsDouble("auto_forward_kd");
-	public static final double AUTO_LINE_KP = 1;
+	public static final double AUTO_FORWARD_KD = 0.1; //Constants.getAsDouble("auto_forward_kd");
+	public static final double AUTO_LINE_KP = 0.125;
 	public static final double AUTO_LINE_KI = 0;
 	public static final double AUTO_LINE_KD = 0;
-	public static final double AUTO_TURN_KP = .05; //Constants.getAsDouble("auto_turn_kp");
+	public static final double AUTO_TURN_KP = 0.06; //Constants.getAsDouble("auto_turn_kp");
 	public static final double AUTO_TURN_KI = 0; //Constants.getAsDouble("auto_turn_ki");
-	public static final double AUTO_TURN_KD = 0.005; //Constants.getAsDouble("auto_turn_kd");
+	public static final double AUTO_TURN_KD = 0.05; //Constants.getAsDouble("auto_turn_kd");
 	public static final double FORWARD_KF = 0; //Constants.getAsDouble("forward_kf");
 	public static final double TURN_KF = 0; // Constants.getAsDouble("turn_kf");
-	public static final double TURN_KP = .0625; //Constants.getAsDouble("turn_kp");
-	public static final double TURN_KI = 0; //Constants.getAsDouble("turn_ki");
+	public static final double TURN_KP = 0.05; //Constants.getAsDouble("turn_kp");
+	public static final double TURN_KI = 0.1; //Constants.getAsDouble("turn_ki");
 	public static final double ARM_KP = 0.02;
 	public static final double ARM_KI = 0;
-	public static final double ARM_KD = 0;
+	public static final double ARM_KD = 0.01;
 	
 	// Tolerances for PID
 	public static final double LINE_TOLERANCE = 0.25; //Constants.getAsDouble("line_torerance"); // ft
 	public static final double LINE_DTOLERANCE = 0.25; //Constants.getAsDouble("line_dtolerance"); // ft/s
 	public static final double FORWARD_TOLERANCE = 0.25; //Constants.getAsDouble("forward_tolerance");//ft
-	public static final double FORWARD_DTOLERANCE = 0.25; //Constants.getAsDouble("forward_dtolerance");//ft/s
+	public static final double FORWARD_DTOLERANCE = 0.05; //Constants.getAsDouble("forward_dtolerance");//ft/s
 	public static final double TURN_TOLERANCE = 2.5; //Constants.getAsDouble("turn_tolerance"); // rad
 	public static final double TURN_DTOLERANCE = 5; //Constants.getAsDouble("turn_dtolerance"); // rad/s
 	public static final double ARM_TOLERANCE = 5;
@@ -62,17 +62,23 @@ public class Konstanten {
 	
 	// Physical robot attributes
 	public static final double TOP_SPEED = 1;
-	public static final double TOP_TURN_SPEED = 1;
-	public static final double RETURN_HEIGHT = 0;
-	public static final double RUNG_HEIGHT = 878;
-	public static final double INTAKE_HEIGHT = 107;
-	public static final double SWITCH_HEIGHT = 130;
-	public static final double SCALE_HEIGHT = 710;
+	public static final double TOP_TURN_SPEED = 0.75;
+	
+	// DIFFERENT BETWEEN ROBOTS - DO NOT COPY
+	public static final double RETURN_HEIGHT = 110;
+	public static final double RUNG_HEIGHT = 976;
+	public static final double INTAKE_HEIGHT = 280;
+	public static final double SWITCH_HEIGHT = 347;
+	public static final double SCALE_HEIGHT = 923;
+	//
+	
 	public static final double ELEVATOR_SPEED_SCALE = 1;
 	public static final double ELEVATOR_SPEED_SWITCH = 0.5;
+	public static final double ELEVATOR_THRESHOLD = 10;
 	public static final double ELEVATOR_SPEED = 0.75;
-	public static final double INTAKE_SPEED = 0.75;
-	public static final double PASSOFF_TIME = 0.75;
+	public static final double INTAKE_SPEED = 0.5;
+	public static final double SPIT_SPEED = -1;
+	public static final double PASSOFF_TIME = 1;
 	public static final double PASSBACK_TIME = 0.1;
 	public static final double SPIT_DELAY = 0.5;
 	public static final double TIP_THRESHOLD = -20;
@@ -82,9 +88,9 @@ public class Konstanten {
 	
 	public static final int POT_THRESHOLD = 900;
 	public static final double ARC_RATIO = 2.675;
-	public static final int ELEVATOR_MAX = 850;
-	public static final int ELEVATOR_MIN = 60;
-	public static final int ELEVATOR_STEP = 5;
+	public static final int ELEVATOR_MAX = 975;
+	public static final int ELEVATOR_MIN = 110;
+	public static final int ELEVATOR_STEP = 100;
 	//PWM
 	public static final int INTAKE_SPARK_LEFT = 2;
 	public static final int INTAKE_SPARK_RIGHT = 1;
@@ -100,10 +106,10 @@ public class Konstanten {
 	
 	
 	//PCM
-	public static final int INTAKE_FORWARD_CHANNEL_LEFT = 5;	//retract; grip
+	public static final int INTAKE_FORWARD_CHANNEL_LEFT = 5;	//retract; grip	//YOCANNOT COPY THIS TOTHE OTHER ROBOT
 	public static final int INTAKE_REVERSE_CHANNEL_LEFT = 4;	//extend; release
-	public static final int INTAKE_FORWARD_CHANNEL_RIGHT = 7;	//retract; grip
-	public static final int INTAKE_REVERSE_CHANNEL_RIGHT = 6;	//extend, release
+	public static final int INTAKE_FORWARD_CHANNEL_RIGHT = 6;	//retract; grip
+	public static final int INTAKE_REVERSE_CHANNEL_RIGHT = 7;	//extend, release
 	
 	public static final int CARRIAGE_FORWARD_CHANNEL  = 0;		//retract; grab
 	public static final int CARRIAGE_REVERSE_CHANNEL = 1;		//extend; release
@@ -129,5 +135,5 @@ public class Konstanten {
 	public static final int BACK_RIGHT_MOTOR_ID = 2;
 	public static final int PHEUMATIC_PCM_0_ID = 7;
 	public static final int PHEUMATIC_PCM_1_ID = 8;
-	public static final int MOVER_MOTOR_ID = 0;
+	public static final int MOVER_MOTOR_ID = 5;
 }

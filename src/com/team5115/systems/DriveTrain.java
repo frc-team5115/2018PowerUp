@@ -1,6 +1,5 @@
 package com.team5115.systems;
 
-import com.cruzsbrian.robolog.Log;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
@@ -8,12 +7,9 @@ import com.kauailabs.navx.frc.AHRS;
 import com.team5115.Konstanten;
 import com.team5115.robot.Robot;
 
-import java.util.ArrayList;
-import edu.wpi.first.wpilibj.BuiltInAccelerometer;
-import edu.wpi.first.wpilibj.interfaces.Accelerometer;
 import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.SPI;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.I2C;
 
 
 public class DriveTrain {
@@ -26,13 +22,13 @@ public class DriveTrain {
 	TalonSRX frontright;
 	TalonSRX backleft;
 	TalonSRX backright;
+	AHRS navx;
 	
 	public double lastLeftSpeed = 0;
 	public double lastRightSpeed = 0;
 
 	public int direction;
 	
-	AHRS navx;
 	public DriveTrain(){
 		navx = new AHRS(SPI.Port.kMXP);
 		frontleft = new TalonSRX(Konstanten.FRONT_LEFT_MOTOR_ID);
@@ -69,8 +65,8 @@ public class DriveTrain {
 		}
 //		System.out.println("left: " + leftspeed);
 //		System.out.println("right: " + rightspeed);
-		backleft.set(ControlMode.PercentOutput, -leftspeed);
-		backright.set(ControlMode.PercentOutput, rightspeed);
+		backleft.set(ControlMode.PercentOutput, leftspeed);
+		backright.set(ControlMode.PercentOutput, -rightspeed);
 	}
 	public double leftDist() {
 		double leftDist = -direction * backleft.getSelectedSensorPosition(0);

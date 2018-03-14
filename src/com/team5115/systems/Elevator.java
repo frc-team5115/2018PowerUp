@@ -26,7 +26,8 @@ public class Elevator {
 	 	armMover.configSelectedFeedbackSensor(FeedbackDevice.Analog, 0, 5);
 	 	armMover.configSetParameter(ParamEnum.eFeedbackNotContinuous, 1, 0x00, 0x00, 0x00);
 	 	armMover.configForwardSoftLimitThreshold(Konstanten.POT_THRESHOLD, 5);
-	 	armMover.configForwardSoftLimitEnable(true, 0);
+	 	armMover.configForwardSoftLimitEnable(false, 0);
+	 	//armMover.configOpenloopRamp(0.5, 0);
 	 }
 	 
 	 public double getAngle(){
@@ -51,12 +52,12 @@ public class Elevator {
 	 
 	 public boolean maxHeight(){
 		//return topLimit.get();
-		return (getAngle() > Konstanten.ELEVATOR_MAX);
+		return (getAngle() + Konstanten.ELEVATOR_THRESHOLD >= Konstanten.ELEVATOR_MAX);
 		//return false;
 	 }
 	 public boolean minHeight(){
 		// return bottomLimit.get();
-		return (getAngle() < Konstanten.ELEVATOR_MIN);
+		return (getAngle() - Konstanten.ELEVATOR_THRESHOLD <= Konstanten.ELEVATOR_MIN);
 		//return false;
 	 }
 }
