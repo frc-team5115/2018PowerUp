@@ -78,7 +78,7 @@ public class Konstanten {
 	public static final double ELEVATOR_SPEED = 0.75;
 	public static final double INTAKE_SPEED = 0.5;
 	public static final double SPIT_SPEED = -1;
-	public static final double PASSOFF_TIME = 2;
+	public static final double PASSOFF_TIME = 1;
 	public static final double PASSBACK_TIME = 0.1;
 	public static final double SPIT_DELAY = 0.5;
 	public static final double TIP_THRESHOLD = -20;

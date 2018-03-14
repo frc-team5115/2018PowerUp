@@ -31,9 +31,9 @@ public class Drive extends StateMachineBase {
 					double forwardSpeed = InputManager.getForward() * InputManager.getThrottle() * Konstanten.TOP_SPEED;
 					double turnSpeed = InputManager.getTurn() * InputManager.getThrottle() * Konstanten.TOP_TURN_SPEED;
 					
-					if (forwardSpeed < 0) {
-						turnSpeed = -turnSpeed;
-					}
+//					if (forwardSpeed < 0) {
+//						turnSpeed = -turnSpeed;
+//					}
 					//System.out.println("forward " + InputManager.getForward());
 					//System.out.println("turn " + turnSpeed);
 

@@ -53,8 +53,8 @@ public class Robot extends IterativeRobot {
 	public static DriveForwardSome autoDrive;
 	public static Drive drive;
 	public static DriverStation ds;
-	public static SendableChooser<Integer> positionChooser;
-	public static SendableChooser<Integer> strategyChooser;
+	public static SendableChooser positionChooser;
+	public static SendableChooser strategyChooser;
 	 
 	public static CubeManipulatorManager CMM;
 	public static int position;
@@ -117,13 +117,13 @@ public class Robot extends IterativeRobot {
 //		gravity[1] = drivetrain.AccelY();
 //		gravity[2] = drivetrain.AccelZ();
 	 	
-		positionChooser = new SendableChooser<Integer>();
+		positionChooser = new SendableChooser();
 		positionChooser.addDefault("Left", 1);
 		positionChooser.addObject("Right", 2);
 		positionChooser.addObject("Center", 3);
 	 	SmartDashboard.putData("Position", positionChooser);
 		
-		strategyChooser = new SendableChooser<Integer>();
+		strategyChooser = new SendableChooser();
 		strategyChooser.addDefault("Strategy 1- start in the center put a cube in the correct side of the switch", 2); //these are the state numbers in Auto.java
 		strategyChooser.addObject("Strategy 2- put something in scale", 3);
 		strategyChooser.addObject("Strategy 3- cross auto line and do nothing ", 4);
@@ -194,12 +194,12 @@ public class Robot extends IterativeRobot {
 	 // Runs periodically when the game is in the driver operated stage
 	 public void teleopPeriodic() {
 	 	Timer.delay(.005);
-		drive.update();
-		CMM.update();
-		System.out.println("y axis: " + InputManager.getForward());
-		System.out.println("x axis: " + InputManager.getTurn());
-		System.out.println("throttle: " + InputManager.getThrottle());
-		System.out.println("yaw: " + drivetrain.getYaw());
+//		drive.update();
+//		CMM.update();
+//		System.out.println("y axis: " + InputManager.getForward());
+//		System.out.println("x axis: " + InputManager.getTurn());
+//		System.out.println("throttle: " + InputManager.getThrottle());
+//		System.out.println("yaw: " + drivetrain.getYaw());
 
 		SmartDashboard.putNumber("left", drivetrain.leftDist());
 		SmartDashboard.putNumber("right", drivetrain.rightDist());
@@ -244,39 +244,41 @@ public class Robot extends IterativeRobot {
 //		CM.update();
 	 	
 	 	
-//		System.out.println(elevator.getAngle());
-//	 	
-//		if (InputManager.getButton(11)) {	// lower and start intake
-//			intake.lowerIntake();
-//			Timer.delay(0.5);
-//			intake.relax();
-//			intake.intake(0.5);
-//		}
-//		if (InputManager.getButton(6)) {	// grip intake
-//			intake.grip();
-//		}
-//		if (InputManager.getButton(7)) {	// release intake
-//			intake.release();
-//		}
-//		if (InputManager.getButton(8)) {	// relax intake
-//			intake.relax();
-//		}
-//		if (InputManager.getButton(10)) {	// release carriage
-//			carriage.eject();
-//		}
-//		
-//		if (InputManager.moveUp()) {
-//			//armTarget += Konstanten.ELEVATOR_STEP;
-//			elevator.move(0.25);
-//			System.out.println("arm up");
-//		}
-//		else if (InputManager.moveDown()) {
-//			//armTarget -= Konstanten.ELEVATOR_STEP;
-//			elevator.move(-0.25);
-//			System.out.println("arm down");
-//		} else {
-//			elevator.move(0);
-//		}
+		System.out.println(elevator.getAngle());
+	 	
+		if (InputManager.getButton(12)) {	// lower and start intake
+			intake.lowerIntake();
+			Timer.delay(0.5);
+			intake.relax();
+		}
+		if (InputManager.getButton(6)) {	// grip intake
+			intake.grip();
+		}
+		if (InputManager.getButton(4)) {	// release intake
+			intake.release();
+		}
+		if (InputManager.getButton(11)) {	// relax intake
+			intake.relax();
+		}
+		if (InputManager.getButton(1)) {	// release carriage
+			carriage.eject();
+		}
+		if (InputManager.getButton(9)) {	// grip carriage
+			carriage.grab();
+		}
+		
+		if (InputManager.getButton(5)) {
+			//armTarget += Konstanten.ELEVATOR_STEP;
+			elevator.move(0.5);
+			System.out.println("arm up");
+		}
+		else if (InputManager.getButton(3)) {
+			//armTarget -= Konstanten.ELEVATOR_STEP;
+			elevator.move(-0.5);
+			System.out.println("arm down");
+		} else {
+			elevator.move(0);
+		}
 //		
 //		if (InputManager.getButton(9)) {
 //			armTarget = Konstanten.RETURN_HEIGHT;
