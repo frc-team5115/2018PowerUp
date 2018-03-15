@@ -112,9 +112,9 @@ public class AutoDrive extends StateMachineBase {
 
 	private double clearSteer(double yaw, double target) {
 		if (Math.abs(target - yaw) > 180) {
-			if (target < 180) {	// yaw must be too high for target
+			if (target < 180) {
 				yaw += 360;
-			} else {	// yaw must be too low for target
+			} else {
 				yaw -= 360;
 			}
 		}

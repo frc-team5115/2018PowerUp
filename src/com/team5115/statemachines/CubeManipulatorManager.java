@@ -53,6 +53,7 @@ public class CubeManipulatorManager extends StateMachineBase {
 				
 				Robot.CM.setState(CarriageManager.DUMP);
 				Robot.EM.setTarget(Konstanten.RETURN_HEIGHT);
+				armGoal = Konstanten.RETURN_HEIGHT;
 				updateChildren();
 				
 				if (InputManager.bump()) {
@@ -69,14 +70,8 @@ public class CubeManipulatorManager extends StateMachineBase {
 
 			case PASS_TO_INTAKE:
 				Robot.EM.setTarget(Konstanten.RETURN_HEIGHT);
+				armGoal = Konstanten.RETURN_HEIGHT;
 				updateChildren();
-				
-				Robot.IM.setState(IntakeManager.GRIP_UP);
-				Robot.CM.setState(CarriageManager.DUMP);
-				time = Timer.getFPGATimestamp();
-				setState(DRIVIN_AROUND_WIT_DA_INTAKE_DOWN);
-				//collisionAvoidance();
-				
 				
 				if(Robot.elevator.minHeight()) {
 					Robot.IM.setState(IntakeManager.GRIP_UP);

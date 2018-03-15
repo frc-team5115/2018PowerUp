@@ -65,11 +65,10 @@ public class Konstanten {
 	public static final double TOP_TURN_SPEED = 0.75;
 	
 	// DIFFERENT BETWEEN ROBOTS - DO NOT COPY
-	public static final double RETURN_HEIGHT = 110;
-	public static final double RUNG_HEIGHT = 976;
-	public static final double INTAKE_HEIGHT = 280;
-	public static final double SWITCH_HEIGHT = 347;
-	public static final double SCALE_HEIGHT = 923;
+	public static final double RETURN_HEIGHT = 0;
+	public static final double INTAKE_HEIGHT = 160;
+	public static final double SWITCH_HEIGHT = 200;
+	public static final double SCALE_HEIGHT = 720;
 	//
 	
 	public static final double ELEVATOR_SPEED_SCALE = 1;
@@ -88,8 +87,8 @@ public class Konstanten {
 	
 	public static final int POT_THRESHOLD = 900;
 	public static final double ARC_RATIO = 2.675;
-	public static final int ELEVATOR_MAX = 975;
-	public static final int ELEVATOR_MIN = 110;
+	public static final int ELEVATOR_MAX = 817;
+	public static final int ELEVATOR_MIN = 0;
 	public static final int ELEVATOR_STEP = 100;
 	//PWM
 	public static final int INTAKE_SPARK_LEFT = 2;

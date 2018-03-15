@@ -5,7 +5,6 @@ import com.cruzsbrian.robolog.Log;
 
 import com.team5115.Konstanten;
 
-import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
@@ -15,46 +14,37 @@ public class Intake {
 
 	DigitalInput cubeDetectorL;
 	DigitalInput cubeDetectorR;
-	Solenoid cubeSolenoidLeftOpen;
-	DoubleSolenoid cubeSolenoidLeftClose;
+	DoubleSolenoid cubeSolenoidLeft;
 	DoubleSolenoid cubeSolenoidRight;
 	DoubleSolenoid intakeLifterLeft;
 	DoubleSolenoid intakeLifterRight;
 	Spark intakeWheelsLeft;
 	Spark intakeWheelsRight;
-	
 	public Intake(){
 		cubeDetectorL = new DigitalInput(Konstanten.CUBE_DETECTOR_L);
 		cubeDetectorR = new DigitalInput(Konstanten.CUBE_DETECTOR_R);
-		
-		cubeSolenoidLeftOpen = new Solenoid(Konstanten.PHEUMATIC_PCM_1_ID, 4);
-		cubeSolenoidLeftClose = new DoubleSolenoid(Konstanten.PHEUMATIC_PCM_1_ID, 6, 7);
+		cubeSolenoidLeft = new DoubleSolenoid(Konstanten.PHEUMATIC_PCM_0_ID, Konstanten.INTAKE_FORWARD_CHANNEL_LEFT, Konstanten.INTAKE_REVERSE_CHANNEL_LEFT);
 		cubeSolenoidRight = new DoubleSolenoid(Konstanten.PHEUMATIC_PCM_0_ID, Konstanten.INTAKE_FORWARD_CHANNEL_RIGHT, Konstanten.INTAKE_REVERSE_CHANNEL_RIGHT);
-		
 		intakeLifterLeft = new DoubleSolenoid(Konstanten.PHEUMATIC_PCM_0_ID, Konstanten.LIFTER_FORWARD_CHANNEL_LEFT, Konstanten.LIFTER_REVERSE_CHANNEL_LEFT);
 		intakeLifterRight = new DoubleSolenoid(Konstanten.PHEUMATIC_PCM_0_ID, Konstanten.LIFTER_FORWARD_CHANNEL_RIGHT, Konstanten.LIFTER_REVERSE_CHANNEL_RIGHT);
-		
 		intakeWheelsLeft = new Spark(Konstanten.INTAKE_SPARK_LEFT);
 		intakeWheelsRight = new Spark(Konstanten.INTAKE_SPARK_RIGHT);
 	}
 	
 	public void grip(){
-		cubeSolenoidLeftOpen.set(false);
-		cubeSolenoidLeftClose.set(DoubleSolenoid.Value.kForward);
-		
+		System.out.println("grip");
+		cubeSolenoidLeft.set(DoubleSolenoid.Value.kForward);
 		cubeSolenoidRight.set(DoubleSolenoid.Value.kForward);
 	}
 	
 	public void relax(){
-		cubeSolenoidLeftOpen.set(false);
-		cubeSolenoidLeftClose.set(DoubleSolenoid.Value.kReverse);
-		
+		System.out.println("relax");
+		cubeSolenoidLeft.set(DoubleSolenoid.Value.kOff);
 		cubeSolenoidRight.set(DoubleSolenoid.Value.kOff);
 	}
 	public void release(){
-		cubeSolenoidLeftOpen.set(true);
-		cubeSolenoidLeftClose.set(DoubleSolenoid.Value.kReverse);
-
+		System.out.println("release");
+		cubeSolenoidLeft.set(DoubleSolenoid.Value.kReverse);
 		cubeSolenoidRight.set(DoubleSolenoid.Value.kReverse);
 	}
 	public void liftIntake(){
@@ -76,8 +66,8 @@ public class Intake {
 		intakeWheelsRight.set(dir);
 	}
 	public void bump(){
-		intakeWheelsLeft.set(0.25);
-		intakeWheelsRight.set(Konstanten.INTAKE_SPEED);
+		intakeWheelsLeft.set(1);
+		intakeWheelsRight.set(1);
 	}
 	
 }

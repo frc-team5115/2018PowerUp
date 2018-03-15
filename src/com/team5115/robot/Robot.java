@@ -194,8 +194,8 @@ public class Robot extends IterativeRobot {
 	 // Runs periodically when the game is in the driver operated stage
 	 public void teleopPeriodic() {
 	 	Timer.delay(.005);
-//		drive.update();
-//		CMM.update();
+		drive.update();
+		CMM.update();
 //		System.out.println("y axis: " + InputManager.getForward());
 //		System.out.println("x axis: " + InputManager.getTurn());
 //		System.out.println("throttle: " + InputManager.getThrottle());
@@ -244,41 +244,41 @@ public class Robot extends IterativeRobot {
 //		CM.update();
 	 	
 	 	
-		System.out.println(elevator.getAngle());
-	 	
-		if (InputManager.getButton(12)) {	// lower and start intake
-			intake.lowerIntake();
-			Timer.delay(0.5);
-			intake.relax();
-		}
-		if (InputManager.getButton(6)) {	// grip intake
-			intake.grip();
-		}
-		if (InputManager.getButton(4)) {	// release intake
-			intake.release();
-		}
-		if (InputManager.getButton(11)) {	// relax intake
-			intake.relax();
-		}
-		if (InputManager.getButton(1)) {	// release carriage
-			carriage.eject();
-		}
-		if (InputManager.getButton(9)) {	// grip carriage
-			carriage.grab();
-		}
-		
-		if (InputManager.getButton(5)) {
-			//armTarget += Konstanten.ELEVATOR_STEP;
-			elevator.move(0.5);
-			System.out.println("arm up");
-		}
-		else if (InputManager.getButton(3)) {
-			//armTarget -= Konstanten.ELEVATOR_STEP;
-			elevator.move(-0.5);
-			System.out.println("arm down");
-		} else {
-			elevator.move(0);
-		}
+//		System.out.println(elevator.getAngle());
+//	 	
+//		if (InputManager.getButton(12)) {	// lower and start intake
+//			intake.lowerIntake();
+//			Timer.delay(0.5);
+//			intake.relax();
+//		}
+//		if (InputManager.getButton(6)) {	// grip intake
+//			intake.grip();
+//		}
+//		if (InputManager.getButton(4)) {	// release intake
+//			intake.release();
+//		}
+//		if (InputManager.getButton(11)) {	// relax intake
+//			intake.relax();
+//		}
+//		if (InputManager.getButton(1)) {	// release carriage
+//			carriage.eject();
+//		}
+//		if (InputManager.getButton(9)) {	// grip carriage
+//			carriage.grab();
+//		}
+//		
+//		if (InputManager.getButton(5)) {
+//			//armTarget += Konstanten.ELEVATOR_STEP;
+//			elevator.move(0.5);
+//			System.out.println("arm up");
+//		}
+//		else if (InputManager.getButton(3)) {
+//			//armTarget -= Konstanten.ELEVATOR_STEP;
+//			elevator.move(-0.5);
+//			System.out.println("arm down");
+//		} else {
+//			elevator.move(0);
+//		}
 //		
 //		if (InputManager.getButton(9)) {
 //			armTarget = Konstanten.RETURN_HEIGHT;
