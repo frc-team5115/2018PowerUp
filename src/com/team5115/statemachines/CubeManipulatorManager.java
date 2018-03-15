@@ -58,11 +58,15 @@ public class CubeManipulatorManager extends StateMachineBase {
 				
 				if (InputManager.bump()) {
 					Robot.IM.setState(IntakeManager.CORRECT);
+				} else if (Robot.intake.isCube()){
+					Robot.IM.setState(IntakeManager.GRIP_DOWN);
+				} else if (InputManager.eject()) {
+					Robot.IM.setState(IntakeManager.SPIT);
 				} else {
 					Robot.IM.setState(IntakeManager.INTAKE);
 				}
 
-				if (InputManager.grabIntake() || Robot.intake.isCube()) {
+				if (!InputManager.intake()) {
 					setState(PASS_TO_ARM);
 				}
 				
