@@ -1,8 +1,5 @@
 package com.team5115;
 
-
-import com.cruzsbrian.robolog.Constants;
-
 public class Konstanten {
 
 	/**
@@ -33,9 +30,9 @@ public class Konstanten {
 	public static final int GRAB_INTAKE = 5;
 	
 	// PID values
-	public static final double AUTO_FORWARD_KP = 0.25; //Constants.getAsDouble("auto_forward_kp");
+	public static final double AUTO_FORWARD_KP = 0.4; //Constants.getAsDouble("auto_forward_kp");
 	public static final double AUTO_FORWARD_KI = 0; //Constants.getAsDouble("auto_forward_ki");
-	public static final double AUTO_FORWARD_KD = 0.1; //Constants.getAsDouble("auto_forward_kd");
+	public static final double AUTO_FORWARD_KD = 0.2; //Constants.getAsDouble("auto_forward_kd");
 	public static final double AUTO_LINE_KP = 0.125;
 	public static final double AUTO_LINE_KI = 0;
 	public static final double AUTO_LINE_KD = 0;
@@ -45,7 +42,7 @@ public class Konstanten {
 	public static final double FORWARD_KF = 0; //Constants.getAsDouble("forward_kf");
 	public static final double TURN_KF = 0; // Constants.getAsDouble("turn_kf");
 	public static final double TURN_KP = 0.05; //Constants.getAsDouble("turn_kp");
-	public static final double TURN_KI = 0.1; //Constants.getAsDouble("turn_ki");
+	public static final double TURN_KI = 0.2; //Constants.getAsDouble("turn_ki");
 	public static final double ARM_KP = 0.02;
 	public static final double ARM_KI = 0;
 	public static final double ARM_KD = 0.01;
@@ -71,9 +68,9 @@ public class Konstanten {
 	public static final double SCALE_HEIGHT = 720;
 	//
 	
-	public static final double ELEVATOR_SPEED_SCALE = 1;
+	public static final double ELEVATOR_SPEED_SCALE = 0.8;
 	public static final double ELEVATOR_SPEED_SWITCH = 0.5;
-	public static final double ELEVATOR_THRESHOLD = 10;
+	public static final double ELEVATOR_THRESHOLD = 20;
 	public static final double ELEVATOR_SPEED = 0.75;
 	public static final double INTAKE_SPEED = 0.5;
 	public static final double SPIT_SPEED = -1;

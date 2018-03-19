@@ -1,6 +1,5 @@
 package com.team5115.auto;
 
-import com.cruzsbrian.robolog.Log;
 import com.team5115.Konstanten;
 import com.team5115.PID;
 import com.team5115.robot.Robot;
@@ -23,7 +22,7 @@ public class LineAuto extends StateMachineBase {
 	public void update() {
 		switch(state){
 		case INIT:
-			drive.startLine(11.5, .25);
+			drive.startLine(8, .25);
 			setState(DRIVE);
 			break;
 		case DRIVE:

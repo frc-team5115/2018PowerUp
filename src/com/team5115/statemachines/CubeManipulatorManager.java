@@ -212,6 +212,7 @@ public class CubeManipulatorManager extends StateMachineBase {
 				//ELEVATOR STILL, INTAKE INACTIVE, CARRIAGE DUMPING
 				//IF USER INPUT IS DETECTED, GO TO RETURING
 				Robot.CM.setState(CarriageManager.DUMP);
+				collisionAvoidance();
 				updateChildren();
 				
 				// if we're coming from DRIVIN_AROUND_WIT_DA_INTAKE_DOWN, wait for the ejection to finish

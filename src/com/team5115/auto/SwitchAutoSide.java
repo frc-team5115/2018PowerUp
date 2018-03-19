@@ -1,5 +1,5 @@
 package com.team5115.auto;
-import com.cruzsbrian.robolog.Log;
+
 import com.team5115.Konstanten;
 import com.team5115.PID;
 import com.team5115.robot.Robot;
@@ -65,9 +65,9 @@ public class SwitchAutoSide extends StateMachineBase {
 			Robot.IM.setState(IntakeManager.STOW_CLOSED);
 			Robot.CM.setState(CarriageManager.GRAB);
 			if(position == switchPosition){
-				drive.startLine(12, 0.125);
+				drive.startLine(12, 0.25);
 			} else {
-				drive.startLine(10, 0.125);//17.5
+				drive.startLine(10, 0.25);//17.5
 			}
 			setState(DRIVING);
 			break;
@@ -91,7 +91,7 @@ public class SwitchAutoSide extends StateMachineBase {
 			updateChildren();
 			if(drive.state == AutoDrive.FINISHED){
 				if(position == switchPosition){
-					drive.startLine(1.6, 0.25);
+					drive.startLine(1.6, 0.125);
 				}else{
 					//Position != swith position
 					drive.startLine(14.12, 0.25);
@@ -121,7 +121,7 @@ public class SwitchAutoSide extends StateMachineBase {
 		case TURNING2:
 			updateChildren();
 			if(drive.state == AutoDrive.FINISHED){
-				drive.startLine(2.8, 0.25);
+				drive.startLine(2.8, 0.125);
 				setState(DRIVING3);
 			}
 			break;

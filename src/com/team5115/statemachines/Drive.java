@@ -40,6 +40,7 @@ public class Drive extends StateMachineBase {
 					// open loop control for forward
 					// vForward is negative because y on the joystick is reversed
 					//double vForward = forwardSpeed * Constants.FORWARD_KF;
+					System.out.println(forwardSpeed + " " +  turnSpeed);
 					
 					Robot.drivetrain.drive(forwardSpeed, turnSpeed);
 					if ((Robot.drivetrain.getPitch() < Konstanten.TIP_THRESHOLD) && (Robot.drivetrain.forwarAccel() > Konstanten.ACCEL_THRESHOLD)){

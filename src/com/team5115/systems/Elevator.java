@@ -1,6 +1,5 @@
 package com.team5115.systems;
 
-import com.cruzsbrian.robolog.Log;
 import com.ctre.phoenix.ParamEnum;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
@@ -41,7 +40,7 @@ public class Elevator {
 	 }
 	 
 	 public void move(double speed){
-		 if (speed != 0){
+		 if (Math.abs(speed) > 0.1){
 			 movingArm = true;
 		 }
 		 else {

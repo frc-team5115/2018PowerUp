@@ -1,8 +1,6 @@
 package com.team5115.robot;
 //
 import java.util.ArrayList;
-import com.cruzsbrian.robolog.Log;
-import com.cruzsbrian.robolog.Constants;
 import com.team5115.Konstanten;
 import com.team5115.statemachines.CarriageManager;
 import com.team5115.statemachines.CubeManipulatorManager;
@@ -148,6 +146,7 @@ public class Robot extends IterativeRobot {
 	 	 switchPosition = ('L' == gameData.charAt(0)) ? 1 : 2;
 	 	 scalePosition = ('L' == gameData.charAt(1)) ? 1 : 2;
 	 	 strategy = (int) strategyChooser.getSelected();
+//	 	 auto = new Auto(position, switchPosition, scalePosition, strategy);
 	 	 auto = new Auto(position, switchPosition, scalePosition, strategy);
 	 	 drivetrain.inuse = true;
 
@@ -158,10 +157,10 @@ public class Robot extends IterativeRobot {
  		 * Per this example, the initialState value should come from the class of the object
  		 * You could just give it a normal integer like 0 or 1, but this is nicer organizationally
  		 */
- 		
+	 	 carriage.grab();
  		 auto.setState(Auto.INIT);
-	 	 //autoDrive.setState(DriveForwardSome.INIT);
-	 	 drivetrain.drive(0.25, 0);
+//	 	 autoDrive.setState(DriveForwardSome.INIT);
+	 	 drivetrain.drive(0.01, 0);
 	 }
 
 	 //Runs periodically while the game is in the autonomous phase
@@ -176,18 +175,18 @@ public class Robot extends IterativeRobot {
 	 
 	 // Runs once when the game enters the driver operated stage
 	 public void teleopInit() {
-//	 	drivetrain.inuse = false;
-//	 	drivetrain.drive(0,0);
+	 	drivetrain.inuse = false;
+	 	drivetrain.drive(0,0);
 //		drivetrain.resetGyro();
-//		drivetrain.resetEncoders();
+		drivetrain.resetEncoders();
 //		autoDrive.setState(DriveForwardSome.FINISHED);
-//	 	drive.setState(Drive.DRIVING);
-		CMM.setState(CubeManipulatorManager.EMPTY); //should set state stop
+//	 	drive.setState(Drive.DRIVING);		
+		CMM.armGoal = elevator.getAngle();
+		CMM.setState(CubeManipulatorManager.TRANSIT); //should set state stop
 		drive.setState(Drive.DRIVING); 
-		carriage.eject();
 		
 	
-		armTarget = elevator.getAngle();
+
 		EM.setState(ElevatorManager.MOVING_TO);
 	 }
 	 
@@ -202,8 +201,9 @@ public class Robot extends IterativeRobot {
 //		System.out.println("yaw: " + drivetrain.getYaw());
 
 		SmartDashboard.putNumber("left", drivetrain.leftDist());
-		SmartDashboard.putNumber("right", drivetrain.rightDist());
+		//SmartDashboard.putNumber("right", drivetrain.rightDist());
 		SmartDashboard.putNumber("total", drivetrain.distanceTraveled());
+		SmartDashboard.putNumber("arm", elevator.getAngle());
 		
 		//System.out.println("CMM state: " + CMM.state);
 		

@@ -63,38 +63,40 @@ public class DriveTrain {
 		 rightspeed = Math.signum(rightspeed);
 		
 		}
-//		System.out.println("left: " + leftspeed);
-//		System.out.println("right: " + rightspeed);
+		System.out.println("left: " + leftspeed);
+		System.out.println("right: " + rightspeed);
 		backleft.set(ControlMode.PercentOutput, -leftspeed);
 		backright.set(ControlMode.PercentOutput, rightspeed);
 	}
 	public double leftDist() {
 		double leftDist = -direction * backleft.getSelectedSensorPosition(0);
-		return leftDist / 1440 * 6 * Math.PI / 12;
+		return leftDist / 1440 * 7.8 * Math.PI / 12;
 	}
 	
-	public double rightDist() {
+	/*public double rightDist() {
+		System.out.println(backright.getSelectedSensorPosition(0));
 		double rightDist = direction * backright.getSelectedSensorPosition(0);
 		return rightDist / 1440 * 6 * Math.PI / 12;
-	}
+	}*/
 	
 	public double distanceTraveled() {
-		return (leftDist() + rightDist()) / 2;
+		return leftDist();
 	}
 
 	public double leftSpeed() {
-		double leftspeed = backleft.getSelectedSensorVelocity(0);
-		return ((leftspeed * 4 * Math.PI * 10) / (1440 * 12));
+		double leftspeed = -backleft.getSelectedSensorVelocity(0);
+		return ((leftspeed * 6 * Math.PI * 10) / (1440 * 12));
 		
 	}
-	
+
 	public double rightSpeed() {
 		double rightspeed = backright.getSelectedSensorVelocity(0);
-		return ((rightspeed * 4 * Math.PI * 10) / (1440 * 12));
+		return ((rightspeed * 6 * Math.PI * 10) / (1440 * 12));
 	}
+
 	
 	public double averageSpeed() {
-		return (rightSpeed() + leftSpeed()) / 2;
+		return leftSpeed();
 	}
 
 	public double getPitch(){

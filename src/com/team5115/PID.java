@@ -1,6 +1,6 @@
 package com.team5115;
 
-import com.cruzsbrian.robolog.Log;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class PID {
 
@@ -59,7 +59,9 @@ public class PID {
 		dError = -dReading;		// result of taking the derivative of the equation above with respect to time
 
 		output = kp * error + ki * errorAccum + kd * dError;
-		Log.log("error", error);
+		SmartDashboard.putNumber("PID sensor", reading);
+		SmartDashboard.putNumber("PID setpoint", setpoint);
+		SmartDashboard.putNumber("error", error);
 		// Do not integrate if the output exceeds max to avoid intergral windup. See youtu.be/fusr9eTceEo
 		if (Math.abs(output) <= maxOutput) {
 			errorAccum += error * Konstanten.DELAY;
@@ -69,7 +71,7 @@ public class PID {
 		if (Math.abs(output) > maxOutput) {
 			output = maxOutput * Math.signum(output);
 		}
-		Log.log("pid output", output);
+		SmartDashboard.putNumber("PID output", output);
 		return output;
 	}
 	

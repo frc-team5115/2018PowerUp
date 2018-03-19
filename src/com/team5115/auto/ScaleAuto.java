@@ -1,6 +1,5 @@
 package com.team5115.auto;
 
-import com.cruzsbrian.robolog.Log;
 import com.team5115.Konstanten;
 import com.team5115.PID;
 import com.team5115.robot.Robot;
@@ -50,7 +49,7 @@ public class ScaleAuto extends StateMachineBase {
 		switch(state){
 		case INIT:
 			Robot.CMM.setState(CubeManipulatorManager.STOP);
-			drive.startLine(17.3, 0.5); //distance that is going to be required every time
+			drive.startLine(12, 0.5); //distance that is going to be required every time
 			Robot.CM.setState(CarriageManager.GRAB);
 			Robot.IM.setState(IntakeManager.STOW_OPEN);
 			Robot.EM.setTarget(Konstanten.SCALE_HEIGHT);
@@ -76,13 +75,14 @@ public class ScaleAuto extends StateMachineBase {
 					setState(TURNING2);
 				}
 				else if (position == left){
-					drive.startTurn(90, .5);
-					setState(TURNING);
-					
+					//drive.startTurn(90, .5);
+					//setState(TURNING);
+					setState(FINISHED);
 				}
 				else {//position = right
-					drive.startTurn(-90, .5);
-					setState(TURNING);
+					//drive.startTurn(-90, .5);
+					//setState(TURNING);
+					setState(FINISHED);
 				}
 			}
 			break;
@@ -120,7 +120,7 @@ public class ScaleAuto extends StateMachineBase {
 			Robot.IM.update();
 			Robot.CM.update();
 			if (drive.state == AutoDrive.FINISHED){
-				drive.startLine(6.1, 0.25);
+				drive.startLine(2, 0.25);
 				setState(DRIVING4);
 			}
 			break;

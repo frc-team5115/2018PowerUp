@@ -1,6 +1,5 @@
 package com.team5115.auto;
 
-import com.cruzsbrian.robolog.Log;
 import com.team5115.Konstanten;
 import com.team5115.PID;
 import com.team5115.robot.Robot;

@@ -1,6 +1,5 @@
 package com.team5115.auto;
 
-import com.cruzsbrian.robolog.Log;
 import com.team5115.Konstanten;
 import com.team5115.PID;
 import com.team5115.robot.Robot;
@@ -18,6 +17,8 @@ public class AutoDrive extends StateMachineBase {
 
 	double targetDist;
 	double targetAngle;
+	
+	double time;
 
 	PID forwardController;
 	PID turnController;
@@ -34,6 +35,7 @@ public class AutoDrive extends StateMachineBase {
 		//Change back to our constants, this one doesn't work
 		forwardController = new PID(Konstanten.AUTO_FORWARD_KP, Konstanten.AUTO_FORWARD_KI, Konstanten.AUTO_FORWARD_KD ,maxSpeed);
 		turnController = new PID(Konstanten.AUTO_TURN_KP, Konstanten.AUTO_TURN_KI ,Konstanten.AUTO_TURN_KD);
+		time = Timer.getFPGATimestamp();
 		setState(DRIVING);
 	}
 
@@ -62,7 +64,7 @@ public class AutoDrive extends StateMachineBase {
 	}
 
 	public void update() {
-		//System.out.println("autodrive state: " + state);
+		SmartDashboard.putNumber("autodrive state: ", state);
 		switch (state) {
 			case DRIVING:
 				Robot.drivetrain.inuse = true;
@@ -73,15 +75,6 @@ public class AutoDrive extends StateMachineBase {
 				double clearYaw = clearSteer(Robot.drivetrain.getYaw(), targetAngle);
 				double vTurn = turnController.getPID(targetAngle, clearYaw, Robot.drivetrain.getTurnVelocity());
 
-				//Log.add("yawp", turnController.getError() * Constantos.AUTO_TURN_KP);
-				//Log.add("yawi", turnController.getError() * Constantos.AUTO_TURN_KI);
-				//Log.add("yawcorrection", vTurn);
-				//Log.log("vForward", vForward);
-				//Log.log("average speed", Robot.drivetrain.averageSpeed());
-				Log.log("leftSpeed", Robot.drivetrain.leftSpeed());
-				Log.log("rightSpeed", Robot.drivetrain.rightSpeed());
-				Log.log("error", targetDist - Robot.drivetrain.distanceTraveled());
-				Log.log("turn error", targetAngle - Robot.drivetrain.getYaw());
 				Robot.drivetrain.drive(vForward, vTurn);
 				//System.out.println("distance travelled:  " + Robot.drivetrain.distanceTraveled());
 //				System.out.println("Yaw: " + Robot.drivetrain.getYaw());
@@ -98,6 +91,10 @@ public class AutoDrive extends StateMachineBase {
 					Robot.drivetrain.drive(0, 0);
 					setState(FINISHED);
 				}
+				
+				double delay = Timer.getFPGATimestamp() - time;
+				SmartDashboard.putNumber("delay", delay);
+				time = Timer.getFPGATimestamp();
 
 				break;
 			case FINISHED:

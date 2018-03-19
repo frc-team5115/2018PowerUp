@@ -1,6 +1,5 @@
 package com.team5115.auto;
 
-import com.cruzsbrian.robolog.Log;
 import com.team5115.Konstanten;
 import com.team5115.PID;
 import com.team5115.robot.Robot;
@@ -13,6 +12,7 @@ import com.team5115.statemachines.IntakeManager;
 import com.team5115.statemachines.StateMachineBase;
 
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 //drop a cube in the correct side of the switch
 public class SwitchAutoCenter extends StateMachineBase {
@@ -61,9 +61,10 @@ public class SwitchAutoCenter extends StateMachineBase {
 	}
 	
 	public void update() {
+		SmartDashboard.putNumber("state", state);
 		switch(state){
 		case INIT:
-			drive.startLine(2, 0.5);
+			drive.startLine(1.5, 0.25);
 			Robot.EM.setState(ElevatorManager.STOP);
 			Robot.IM.setState(IntakeManager.STOW_CLOSED);
 			Robot.CM.setState(CarriageManager.GRAB);
@@ -73,12 +74,12 @@ public class SwitchAutoCenter extends StateMachineBase {
 			updateChildren();
 			if(drive.state == AutoDrive.FINISHED){
 				if(switchPosition == left) {
-					drive.startTurn(-45, 0.4);
+					drive.startTurn(-45, 0.5);
 				}
 				else {
-					drive.startTurn(45, 0.4);
+					drive.startTurn(45, 0.5);
 				}
-				Robot.CMM.setState(CubeManipulatorManager.TRANSIT);
+//				Robot.CMM.setState(CubeManipulatorManager.TRANSIT);
 				setState(TURNING);
 			}
 			break;
@@ -87,10 +88,10 @@ public class SwitchAutoCenter extends StateMachineBase {
 			updateChildren();
 			if (drive.state == AutoDrive.FINISHED) { 
 				if(switchPosition == left) {
-					drive.startLine(6.4, 0.5);
+					drive.startLine(4.5, 0.5);
 				}
 				else {
-					drive.startLine(6.4, 0.5);
+					drive.startLine(4.5, 0.5);
 				}
 				Robot.EM.setTarget(Konstanten.SWITCH_HEIGHT);
 				Robot.EM.setState(ElevatorManager.MOVING_TO);
@@ -103,10 +104,10 @@ public class SwitchAutoCenter extends StateMachineBase {
 			Robot.CMM.collisionAvoidance();
 			if (drive.state == AutoDrive.FINISHED) { 
 				if(switchPosition == left) {
-					drive.startTurn(45, 0.4);
+					drive.startTurn(45, 0.5);
 				}
 				else {
-					drive.startTurn(-45, 0.4);
+					drive.startTurn(-45, 0.5);
 				}
 				setState(TURNING2);
 			}
@@ -116,10 +117,10 @@ public class SwitchAutoCenter extends StateMachineBase {
 			updateChildren();
 			if (drive.state == AutoDrive.FINISHED) { 
 				if(switchPosition == left) {
-					drive.startLine(2.37, 0.5);
+					drive.startLine(4, 0.25);
 				}
 				else {
-					drive.startLine(2.04, 0.5);
+					drive.startLine(4, 0.25);
 				}
 			
 				setState(DRIVING3);
