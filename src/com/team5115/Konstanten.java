@@ -32,7 +32,7 @@ public class Konstanten {
 	// PID values
 	public static final double AUTO_FORWARD_KP = 0.4; //Constants.getAsDouble("auto_forward_kp");
 	public static final double AUTO_FORWARD_KI = 0; //Constants.getAsDouble("auto_forward_ki");
-	public static final double AUTO_FORWARD_KD = 0.2; //Constants.getAsDouble("auto_forward_kd");
+	public static final double AUTO_FORWARD_KD = 0.1; //Constants.getAsDouble("auto_forward_kd");
 	public static final double AUTO_LINE_KP = 0.125;
 	public static final double AUTO_LINE_KI = 0;
 	public static final double AUTO_LINE_KD = 0;
@@ -41,19 +41,19 @@ public class Konstanten {
 	public static final double AUTO_TURN_KD = 0.05; //Constants.getAsDouble("auto_turn_kd");
 	public static final double FORWARD_KF = 0; //Constants.getAsDouble("forward_kf");
 	public static final double TURN_KF = 0; // Constants.getAsDouble("turn_kf");
-	public static final double TURN_KP = 0.05; //Constants.getAsDouble("turn_kp");
-	public static final double TURN_KI = 0.2; //Constants.getAsDouble("turn_ki");
-	public static final double ARM_KP = 0.02;
+	public static final double TURN_KP = 0.3; //Constants.getAsDouble("turn_kp");
+	public static final double TURN_KI = 0.15; //Constants.getAsDouble("turn_ki");
+	public static final double ARM_KP = 0.015;
 	public static final double ARM_KI = 0;
-	public static final double ARM_KD = 0.01;
+	public static final double ARM_KD = 0.02;
 	
 	// Tolerances for PID
 	public static final double LINE_TOLERANCE = 0.25; //Constants.getAsDouble("line_torerance"); // ft
 	public static final double LINE_DTOLERANCE = 0.25; //Constants.getAsDouble("line_dtolerance"); // ft/s
 	public static final double FORWARD_TOLERANCE = 0.25; //Constants.getAsDouble("forward_tolerance");//ft
 	public static final double FORWARD_DTOLERANCE = 0.05; //Constants.getAsDouble("forward_dtolerance");//ft/s
-	public static final double TURN_TOLERANCE = 2.5; //Constants.getAsDouble("turn_tolerance"); // rad
-	public static final double TURN_DTOLERANCE = 5; //Constants.getAsDouble("turn_dtolerance"); // rad/s
+	public static final double TURN_TOLERANCE = 10; //Constants.getAsDouble("turn_tolerance"); // rad
+	public static final double TURN_DTOLERANCE = 15; //Constants.getAsDouble("turn_dtolerance"); // rad/s
 	public static final double ARM_TOLERANCE = 5;
 	public static final double ARM_DTOLERANCE = 5;
 	
@@ -64,19 +64,19 @@ public class Konstanten {
 	// DIFFERENT BETWEEN ROBOTS - DO NOT COPY
 	public static final double RETURN_HEIGHT = 0;
 	public static final double INTAKE_HEIGHT = 160;
-	public static final double SWITCH_HEIGHT = 200;
+	public static final double SWITCH_HEIGHT = 250;
 	public static final double SCALE_HEIGHT = 720;
 	//
 	
-	public static final double ELEVATOR_SPEED_SCALE = 0.8;
+	public static final double ELEVATOR_SPEED_SCALE = 1;
 	public static final double ELEVATOR_SPEED_SWITCH = 0.5;
 	public static final double ELEVATOR_THRESHOLD = 20;
 	public static final double ELEVATOR_SPEED = 0.75;
-	public static final double INTAKE_SPEED = 0.5;
+	public static final double INTAKE_SPEED = 0.65;
 	public static final double SPIT_SPEED = -1;
-	public static final double PASSOFF_TIME = 1;
+	public static final double PASSOFF_TIME = 1.5;
 	public static final double PASSBACK_TIME = 0.1;
-	public static final double SPIT_DELAY = 0.5;
+	public static final double SPIT_DELAY = 1;
 	public static final double TIP_THRESHOLD = -20;
 	public static final double ACCEL_THRESHOLD = 0.75;
 	public static final double SAFE_ANGLE = -15;

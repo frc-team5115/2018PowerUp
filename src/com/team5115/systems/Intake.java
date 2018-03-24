@@ -60,11 +60,10 @@ public class Intake {
 	}
 	public void intake(double dir){
 		intakeWheelsLeft.set(-dir);
-		intakeWheelsRight.set(dir);
+		intakeWheelsRight.set(dir * 0.9);
 	}
 	public void bump(){
-		intakeWheelsLeft.set(1);
-		intakeWheelsRight.set(1);
+		intakeWheelsRight.set(-0.1);
 	}
 	
 }

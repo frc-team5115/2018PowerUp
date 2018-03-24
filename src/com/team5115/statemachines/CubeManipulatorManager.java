@@ -218,7 +218,7 @@ public class CubeManipulatorManager extends StateMachineBase {
 				// if we're coming from DRIVIN_AROUND_WIT_DA_INTAKE_DOWN, wait for the ejection to finish
 				// otherwise, time should already be something from much longer ago
 				if (Timer.getFPGATimestamp() >= time + Konstanten.SPIT_DELAY) {
-					Robot.IM.setState(IntakeManager.STOW_CLOSED);
+					//Robot.IM.setState(IntakeManager.STOW_CLOSED);
 				}
 				
 				Robot.EM.setTarget(armGoal);

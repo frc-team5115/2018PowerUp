@@ -74,14 +74,19 @@ public class AutoDrive extends StateMachineBase {
 
 				double clearYaw = clearSteer(Robot.drivetrain.getYaw(), targetAngle);
 				double vTurn = turnController.getPID(targetAngle, clearYaw, Robot.drivetrain.getTurnVelocity());
+				
+				if (!line && Math.abs(turnController.getError()) > Konstanten.TURN_TOLERANCE) {
+					vTurn += 0.15 * Math.signum(vTurn);
+				}
 
 				Robot.drivetrain.drive(vForward, vTurn);
 				//System.out.println("distance travelled:  " + Robot.drivetrain.distanceTraveled());
 //				System.out.println("Yaw: " + Robot.drivetrain.getYaw());
 				System.out.println("Clear Yaw " + clearYaw);
 				System.out.println("Target" + targetAngle);
-				
-				SmartDashboard.putNumber("distance traveled", Robot.drivetrain.distanceTraveled());
+
+				SmartDashboard.putNumber("distance traveled left", Robot.drivetrain.leftDist());
+				SmartDashboard.putNumber("distance traveled right", Robot.drivetrain.rightDist());
 				SmartDashboard.putNumber("velocity", Robot.drivetrain.averageSpeed());
 
 				SmartDashboard.putNumber("vTurn", vTurn);

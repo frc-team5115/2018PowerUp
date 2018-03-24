@@ -64,7 +64,7 @@ public class SwitchAutoCenter extends StateMachineBase {
 		SmartDashboard.putNumber("state", state);
 		switch(state){
 		case INIT:
-			drive.startLine(1.5, 0.25);
+			drive.startLine(1.5, 0.45);
 			Robot.EM.setState(ElevatorManager.STOP);
 			Robot.IM.setState(IntakeManager.STOW_CLOSED);
 			Robot.CM.setState(CarriageManager.GRAB);
@@ -88,10 +88,10 @@ public class SwitchAutoCenter extends StateMachineBase {
 			updateChildren();
 			if (drive.state == AutoDrive.FINISHED) { 
 				if(switchPosition == left) {
-					drive.startLine(4.5, 0.5);
+					drive.startLine(7, 0.5);
 				}
 				else {
-					drive.startLine(4.5, 0.5);
+					drive.startLine(5.5, 0.5);
 				}
 				Robot.EM.setTarget(Konstanten.SWITCH_HEIGHT);
 				Robot.EM.setState(ElevatorManager.MOVING_TO);
@@ -117,10 +117,10 @@ public class SwitchAutoCenter extends StateMachineBase {
 			updateChildren();
 			if (drive.state == AutoDrive.FINISHED) { 
 				if(switchPosition == left) {
-					drive.startLine(4, 0.25);
+					drive.startLine(4, 0.5);
 				}
 				else {
-					drive.startLine(4, 0.25);
+					drive.startLine(4, 0.5);
 				}
 			
 				setState(DRIVING3);
@@ -130,13 +130,15 @@ public class SwitchAutoCenter extends StateMachineBase {
 			updateChildren();
 			if (drive.state == AutoDrive.FINISHED || Timer.getFPGATimestamp() - time > 2) { 
 				Robot.CM.setState(CarriageManager.DUMP);
-				Robot.drivetrain.drive(0, 0);
+				Robot.drivetrain.drive(.2, 0);
 				setState(PLACE);
 			}
 			break;
 		case PLACE:
 			updateChildren();
+			Robot.drivetrain.drive(.2, 0);
 			if(Timer.getFPGATimestamp() >= time + Konstanten.SPIT_DELAY)
+				Robot.drivetrain.drive(0, 0);
 				setState(FINISHED);
 			break;
 			

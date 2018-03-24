@@ -12,7 +12,7 @@ import com.team5115.statemachines.IntakeManager;
 import com.team5115.statemachines.StateMachineBase;
 
 import edu.wpi.first.wpilibj.Timer;
-
+//Deprecated. Use SwitchAutoSide instead.
 //if we're in front of our side of the switch, drop a cube, otherwise, cross the auto line
 public class DropCubeAuto extends StateMachineBase {
 	public static final int INIT = 0;

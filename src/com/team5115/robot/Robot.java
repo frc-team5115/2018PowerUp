@@ -1,6 +1,7 @@
 package com.team5115.robot;
 //
 import java.util.ArrayList;
+
 import com.team5115.Konstanten;
 import com.team5115.statemachines.CarriageManager;
 import com.team5115.statemachines.CubeManipulatorManager;
@@ -16,13 +17,14 @@ import com.team5115.statemachines.IntakeManager;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
+import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.networktables.NetworkTable;;
 
-public class Robot extends IterativeRobot {
+public class Robot extends TimedRobot {
 	
 /**
  * The Robot class handles the basic functions of the robot
@@ -198,41 +200,22 @@ public class Robot extends IterativeRobot {
 //		System.out.println("y axis: " + InputManager.getForward());
 //		System.out.println("x axis: " + InputManager.getTurn());
 //		System.out.println("throttle: " + InputManager.getThrottle());
-//		System.out.println("yaw: " + drivetrain.getYaw());
 
 		SmartDashboard.putNumber("left", drivetrain.leftDist());
-		//SmartDashboard.putNumber("right", drivetrain.rightDist());
+		SmartDashboard.putNumber("right", drivetrain.rightDist());
 		SmartDashboard.putNumber("total", drivetrain.distanceTraveled());
-		SmartDashboard.putNumber("arm", elevator.getAngle());
-		
-		//System.out.println("CMM state: " + CMM.state);
-		
-		//System.out.println("Angle " + elevator.getAngle());
 //		SmartDashboard.putNumber("arm", elevator.getAngle());
-//		//System.out.println("Drive State " + drive.state);
-//		SmartDashboard.putNumber("yaw", drivetrain.getYaw());
+
+//		System.out.println("Angle " + elevator.getAngle());
+//		SmartDashboard.putNumber("arm", elevator.getAngle());
 //		
-//		SmartDashboard.putNumber("frontleft motor current", PDP.getCurrent(Konstanten.FRONT_LEFT_CHANNEL));
-//		SmartDashboard.putNumber("frontright motor current", PDP.getCurrent(Konstanten.FRONT_RIGHT_CHANNEL));
-//		SmartDashboard.putNumber("backleft motor current", PDP.getCurrent(Konstanten.BACK_LEFT_CHANNEL));
-//		SmartDashboard.putNumber("backright motor current", PDP.getCurrent(Konstanten.BACK_RIGHT_CHANNEL));
-//		
-//		/*
-		//System.out.println("Yaw " + drivetrain.getYaw());
-//		//System.out.println("Roll " + drivetrain.getRoll());
+		/*
+//		System.out.println("Yaw " + drivetrain.getYaw());
+//		System.out.println("Roll " + drivetrain.getRoll());
 //		System.out.println("Pitch " + drivetrain.getPitch());
 //		System.out.println("accel " + drivetrain.forwarAccel());
-//		*/
-//		//get angle
-//		System.out.println("Pot " + elevator.getAngle());
-//		System.out.println("cube " + intake.isCube());
-//		SmartDashboard.putNumber("pot", elevator.getAngle());
-//		System.out.println("elevator " + EM.state);
-//		System.out.println("cube " + CMM.state);
-//		
-//		System.out.println("Hat " + InputManager.getHat());
-//		//get speed
-//		//System.out.println(elevator.getAngleSpeed());
+		*/
+
 //		if (InputManager.kill()){
 //			EM.cancelMovement();
 //		}
@@ -242,9 +225,6 @@ public class Robot extends IterativeRobot {
 //	 	EM.update();
 //		IM.update();
 //		CM.update();
-	 	
-	 	
-//		System.out.println(elevator.getAngle());
 //	 	
 //		if (InputManager.getButton(12)) {	// lower and start intake
 //			intake.lowerIntake();
@@ -290,9 +270,9 @@ public class Robot extends IterativeRobot {
 //			armTarget = Konstanten.SCALE_HEIGHT;
 //		}
 		
-		if (InputManager.getButton(Konstanten.KILL)) {
-			dont();
-		}
+//		if (InputManager.getButton(Konstanten.KILL)) {
+//			dont();
+//		}
 	 }
 	 
 	 

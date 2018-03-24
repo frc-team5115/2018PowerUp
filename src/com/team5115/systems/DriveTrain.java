@@ -70,17 +70,17 @@ public class DriveTrain {
 	}
 	public double leftDist() {
 		double leftDist = -direction * backleft.getSelectedSensorPosition(0);
-		return leftDist / 1440 * 7.8 * Math.PI / 12;
+		return leftDist / 1440 * 6 * Math.PI / 12;
 	}
 	
-	/*public double rightDist() {
+	public double rightDist() {
 		System.out.println(backright.getSelectedSensorPosition(0));
 		double rightDist = direction * backright.getSelectedSensorPosition(0);
 		return rightDist / 1440 * 6 * Math.PI / 12;
-	}*/
+	}
 	
 	public double distanceTraveled() {
-		return leftDist();
+		return rightDist();
 	}
 
 	public double leftSpeed() {
@@ -96,7 +96,7 @@ public class DriveTrain {
 
 	
 	public double averageSpeed() {
-		return leftSpeed();
+		return (leftSpeed() + rightSpeed()) / 2;
 	}
 
 	public double getPitch(){
