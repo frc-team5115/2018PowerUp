@@ -65,6 +65,7 @@ public class AutoDrive extends StateMachineBase {
 
 	public void update() {
 		SmartDashboard.putNumber("autodrive state: ", state);
+		System.out.println("autodrive target: " + targetDist);
 		switch (state) {
 			case DRIVING:
 				Robot.drivetrain.inuse = true;
@@ -75,15 +76,15 @@ public class AutoDrive extends StateMachineBase {
 				double clearYaw = clearSteer(Robot.drivetrain.getYaw(), targetAngle);
 				double vTurn = turnController.getPID(targetAngle, clearYaw, Robot.drivetrain.getTurnVelocity());
 				
-				if (!line && Math.abs(turnController.getError()) > Konstanten.TURN_TOLERANCE) {
+				if (!line && Math.abs(turnController.getError()) > 4 * Konstanten.TURN_TOLERANCE) {
 					vTurn += 0.15 * Math.signum(vTurn);
 				}
 
 				Robot.drivetrain.drive(vForward, vTurn);
 				//System.out.println("distance travelled:  " + Robot.drivetrain.distanceTraveled());
 //				System.out.println("Yaw: " + Robot.drivetrain.getYaw());
-				System.out.println("Clear Yaw " + clearYaw);
-				System.out.println("Target" + targetAngle);
+//				System.out.println("Clear Yaw " + clearYaw);
+//				System.out.println("Target" + targetAngle);
 
 				SmartDashboard.putNumber("distance traveled left", Robot.drivetrain.leftDist());
 				SmartDashboard.putNumber("distance traveled right", Robot.drivetrain.rightDist());
@@ -115,9 +116,9 @@ public class AutoDrive extends StateMachineBase {
 	private double clearSteer(double yaw, double target) {
 		if (Math.abs(target - yaw) > 180) {
 			if (target < 180) {
-				yaw += 360;
-			} else {
 				yaw -= 360;
+			} else {
+				yaw += 360;
 			}
 		}
 

@@ -124,11 +124,15 @@ public class Robot extends TimedRobot {
 	 	SmartDashboard.putData("Position", positionChooser);
 		
 		strategyChooser = new SendableChooser();
-		strategyChooser.addDefault("Strategy 1- start in the center put a cube in the correct side of the switch", 2); //these are the state numbers in Auto.java
-		strategyChooser.addObject("Strategy 2- put something in scale", 3);
-		strategyChooser.addObject("Strategy 3- cross auto line and do nothing ", 4);
-		strategyChooser.addObject("Strategy 4- start on a side, drop a cube if that side of the switch is ours", 5);
-		strategyChooser.addObject("Strategy 5- same as 4 but we go for whichever side of the switch is ours", 7);
+		strategyChooser.addDefault("Strategy 1- center switch auto", 2); //these are the state numbers in Auto.java
+//		strategyChooser.addObject("Strategy 2- put something in scale", 3);
+//		strategyChooser.addObject("Strategy 3- cross auto line and do nothing ", 4);
+//		strategyChooser.addObject("Strategy 4- start on a side, drop a cube if that side of the switch is ours", 5);
+//		strategyChooser.addObject("Strategy 5- same as 4 but we go for whichever side of the switch is ours", 7);
+		strategyChooser.addObject("Strategy 6- side auto, switch preference", 8);
+		strategyChooser.addObject("Strategy 7- side auto, scale preference", 9);
+		strategyChooser.addObject("Strategy 8- side auto, switch preference, fast scale", 10);
+		strategyChooser.addObject("Strategy 9- side auto, scale preference, fast scale", 11);
 		SmartDashboard.putData("Strategy", strategyChooser);
 	 	drive.setState(Drive.STOP);
 	 	

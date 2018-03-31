@@ -63,8 +63,8 @@ public class DriveTrain {
 		 rightspeed = Math.signum(rightspeed);
 		
 		}
-		System.out.println("left: " + leftspeed);
-		System.out.println("right: " + rightspeed);
+//		System.out.println("left: " + leftspeed);
+//		System.out.println("right: " + rightspeed);
 		backleft.set(ControlMode.PercentOutput, -leftspeed);
 		backright.set(ControlMode.PercentOutput, rightspeed);
 	}

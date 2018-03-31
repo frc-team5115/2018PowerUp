@@ -21,12 +21,21 @@ public class Auto extends StateMachineBase{
 	public static final int DROPCUBE = 5;
 	public static final int NOTHINGTODO = 6;
 	public static final int SWITCHCROSS = 7;
+	public static final int RISKYSIDESWITCH = 8;
+	public static final int RISKYSIDESCALE = 9;
+	public static final int FASTSIDESWITCH = 10;
+	public static final int FASTSIDESCALE = 11;
+	
 	public static SwitchAutoCenter switchStrat;
 	public static ScaleAuto scaleStrat;
 	public static DropCubeAuto dropCubeStrat;
 	public static LineAuto lineStrat;
 	public static NothingToSeeHereAuto NothingToSeeHere;
 	public static SwitchAutoSide SwitchAutoSide;
+	public static RiskySideAuto_Switch riskySideSwitch;
+	public static RiskySideAuto_Scale riskySideScale;
+	public static FastSideAuto_Switch fastSideSwitch;
+	public static FastSideAuto_Scale fastSideScale;
 	//create new object imported from AutoDrive called "drive"
 	int position;
 	int switchPosition;
@@ -44,6 +53,10 @@ public class Auto extends StateMachineBase{
 		lineStrat = new LineAuto();
 		NothingToSeeHere = new NothingToSeeHereAuto();
 		SwitchAutoSide = new SwitchAutoSide(position, switchPosition);
+		riskySideSwitch = new RiskySideAuto_Switch(position, switchPosition, scalePosition);
+		riskySideScale = new RiskySideAuto_Scale(position, switchPosition, scalePosition);
+		fastSideSwitch = new FastSideAuto_Switch(position, switchPosition, scalePosition);
+		fastSideScale = new FastSideAuto_Scale(position, switchPosition, scalePosition);
 	}
 	
 	//each time update is called in AutoDrive
@@ -59,6 +72,10 @@ public class Auto extends StateMachineBase{
 					lineStrat.setState(LineAuto.INIT);
 					NothingToSeeHere.setState(NothingToSeeHereAuto.INIT);
 					SwitchAutoSide.setState(SwitchAutoSide.INIT);
+					riskySideSwitch.setState(RiskySideAuto_Switch.INIT);
+					riskySideScale.setState(RiskySideAuto_Scale.INIT);
+					fastSideSwitch.setState(RiskySideAuto_Switch.INIT);
+					fastSideScale.setState(RiskySideAuto_Scale.INIT);
 					setState(strategy);
 					break;
 					
@@ -79,6 +96,20 @@ public class Auto extends StateMachineBase{
 					break;
 				case SWITCHCROSS:
 					SwitchAutoSide.update();
+					break;
+				case RISKYSIDESWITCH:
+					riskySideSwitch.update();
+					break;
+				case RISKYSIDESCALE:
+					riskySideScale.update();
+					break;
+				case FASTSIDESWITCH:
+					fastSideSwitch.update();
+					break;
+				case FASTSIDESCALE:
+					fastSideScale.update();
+					break;
+					
 			}
 	 }
 }

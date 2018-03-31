@@ -117,10 +117,10 @@ public class SwitchAutoCenter extends StateMachineBase {
 			updateChildren();
 			if (drive.state == AutoDrive.FINISHED) { 
 				if(switchPosition == left) {
-					drive.startLine(4, 0.5);
+					drive.startLine(4, 0.25);
 				}
 				else {
-					drive.startLine(4, 0.5);
+					drive.startLine(4, 0.25);
 				}
 			
 				setState(DRIVING3);

@@ -14,8 +14,8 @@ import com.team5115.statemachines.StateMachineBase;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-//starts on a side and goes to the scale if the scale is ours, or the switch if the switch is ours, or cross if neither are ours. prefer scale if both are ours
-public class RiskySideAuto_Scale extends StateMachineBase {
+//starts on a side and goes to the scale if the scale is ours, or the switch if the switch is ours, or cross if neither are ours. prefer switch if both are ours
+public class FastSideAuto_Switch extends StateMachineBase {
 	public static final int INIT = 0;
 	public static final int DRIVING = 1; //11.6 ft
 	public static final int TURNING = 2;
@@ -24,18 +24,21 @@ public class RiskySideAuto_Scale extends StateMachineBase {
 	public static final int DRIVING3 = 5;
 	public static final int PLACE = 6;
 	public static final int FINISHED = 7;
+	public static final int SCALE_DRIVING = 8;
 	
 	public static final int LEFT  = 1;
 	public static final int RIGHT = 2;
 	
 	AutoDrive drive;
+	LinePlusTurn lpt;
 	double time;
 	int position;
 	int switchPosition;
 	int scalePosition;
 	
-	public RiskySideAuto_Scale(int p, int sp, int scp) {
+	public FastSideAuto_Switch(int p, int sp, int scp) {
 		drive = new AutoDrive();
+		lpt = new LinePlusTurn();
 		
 		position = p;
 		switchPosition = sp;
@@ -66,31 +69,30 @@ public class RiskySideAuto_Scale extends StateMachineBase {
 			Robot.EM.setState(ElevatorManager.MOVING_TO);
 			Robot.IM.setState(IntakeManager.STOW_CLOSED);
 			Robot.CM.setState(CarriageManager.GRAB);
-			if(position == scalePosition){
-				Robot.EM.setTarget(Konstanten.SCALE_HEIGHT);
-				drive.startLine(19, 0.75);
-			} else if (position == switchPosition) {
+			if(position == switchPosition){
 				Robot.EM.setTarget(Konstanten.SWITCH_HEIGHT);
-				drive.startLine(12, 0.75);//17.5
+				drive.startLine(12, 0.75);
+				setState(DRIVING);
+			} else if (position == scalePosition) {
+				Robot.EM.setTarget(Konstanten.SCALE_HEIGHT);
+				if (position == LEFT) {
+					// total dist, angle, dist to turn, forward speed, turning speed
+					lpt.start(23, 30, 19, 0.75, 0.5);
+				} else {
+					lpt.start(23, -30, 19, 0.75, 0.5);
+				}
+				setState(SCALE_DRIVING);
 			} else { //neither are ours, go for auto line
 				Robot.EM.setTarget(Konstanten.RETURN_HEIGHT);
 				drive.startLine(11.6, 0.75);
+				setState(DRIVING);
 			}
-			setState(DRIVING);
 			break;
 			
 		case DRIVING:
 			updateChildren();
 			if(drive.state == AutoDrive.FINISHED){
-				if(position == scalePosition){
-					if (position == LEFT){
-						drive.startTurn(30, .5);
-					}
-					else { //position == right
-						drive.startTurn(-30, .5);
-					}
-					setState(TURNING);
-				} else if (position == switchPosition) {
+				if (position == switchPosition) {
 					if (position == LEFT){
 						drive.startTurn(90, .5);
 					}
@@ -98,6 +100,7 @@ public class RiskySideAuto_Scale extends StateMachineBase {
 						drive.startTurn(-90, .5);
 					}
 					setState(TURNING);
+					
 				} else { //neither are ours, go for auto line
 					setState(FINISHED);
 				}
@@ -107,15 +110,14 @@ public class RiskySideAuto_Scale extends StateMachineBase {
 		case TURNING:
 			updateChildren();
 			if(drive.state == AutoDrive.FINISHED){
-				if(position == scalePosition){
-					drive.startLine(4, 0.25);
-				} else if (position == switchPosition) {
+				if (position == switchPosition) {
 					drive.startLine(2.5, 0.25);
 				}
 				setState(DRIVING2);
 				time = Timer.getFPGATimestamp();
 			}
 			break;
+			
 		case DRIVING2:
 			updateChildren();
 			if(drive.state == AutoDrive.FINISHED || Timer.getFPGATimestamp() >= time + 4){
@@ -126,13 +128,22 @@ public class RiskySideAuto_Scale extends StateMachineBase {
 			break;
 				
 		case PLACE:
-			updateChildren();
-			setState(FINISHED);
-			break;
+				updateChildren();
+				setState(FINISHED);
+				break;
 				
 		case FINISHED:
 			updateChildren();
 			Robot.drivetrain.drive(0, 0);
+			break;
+			
+		case SCALE_DRIVING:
+			updateChildren();
+			if (lpt.state == LinePlusTurn.FINISHED) {
+				Robot.CM.setState(CarriageManager.DUMP);
+				Robot.drivetrain.drive(0, 0);
+				setState(PLACE);
+			}
 			break;
 			
 		}

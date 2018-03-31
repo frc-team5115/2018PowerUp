@@ -35,6 +35,8 @@ public class InputManager {
 	   // Joystick give 1 to -1 but we need 0 to 1
     	//System.out.println("throttle " + ((1 - joy.getThrottle()) / 2));
 	   return (1 - joy.getRawAxis(Konstanten.AXIS_THROTTLE)) / 2;
+    	//note: some of the drivers want the throttle to be constant, uncomment above to restore throttle controls to joystick
+    	//return 0.6;
     }
 
     // Handles expo and deadband

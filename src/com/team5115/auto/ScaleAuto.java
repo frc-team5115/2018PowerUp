@@ -49,7 +49,7 @@ public class ScaleAuto extends StateMachineBase {
 		switch(state){
 		case INIT:
 			Robot.CMM.setState(CubeManipulatorManager.STOP);
-			drive.startLine(19, 0.5); //distance that is going to be required every time
+			drive.startLine(19, 0.75); //distance that is going to be required every time
 			Robot.CM.setState(CarriageManager.GRAB);
 			Robot.IM.setState(IntakeManager.STOW_OPEN);
 			Robot.EM.setTarget(Konstanten.SCALE_HEIGHT);

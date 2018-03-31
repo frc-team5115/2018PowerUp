@@ -52,7 +52,7 @@ public class Konstanten {
 	public static final double LINE_DTOLERANCE = 0.25; //Constants.getAsDouble("line_dtolerance"); // ft/s
 	public static final double FORWARD_TOLERANCE = 0.25; //Constants.getAsDouble("forward_tolerance");//ft
 	public static final double FORWARD_DTOLERANCE = 0.05; //Constants.getAsDouble("forward_dtolerance");//ft/s
-	public static final double TURN_TOLERANCE = 10; //Constants.getAsDouble("turn_tolerance"); // rad
+	public static final double TURN_TOLERANCE = 5; //Constants.getAsDouble("turn_tolerance"); // rad
 	public static final double TURN_DTOLERANCE = 15; //Constants.getAsDouble("turn_dtolerance"); // rad/s
 	public static final double ARM_TOLERANCE = 5;
 	public static final double ARM_DTOLERANCE = 5;
