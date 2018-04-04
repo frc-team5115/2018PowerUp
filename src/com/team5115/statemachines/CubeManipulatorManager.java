@@ -50,7 +50,9 @@ public class CubeManipulatorManager extends StateMachineBase {
 			case INTAKE:
 				// ELEVATOR DOWN, INTAKE ACTIVE,CARRIAGE ARMED
 				// IF SENSOR INPUT IS RECOGNIZED, GO TO TRANSIT
-				
+				if (Timer.getFPGATimestamp() <= time + 1) {
+						Robot.IM.setState(IntakeManager.OPEN_DOWN);
+				}
 				Robot.CM.setState(CarriageManager.DUMP);
 				Robot.EM.setTarget(Konstanten.RETURN_HEIGHT);
 				armGoal = Konstanten.RETURN_HEIGHT;
@@ -244,6 +246,7 @@ public class CubeManipulatorManager extends StateMachineBase {
 				}
 				
 				if (InputManager.intake()){
+					time = Timer.getFPGATimestamp();
 					Robot.EM.setTarget(Konstanten.RETURN_HEIGHT);
 					setState(INTAKE);
 				}

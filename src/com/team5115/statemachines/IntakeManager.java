@@ -17,6 +17,7 @@ public class IntakeManager extends StateMachineBase {
     public static final int GRIP_UP = 5;
     public static final int STOW_OPEN = 6;
     public static final int STOW_CLOSED = 7;
+    public static final int OPEN_DOWN = 8;
 
     PID turnController;
     
@@ -61,6 +62,10 @@ public class IntakeManager extends StateMachineBase {
 	   		Robot.intake.intake(0);
 	   		Robot.intake.liftIntake();
 	   		break;
+	   	case OPEN_DOWN:
+	   			Robot.intake.lowerIntake();
+	   			Robot.intake.release();
+	   			Robot.intake.intake(Konstanten.INTAKE_SPEED);
 	   }
     }
     
